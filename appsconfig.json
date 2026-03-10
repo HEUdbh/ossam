@@ -1,0 +1,29 @@
+{
+  "market_name": "ossam",
+  "last_updated": "20260309",
+  "apps": {
+    "Security": [
+      {
+        "name": "oneforall",
+        "repo": "shmilylty/OneForAll",
+        "photo": "", 
+        "match": ".*\\.zip"
+      },
+      {
+        "name": "dirsearch",
+        "repo": "maurosoria/dirsearch",
+        "photo": "https://cas.hrbeu.edu.cn/favicon.ico",
+        "match": "dirsearch-.*\\.tar.gz"
+      }
+    ],
+    "DevTools": [
+      {
+        "name": "fzf",
+        "repo": "junegunn/fzf",
+        "photo": "",
+        "match": "fzf-.*-windows_amd64.zip"
+      }
+    ],
+    "System": []
+  }
+}
