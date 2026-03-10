@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import StatusState from "../components/StatusState.vue";
 import { loadAppsConfig, useAppsStore } from "../stores/appsStore";
 
 const route = useRoute();
@@ -58,31 +59,49 @@ watch(categories, () => {
   <div class="market-layout">
     <aside class="category-sidebar">
       <div class="sidebar-title">软件分类</div>
-      <button
-        v-for="category in categories"
-        :key="category"
-        class="category-button"
-        :class="{ active: category === selectedCategory }"
-        @click="chooseCategory(category)"
-      >
-        {{ category }}
-      </button>
+      <el-scrollbar class="category-scroll">
+        <button
+          v-for="category in categories"
+          :key="category"
+          class="category-button"
+          :class="{ active: category === selectedCategory }"
+          @click="chooseCategory(category)"
+        >
+          {{ category }}
+        </button>
+      </el-scrollbar>
     </aside>
+
     <section class="apps-panel">
       <header class="apps-header">
-        <h1>{{ state.config?.market_name || "应用市场" }}</h1>
-        <span class="updated">
-          更新时间：{{ state.config?.last_updated || "-" }}
-        </span>
+        <div>
+          <h2>{{ state.config?.market_name || "应用市场" }}</h2>
+          <p>精选开源工具，一键进入详情页面。</p>
+        </div>
+        <el-tag round effect="plain" type="primary">
+          更新：{{ state.config?.last_updated || "-" }}
+        </el-tag>
       </header>
 
-      <div v-if="state.loading" class="placeholder">正在加载配置...</div>
-      <div v-else-if="state.error" class="placeholder error">
-        配置加载失败：{{ state.error }}
-      </div>
-      <div v-else-if="!currentApps.length" class="placeholder">
-        当前分类暂无应用。
-      </div>
+      <StatusState
+        v-if="state.loading"
+        type="loading"
+        title="正在加载应用清单"
+        description="正在读取本地配置文件，请稍候。"
+      />
+      <StatusState
+        v-else-if="state.error"
+        type="error"
+        title="配置加载失败"
+        :description="state.error"
+      />
+      <StatusState
+        v-else-if="!currentApps.length"
+        type="empty"
+        title="当前分类暂无应用"
+        description="可在 appsconfig.json 中补充该分类的应用项。"
+      />
+
       <div v-else class="app-grid">
         <router-link
           v-for="app in currentApps"
@@ -94,7 +113,10 @@ watch(categories, () => {
           }"
         >
           <img class="app-icon" :src="app.photo" :alt="app.name" />
-          <span class="app-name">{{ app.name }}</span>
+          <div class="app-body">
+            <div class="app-name">{{ app.name }}</div>
+            <div class="app-repo">{{ app.repo }}</div>
+          </div>
         </router-link>
       </div>
     </section>
@@ -103,117 +125,173 @@ watch(categories, () => {
 
 <style scoped>
 .market-layout {
-  display: grid;
-  grid-template-columns: 220px 1fr;
   height: 100%;
   min-height: 0;
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
 }
 
 .category-sidebar {
-  border-right: 1px solid #e6e8eb;
-  background: #f9fafb;
+  border-right: 1px solid var(--line-color);
+  background: var(--surface-2);
   padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .sidebar-title {
-  color: #4b5563;
+  color: var(--text-secondary);
   font-size: 13px;
   font-weight: 600;
-  margin-bottom: 4px;
+  letter-spacing: 0.2px;
+}
+
+.category-scroll {
+  min-height: 0;
 }
 
 .category-button {
-  border: 1px solid #e5e7eb;
-  background: #ffffff;
-  color: #111827;
-  border-radius: 8px;
-  padding: 10px 12px;
+  width: 100%;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  padding: 9px 10px;
   text-align: left;
   cursor: pointer;
+  transition:
+    color var(--duration-fast) ease,
+    background-color var(--duration-fast) ease,
+    border-color var(--duration-fast) ease;
+}
+
+.category-button:hover {
+  color: var(--text-primary);
+  background: var(--surface-1);
+  border-color: var(--line-color);
 }
 
 .category-button.active {
-  background: #1f2937;
-  border-color: #1f2937;
-  color: #ffffff;
+  color: var(--brand-color);
+  border-color: rgba(59, 130, 246, 0.42);
+  background: var(--brand-color-weak);
+  font-weight: 600;
 }
 
 .apps-panel {
   min-height: 0;
-  padding: 20px;
+  padding: 18px 20px;
   display: flex;
   flex-direction: column;
+  gap: 16px;
 }
 
 .apps-header {
   display: flex;
+  align-items: flex-start;
   justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 16px;
+  gap: 10px;
 }
 
-.apps-header h1 {
+.apps-header h2 {
   margin: 0;
   font-size: 22px;
+  line-height: 1.25;
 }
 
-.updated {
-  font-size: 13px;
-  color: #6b7280;
-}
-
-.placeholder {
-  border: 1px dashed #d1d5db;
-  border-radius: 12px;
-  background: #f8fafc;
-  padding: 20px;
-  color: #374151;
-}
-
-.placeholder.error {
-  border-color: #fca5a5;
-  background: #fef2f2;
-  color: #991b1b;
+.apps-header p {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: var(--text-secondary);
 }
 
 .app-grid {
+  min-height: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
   gap: 14px;
+  align-content: start;
 }
 
 .app-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 12px;
   text-decoration: none;
-  color: #111827;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 14px 10px;
+  color: var(--text-primary);
+  border: 1px solid var(--line-color);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  padding: 14px;
+  transition:
+    border-color var(--duration-fast) ease,
+    box-shadow var(--duration-fast) ease,
+    transform var(--duration-fast) ease;
 }
 
 .app-card:hover {
-  border-color: #d1d5db;
-  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
+  border-color: rgba(59, 130, 246, 0.35);
+  box-shadow: var(--shadow-card);
+  transform: translateY(-2px);
 }
 
 .app-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 10px;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
   object-fit: cover;
-  background: #f3f4f6;
+  background: var(--surface-3);
+}
+
+.app-body {
+  min-width: 0;
 }
 
 .app-name {
-  font-size: 14px;
-  text-align: center;
-  overflow-wrap: anywhere;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.app-repo {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 1279px) {
+  .market-layout {
+    grid-template-columns: 190px minmax(0, 1fr);
+  }
+
+  .apps-panel {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 960px) {
+  .market-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .category-sidebar {
+    border-right: none;
+    border-bottom: 1px solid var(--line-color);
+    padding: 12px;
+  }
+
+  .category-scroll :deep(.el-scrollbar__view) {
+    display: flex;
+    gap: 8px;
+  }
+
+  .category-button {
+    width: auto;
+    white-space: nowrap;
+  }
 }
 </style>

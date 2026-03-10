@@ -1,6 +1,8 @@
 <script setup>
 import { computed } from "vue";
+import { Link, User } from "@element-plus/icons-vue";
 import { useRoute } from "vue-router";
+import StatusState from "../components/StatusState.vue";
 import { loadAppsConfig, useAppsStore } from "../stores/appsStore";
 
 const route = useRoute();
@@ -8,7 +10,6 @@ const { state, findApp } = useAppsStore();
 
 const category = computed(() => String(route.params.category || ""));
 const appName = computed(() => String(route.params.name || ""));
-
 const app = computed(() => findApp(category.value, appName.value));
 
 const developer = computed(() => {
@@ -34,137 +35,159 @@ loadAppsConfig();
 
 <template>
   <section class="detail-page">
-    <div v-if="state.loading" class="placeholder">正在加载应用详情...</div>
-    <div v-else-if="state.error" class="placeholder error">
-      配置加载失败：{{ state.error }}
-    </div>
-    <div v-else-if="!app" class="placeholder">未找到该应用。</div>
-    <div v-else class="detail-card">
-      <header class="detail-header">
-        <img class="icon" :src="app.photo" :alt="app.name" />
-        <div class="meta">
-          <h1>{{ app.name }}</h1>
-          <p>{{ category }}</p>
+    <StatusState
+      v-if="state.loading"
+      type="loading"
+      title="正在加载应用详情"
+      description="正在读取本地配置并匹配应用信息。"
+    />
+    <StatusState
+      v-else-if="state.error"
+      type="error"
+      title="配置加载失败"
+      :description="state.error"
+    />
+    <StatusState
+      v-else-if="!app"
+      type="empty"
+      title="未找到该应用"
+      description="请确认路由参数与 appsconfig.json 配置是否一致。"
+    />
+
+    <div v-else class="detail-layout">
+      <el-card class="overview-card" shadow="never">
+        <div class="overview-head">
+          <img class="app-icon" :src="app.photo" :alt="app.name" />
+          <div class="overview-meta">
+            <h2>{{ app.name }}</h2>
+            <p>{{ category }}</p>
+          </div>
         </div>
-      </header>
+      </el-card>
 
-      <div class="row">
-        <span class="label">介绍</span>
-        <span class="value muted">阶段1占位：后续接入仓库介绍信息</span>
-      </div>
-      <div class="row">
-        <span class="label">版本</span>
-        <span class="value muted">阶段1占位：待接入 Release</span>
-      </div>
-      <div class="row">
-        <span class="label">开发者</span>
-        <span class="value">{{ developer }}</span>
-      </div>
-      <div class="row">
-        <span class="label">原仓库</span>
-        <a class="value link" :href="repoUrl" target="_blank">{{ app.repo }}</a>
-      </div>
+      <el-card class="meta-card" shadow="never">
+        <el-descriptions :column="1" border>
+          <el-descriptions-item label="介绍">
+            <span class="muted">阶段1占位：后续接入仓库介绍信息</span>
+          </el-descriptions-item>
+          <el-descriptions-item label="版本">
+            <span class="muted">阶段1占位：待接入 Release</span>
+          </el-descriptions-item>
+          <el-descriptions-item label="开发者">
+            <el-space :size="6">
+              <el-icon><User /></el-icon>
+              <span>{{ developer }}</span>
+            </el-space>
+          </el-descriptions-item>
+          <el-descriptions-item label="原仓库">
+            <a class="repo-link" :href="repoUrl" target="_blank" rel="noreferrer">
+              <el-space :size="6">
+                <el-icon><Link /></el-icon>
+                <span>{{ app.repo }}</span>
+              </el-space>
+            </a>
+          </el-descriptions-item>
+        </el-descriptions>
+      </el-card>
 
-      <div class="download-panel">
-        <button disabled>Windows 下载（占位）</button>
-        <button disabled>macOS 下载（占位）</button>
-        <button disabled>Linux 下载（占位）</button>
-      </div>
+      <el-card class="download-card" shadow="never">
+        <template #header>
+          <span>下载</span>
+        </template>
+        <div class="download-actions">
+          <el-button disabled>Windows 下载（占位）</el-button>
+          <el-button disabled>macOS 下载（占位）</el-button>
+          <el-button disabled>Linux 下载（占位）</el-button>
+        </div>
+      </el-card>
     </div>
   </section>
 </template>
 
 <style scoped>
 .detail-page {
-  padding: 24px;
+  height: 100%;
+  padding: 18px;
 }
 
-.placeholder {
-  border: 1px dashed #d1d5db;
-  border-radius: 12px;
-  background: #f8fafc;
-  padding: 20px;
-  color: #374151;
-}
-
-.placeholder.error {
-  border-color: #fca5a5;
-  background: #fef2f2;
-  color: #991b1b;
-}
-
-.detail-card {
-  border: 1px solid #e5e7eb;
-  background: #ffffff;
-  border-radius: 14px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
+.detail-layout {
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: 14px;
+  align-content: start;
 }
 
-.detail-header {
+.overview-card,
+.meta-card,
+.download-card {
+  border-radius: var(--radius-md);
+  border-color: var(--line-color);
+}
+
+.overview-card {
+  grid-column: span 12;
+}
+
+.meta-card {
+  grid-column: span 12;
+}
+
+.download-card {
+  grid-column: span 12;
+}
+
+.overview-head {
   display: flex;
   align-items: center;
   gap: 14px;
 }
 
-.icon {
+.app-icon {
   width: 64px;
   height: 64px;
-  border-radius: 12px;
-  background: #f3f4f6;
+  border-radius: 14px;
+  object-fit: cover;
+  background: var(--surface-3);
 }
 
-.meta h1 {
+.overview-meta h2 {
   margin: 0;
   font-size: 22px;
+  line-height: 1.25;
 }
 
-.meta p {
+.overview-meta p {
   margin: 6px 0 0;
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
-.row {
-  display: grid;
-  grid-template-columns: 88px 1fr;
-  gap: 10px;
-  align-items: start;
-}
-
-.label {
-  color: #6b7280;
-}
-
-.value {
-  color: #111827;
-}
-
-.muted {
-  color: #6b7280;
-}
-
-.link {
-  color: #2563eb;
+.repo-link {
+  color: var(--brand-color);
   text-decoration: none;
 }
 
-.link:hover {
+.repo-link:hover {
   text-decoration: underline;
 }
 
-.download-panel {
+.download-actions {
   display: flex;
-  gap: 12px;
-  margin-top: 8px;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-.download-panel button {
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  padding: 8px 12px;
-  background: #f9fafb;
-  color: #6b7280;
+.download-actions :deep(.el-button) {
+  min-width: 170px;
+}
+
+.muted {
+  color: var(--text-secondary);
+}
+
+@media (max-width: 960px) {
+  .detail-page {
+    padding: 14px;
+  }
 }
 </style>

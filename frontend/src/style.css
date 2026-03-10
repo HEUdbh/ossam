@@ -1,3 +1,47 @@
+@font-face {
+  font-family: "Nunito";
+  font-style: normal;
+  font-weight: 400;
+  src: local(""),
+    url("assets/fonts/nunito-v16-latin-regular.woff2") format("woff2");
+}
+
+:root {
+  --brand-color: #3b82f6;
+  --brand-color-weak: rgba(59, 130, 246, 0.12);
+  --danger-color: #ef4444;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #94a3b8;
+  --surface-1: #ffffff;
+  --surface-2: #f8fafc;
+  --surface-3: #f1f5f9;
+  --line-color: #e2e8f0;
+  --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.06);
+  --shadow-card: 0 8px 24px rgba(15, 23, 42, 0.08);
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 10px;
+  --space-1: 8px;
+  --space-2: 12px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --duration-fast: 0.2s;
+  --duration-normal: 0.28s;
+
+  --el-color-primary: var(--brand-color);
+  --el-border-radius-base: var(--radius-sm);
+  --el-border-color: var(--line-color);
+  --el-fill-color-blank: var(--surface-1);
+  --el-text-color-primary: var(--text-primary);
+  --el-text-color-regular: var(--text-secondary);
+}
+
+* {
+  box-sizing: border-box;
+}
+
 html,
 body,
 #app {
@@ -10,80 +54,202 @@ body {
   font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
     "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
-  color: #111827;
-  background: #f3f4f6;
-}
-
-@font-face {
-  font-family: "Nunito";
-  font-style: normal;
-  font-weight: 400;
-  src: local(""),
-    url("assets/fonts/nunito-v16-latin-regular.woff2") format("woff2");
-}
-
-* {
-  box-sizing: border-box;
+  color: var(--text-primary);
+  background:
+    radial-gradient(circle at top right, rgba(59, 130, 246, 0.14), transparent 48%),
+    #f6f8fb;
 }
 
 .app-shell {
+  width: 100%;
   height: 100%;
   display: grid;
-  grid-template-columns: 180px 1fr;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: var(--space-3);
+  padding: var(--space-3);
 }
 
 .primary-sidebar {
-  background: #111827;
-  color: #e5e7eb;
+  border: 1px solid var(--line-color);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-soft);
+  padding: var(--space-3);
   display: flex;
   flex-direction: column;
-  padding: 16px 12px;
+  min-width: 0;
 }
 
-.brand {
-  font-size: 18px;
+.brand-card {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.brand-mark {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, #5ea2ff 0%, #2f6fde 100%);
+  color: #ffffff;
   font-weight: 700;
-  margin-bottom: 20px;
-  padding: 8px 10px;
+  letter-spacing: 0.4px;
+}
+
+.brand-name {
+  font-size: 18px;
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+.brand-desc {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .primary-nav {
+  margin-top: var(--space-4);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-1);
 }
 
 .nav-link {
-  color: #d1d5db;
-  text-decoration: none;
-  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: var(--radius-sm);
   padding: 10px 12px;
+  text-decoration: none;
+  color: var(--text-secondary);
+  transition:
+    background-color var(--duration-fast) ease,
+    color var(--duration-fast) ease;
+}
+
+.nav-link:hover {
+  background: var(--surface-2);
+  color: var(--text-primary);
 }
 
 .nav-link.active,
 .nav-link.router-link-active {
-  background: #1f2937;
-  color: #ffffff;
+  background: var(--brand-color-weak);
+  color: var(--brand-color);
+  font-weight: 600;
 }
 
 .settings-button {
   margin-top: auto;
-  border: 1px solid #374151;
-  background: #1f2937;
-  color: #f9fafb;
-  border-radius: 8px;
-  padding: 10px 12px;
-  text-align: left;
-  cursor: pointer;
+  justify-content: flex-start;
+  gap: 8px;
+  border-radius: var(--radius-sm);
+  height: 42px;
+  color: var(--text-secondary);
+  border: 1px solid var(--line-color);
+  background: var(--surface-1);
 }
 
-.settings-button.active {
-  border-color: #4b5563;
-  background: #374151;
+.settings-button.active,
+.settings-button:hover {
+  color: var(--brand-color);
+  border-color: rgba(59, 130, 246, 0.4);
+  background: var(--brand-color-weak);
 }
 
 .content-area {
   min-width: 0;
   min-height: 0;
-  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.page-header {
+  border: 1px solid var(--line-color);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3) var(--space-4);
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(8px);
+  box-shadow: var(--shadow-soft);
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.25;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.page-header p {
+  margin: 6px 0 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.page-content {
+  min-height: 0;
+  flex: 1;
+  border: 1px solid var(--line-color);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+}
+
+@media (max-width: 1279px) {
+  .app-shell {
+    grid-template-columns: 200px minmax(0, 1fr);
+    gap: var(--space-2);
+    padding: var(--space-2);
+  }
+
+  .primary-sidebar {
+    padding: var(--space-2);
+  }
+
+  .page-header {
+    padding: 14px 18px;
+  }
+}
+
+@media (max-width: 960px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+    height: auto;
+    min-height: 100%;
+  }
+
+  .primary-sidebar {
+    gap: var(--space-2);
+  }
+
+  .primary-nav {
+    margin-top: 0;
+    flex-direction: row;
+  }
+
+  .nav-link {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .settings-button {
+    margin-top: 0;
+  }
 }
