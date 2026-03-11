@@ -1,10 +1,10 @@
 <script setup>
 import { computed, onUnmounted, reactive, watch } from "vue";
 import { ElMessage } from "element-plus";
-import { Link, User } from "@element-plus/icons-vue";
+import { ArrowLeft, Link, User } from "@element-plus/icons-vue";
 import DOMPurify from "dompurify";
 import { marked } from "marked";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { GetDownloadTask, StartDownload } from "../../wailsjs/go/main/App";
 import StatusState from "../components/StatusState.vue";
 import {
@@ -16,6 +16,7 @@ import {
 import { getDownloadDirectory } from "../utils/settings";
 
 const route = useRoute();
+const router = useRouter();
 const { state, findApp } = useAppsStore();
 
 const platformOptions = [
@@ -66,6 +67,17 @@ const releaseTitle = computed(() => {
 
 const readmeHtml = computed(() => renderMarkdown(detail.value?.readme));
 const releaseNotesHtml = computed(() => renderMarkdown(detail.value?.release_body));
+
+function goBack() {
+  const hasRouterBack = Boolean(window.history.state?.back);
+  if (hasRouterBack || window.history.length > 1) {
+    router.back();
+    return;
+  }
+
+  const nextQuery = category.value ? { category: category.value } : {};
+  router.push({ name: "market", query: nextQuery });
+}
 
 function createDownloadState() {
   return {
@@ -245,6 +257,13 @@ onUnmounted(() => {
 
 <template>
   <section class="detail-page">
+    <div class="detail-toolbar">
+      <el-button class="back-button" plain @click="goBack">
+        <el-icon><ArrowLeft /></el-icon>
+        <span>返回</span>
+      </el-button>
+    </div>
+
     <StatusState
       v-if="state.loading"
       type="loading"
@@ -344,6 +363,19 @@ onUnmounted(() => {
 .detail-page {
   height: 100%;
   padding: 18px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.detail-toolbar {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.back-button {
+  gap: 6px;
+  font-weight: 500;
 }
 
 .detail-layout {
