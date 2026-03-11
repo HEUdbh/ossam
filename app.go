@@ -152,6 +152,7 @@ type matchedAsset struct {
 const (
 	appsConfigPath        = "appsconfig.json"
 	defaultAppPlaceholder = "https://github.githubassets.com/favicons/favicon.png"
+	githubProxyPrefix     = "https://ghproxy.net/"
 
 	platformWindows = "windows"
 	platformLinux   = "linux"
@@ -353,15 +354,15 @@ func (c *AppsConfig) applyDisplayDefaults() {
 
 func resolveAppPhoto(repo, photo string) string {
 	if strings.TrimSpace(photo) != "" {
-		return photo
+		return applyGitHubProxy(strings.TrimSpace(photo))
 	}
 
 	parts := strings.Split(strings.TrimSpace(repo), "/")
 	if len(parts) == 2 && parts[0] != "" && parts[1] != "" {
-		return fmt.Sprintf("https://github.com/%s.png", parts[0])
+		return applyGitHubProxy(fmt.Sprintf("https://github.com/%s.png", parts[0]))
 	}
 
-	return defaultAppPlaceholder
+	return applyGitHubProxy(defaultAppPlaceholder)
 }
 
 // GetAppReleaseDetail fetches latest release metadata, README markdown and matched assets for each platform.
@@ -416,7 +417,7 @@ func (a *App) GetAppReleaseDetail(repo, match string) (*AppReleaseDetail, error)
 
 // StartDownload starts a download task asynchronously and returns the task snapshot immediately.
 func (a *App) StartDownload(request StartDownloadRequest) (*DownloadTaskSnapshot, error) {
-	downloadURL := strings.TrimSpace(request.DownloadURL)
+	downloadURL := applyGitHubProxy(strings.TrimSpace(request.DownloadURL))
 	if downloadURL == "" {
 		return nil, errors.New("download_url is required")
 	}
@@ -632,7 +633,7 @@ func (a *App) fetchRepoStars(repo string) (int, error) {
 }
 
 func (a *App) newGitHubRequest(parent context.Context, method, endpoint string) (*http.Request, error) {
-	req, err := http.NewRequestWithContext(parent, method, endpoint, nil)
+	req, err := http.NewRequestWithContext(parent, method, applyGitHubProxy(endpoint), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -806,7 +807,7 @@ func selectAssetForPlatform(assets []githubAsset, basePattern *regexp.Regexp, pl
 					Platform:    platform,
 					Available:   true,
 					AssetName:   candidate.asset.Name,
-					DownloadURL: candidate.asset.BrowserDownloadURL,
+					DownloadURL: applyGitHubProxy(candidate.asset.BrowserDownloadURL),
 					Arch:        candidate.arch,
 				}
 			}
@@ -818,7 +819,7 @@ func selectAssetForPlatform(assets []githubAsset, basePattern *regexp.Regexp, pl
 		Platform:    platform,
 		Available:   true,
 		AssetName:   first.asset.Name,
-		DownloadURL: first.asset.BrowserDownloadURL,
+		DownloadURL: applyGitHubProxy(first.asset.BrowserDownloadURL),
 		Arch:        first.arch,
 	}
 }
@@ -897,6 +898,42 @@ func buildRepoPath(repo string) string {
 		return ""
 	}
 	return url.PathEscape(parts[0]) + "/" + url.PathEscape(parts[1])
+}
+
+func applyGitHubProxy(rawURL string) string {
+	trimmed := strings.TrimSpace(rawURL)
+	if trimmed == "" {
+		return ""
+	}
+
+	if strings.HasPrefix(trimmed, githubProxyPrefix) {
+		return trimmed
+	}
+
+	parsed, err := url.Parse(trimmed)
+	if err != nil {
+		return trimmed
+	}
+
+	host := strings.ToLower(parsed.Hostname())
+	if !isGitHubHost(host) {
+		return trimmed
+	}
+
+	return githubProxyPrefix + trimmed
+}
+
+func isGitHubHost(host string) bool {
+	if host == "" {
+		return false
+	}
+
+	return host == "github.com" ||
+		strings.HasSuffix(host, ".github.com") ||
+		host == "githubusercontent.com" ||
+		strings.HasSuffix(host, ".githubusercontent.com") ||
+		host == "githubassets.com" ||
+		strings.HasSuffix(host, ".githubassets.com")
 }
 
 func (a *App) nextTaskID() string {

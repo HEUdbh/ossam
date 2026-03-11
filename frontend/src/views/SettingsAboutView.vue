@@ -8,7 +8,7 @@
       <el-descriptions-item label="仓库主页">
         <a
           class="about-link"
-          href="https://github.com/HEUdbh/ossam"
+          href="https://ghproxy.net/https://github.com/HEUdbh/ossam"
           target="_blank"
           rel="noreferrer"
         >

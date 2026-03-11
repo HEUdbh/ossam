@@ -54,7 +54,7 @@ const repoUrl = computed(() => {
   if (!repo) {
     return "";
   }
-  return `https://github.com/${repo}`;
+  return `https://ghproxy.net/https://github.com/${repo}`;
 });
 
 const releaseTitle = computed(() => {
@@ -410,7 +410,7 @@ onUnmounted(() => {
 .app-icon {
   width: 72px;
   height: 72px;
-  border-radius: 16px;
+  border-radius: var(--radius-md);
   object-fit: cover;
   background: var(--surface-3);
   border: 1px solid #dbeee2;
@@ -519,7 +519,7 @@ onUnmounted(() => {
 .markdown-body :deep(pre) {
   overflow-x: auto;
   padding: 10px;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   background: #0f172a;
   color: #e2e8f0;
 }

@@ -4,7 +4,7 @@
       <template #header>
         <div class="card-header">
           <h2>我的</h2>
-          <el-tag type="success" effect="plain" round>阶段占位</el-tag>
+          <el-tag type="success" effect="plain">阶段占位</el-tag>
         </div>
       </template>
 

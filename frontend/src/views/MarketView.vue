@@ -144,24 +144,23 @@ watch(categories, () => {
 
 <template>
   <div class="market-layout">
-    <aside class="category-sidebar">
-      <div class="sidebar-title">分类浏览</div>
-      <el-scrollbar class="category-scroll">
-        <button
-          v-for="category in categories"
-          :key="category"
-          class="category-button"
-          :class="{ active: category === selectedCategory }"
-          @click="chooseCategory(category)"
-        >
-          <span class="category-dot" />
-          <span class="category-text">{{ getCategoryDisplayName(category) }}</span>
-        </button>
-      </el-scrollbar>
-    </aside>
-
     <section class="apps-panel">
       <header class="apps-header">
+        <el-scrollbar class="category-top-nav">
+          <div class="category-nav-list">
+            <button
+              v-for="category in categories"
+              :key="category"
+              class="category-button"
+              :class="{ active: category === selectedCategory }"
+              @click="chooseCategory(category)"
+            >
+              <span class="category-dot" />
+              <span class="category-text">{{ getCategoryDisplayName(category) }}</span>
+            </button>
+          </div>
+        </el-scrollbar>
+
         <div class="apps-actions">
           <el-input
             v-model="searchQuery"
@@ -173,7 +172,7 @@ watch(categories, () => {
               <el-icon><Search /></el-icon>
             </template>
           </el-input>
-          <el-tag round effect="plain" type="success">
+          <el-tag effect="plain" type="success">
             更新：{{ state.config?.last_updated || "-" }}
           </el-tag>
         </div>
@@ -245,43 +244,54 @@ watch(categories, () => {
 .market-layout {
   height: 100%;
   min-height: 0;
-  display: grid;
-  grid-template-columns: 220px minmax(0, 1fr);
   background: var(--surface-1);
 }
 
-.category-sidebar {
-  border-right: 1px solid var(--line-color);
-  background: var(--surface-2);
-  padding: 16px 12px;
+.apps-panel {
+  height: 100%;
+  min-height: 0;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
 }
 
-.sidebar-title {
-  padding: 0 8px;
-  color: var(--text-secondary);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+.apps-header {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
 }
 
-.category-scroll {
-  min-height: 0;
+.category-top-nav {
+  width: 100%;
+}
+
+.category-top-nav :deep(.el-scrollbar__wrap) {
+  overflow-y: hidden;
+}
+
+.category-top-nav :deep(.el-scrollbar__view) {
+  display: flex;
+  padding-bottom: 2px;
+}
+
+.category-nav-list {
+  display: flex;
+  gap: 8px;
+  min-width: max-content;
 }
 
 .category-button {
-  width: 100%;
+  flex: 0 0 auto;
   border: 1px solid transparent;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   background: transparent;
   color: var(--text-secondary);
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 10px;
+  padding: 8px 12px;
   text-align: left;
   cursor: pointer;
   transition:
@@ -323,25 +333,12 @@ watch(categories, () => {
   min-width: 0;
 }
 
-.apps-panel {
-  min-height: 0;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.apps-header {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 12px;
-}
-
 .apps-actions {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .search-input {
@@ -349,7 +346,7 @@ watch(categories, () => {
 }
 
 .search-input :deep(.el-input__wrapper) {
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   box-shadow: 0 0 0 1px #d5e8da inset;
 }
 
@@ -370,7 +367,7 @@ watch(categories, () => {
 
 .app-card {
   border: 1px solid var(--line-color);
-  border-radius: 18px;
+  border-radius: var(--radius-lg);
   background: linear-gradient(180deg, #ffffff 0%, #fbfefb 100%);
   box-shadow: 0 6px 16px rgba(15, 23, 42, 0.05);
   text-decoration: none;
@@ -394,7 +391,7 @@ watch(categories, () => {
 .app-icon {
   width: 58px;
   height: 58px;
-  border-radius: 14px;
+  border-radius: var(--radius-md);
   object-fit: cover;
   background: var(--surface-3);
   border: 1px solid #e2efe6;
@@ -451,50 +448,19 @@ watch(categories, () => {
 }
 
 @media (max-width: 1279px) {
-  .market-layout {
-    grid-template-columns: 188px minmax(0, 1fr);
-  }
-
   .search-input {
     width: 260px;
   }
 }
 
 @media (max-width: 960px) {
-  .market-layout {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto minmax(0, 1fr);
-  }
-
-  .category-sidebar {
-    border-right: none;
-    border-bottom: 1px solid var(--line-color);
-    padding: 12px;
-  }
-
-  .category-scroll :deep(.el-scrollbar__view) {
-    display: flex;
-    gap: 8px;
-    padding-bottom: 2px;
-  }
-
-  .category-button {
-    width: auto;
-    min-width: 112px;
-    white-space: nowrap;
-  }
-
   .apps-panel {
     padding: 14px;
   }
 
-  .apps-header {
-    flex-direction: column;
-  }
-
   .apps-actions {
     width: 100%;
-    flex-wrap: wrap;
+    justify-content: flex-start;
   }
 
   .search-input {

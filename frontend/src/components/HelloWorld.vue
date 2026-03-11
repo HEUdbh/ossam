@@ -36,7 +36,7 @@ function greet() {
   width: 60px;
   height: 30px;
   line-height: 30px;
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
   border: none;
   margin: 0 0 0 20px;
   padding: 0 8px;
@@ -50,7 +50,7 @@ function greet() {
 
 .input-box .input {
   border: none;
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
   outline: none;
   height: 30px;
   line-height: 30px;
