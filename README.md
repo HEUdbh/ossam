@@ -1,11 +1,11 @@
 # 一、项目概述
 
-一款针对 GitHub 的开源软件应用市场（Open source software application market），对开源软件进行综合管理。支持一键下载最新版本，集中浏览，方便快捷。多线程下载，避免长久等待，内置加速源，避免新人玩家无法访问的尴尬。
+一款针对 GitHub 的开源软件应用市场（Open source software application market），对开源软件进行综合管理。支持一键下载最新版本，集中浏览，方便快捷。多线程下载，避免长久等待。
 
 # 二、解决痛点
 
 传统工程师换新电脑，或者去到新公司，需要快速装机，投入生产。去 GitHub 手动下载存在需要一个一个搜索并下载，程序繁琐，容易疏漏等问题；使用应用市场统一管理，方便高效，同时可以避免疏漏的情况。
-面对新电脑，通常还存在需要 VPN 才能稳定访问 GitHub 和开源 VPN 在 GitHub 上下载的尴尬问题，软件内置加速源，解决尴尬，并且新人友好。
+面对新电脑，通常还存在需要 VPN 才能稳定访问 GitHub 和开源 VPN 在 GitHub 上下载的尴尬问题，软件提供统一下载体验，并且新人友好。
 
 # 三、功能分析
 
@@ -13,9 +13,9 @@
 
 使用golang实现多线程同时下载
 
-## 2.内置下载加速源
+## 2.稳定下载能力
 
-内置开源的 GitHub 下载加速源
+提供 GitHub 资源的统一下载流程
 
 ## 3.可以修改文件下载位置
 
@@ -176,3 +176,20 @@
 - `repo`：GitHub 仓库标识，格式为 `owner/repo`。
 - `photo`：应用图标地址，可为空；为空时可回退到默认图标或仓库作者头像策略。
 - `match`：用于匹配 Release 资产文件名的正则表达式，需与目标平台产物命名规则一致。
+
+## GitHub Request Mapping
+
+| Request Purpose | Trigger Location | URL Template | Proxy Prefix Applied | Notes |
+| --- | --- | --- | --- | --- |
+| Release list query | `fetchReleases -> newGitHubRequest` | `https://api.github.com/repos/{owner}/{repo}/releases?per_page=30` | No | Sent directly by `newGitHubRequest`. |
+| Repository stars query | `fetchRepoStars -> newGitHubRequest` | `https://api.github.com/repos/{owner}/{repo}` | No | Sent directly by `newGitHubRequest`. |
+| README fetch (ghproxy + raw) | `fetchReadme -> buildReadmeRawCandidates` | `https://ghproxy.net/https://raw.githubusercontent.com/{owner}/{repo}/main/readme.md`<br>`https://ghproxy.net/https://raw.githubusercontent.com/{owner}/{repo}/main/README.md`<br>`https://ghproxy.net/https://raw.githubusercontent.com/{owner}/{repo}/master/readme.md`<br>`https://ghproxy.net/https://raw.githubusercontent.com/{owner}/{repo}/master/README.md` | Yes | Candidates are requested in order until first success. |
+| Release asset download URL (`browser_download_url`) | `selectAssetForPlatform` | `https://github.com/{owner}/{repo}/releases/download/{tag}/{asset}` (typical shape) | No | `downloads[*].download_url` keeps original GitHub URL. |
+| `StartDownload` input URL | `StartDownload` | Frontend-provided `download_url` | No | Uses original incoming URL after validation. |
+| Default app avatar | `resolveAppPhoto -> buildGitHubAvatarURL` | `https://avatars.githubusercontent.com/{owner}` | No | Default avatar uses direct URL. |
+| Default placeholder icon | `resolveAppPhoto` | `https://github.githubassets.com/favicons/favicon.png` | No | Placeholder icon uses direct URL. |
+| Custom `photo` field | `resolveAppPhoto` | Original value from `appsconfig.json` | No | Returned as-is, no URL rewrite. |
+
+- Runtime GitHub requests use direct URLs except README fetch, which prepends `https://ghproxy.net/`.
+- Non-GitHub URLs are passed through as-is.
+

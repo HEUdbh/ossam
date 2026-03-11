@@ -48,6 +48,9 @@ export namespace main {
 	    release_body: string;
 	    release_published_at: string;
 	    readme: string;
+	    readme_source_url: string;
+	    readme_branch: string;
+	    readme_file_path: string;
 	    downloads: Record<string, PlatformDownload>;
 	
 	    static createFrom(source: any = {}) {
@@ -63,6 +66,9 @@ export namespace main {
 	        this.release_body = source["release_body"];
 	        this.release_published_at = source["release_published_at"];
 	        this.readme = source["readme"];
+	        this.readme_source_url = source["readme_source_url"];
+	        this.readme_branch = source["readme_branch"];
+	        this.readme_file_path = source["readme_file_path"];
 	        this.downloads = this.convertValues(source["downloads"], PlatformDownload, true);
 	    }
 	

@@ -54,7 +54,7 @@ const repoUrl = computed(() => {
   if (!repo) {
     return "";
   }
-  return `https://ghproxy.net/https://github.com/${repo}`;
+  return `https://github.com/${repo}`;
 });
 
 const releaseTitle = computed(() => {

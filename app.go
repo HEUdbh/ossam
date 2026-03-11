@@ -82,6 +82,9 @@ type AppReleaseDetail struct {
 	ReleaseBody        string                      `json:"release_body"`
 	ReleasePublishedAt string                      `json:"release_published_at"`
 	Readme             string                      `json:"readme"`
+	ReadmeSourceURL    string                      `json:"readme_source_url"`
+	ReadmeBranch       string                      `json:"readme_branch"`
+	ReadmeFilePath     string                      `json:"readme_file_path"`
 	Downloads          map[string]PlatformDownload `json:"downloads"`
 }
 
@@ -149,10 +152,23 @@ type matchedAsset struct {
 	arch  string
 }
 
+type readmeCandidate struct {
+	URL      string
+	Branch   string
+	FilePath string
+}
+
+type readmeFetchResult struct {
+	Content   string
+	SourceURL string
+	Branch    string
+	FilePath  string
+}
+
 const (
 	appsConfigPath        = "appsconfig.json"
 	defaultAppPlaceholder = "https://github.githubassets.com/favicons/favicon.png"
-	githubProxyPrefix     = "https://ghproxy.net/"
+	githubReadmeProxy     = "https://ghproxy.net/"
 
 	platformWindows = "windows"
 	platformLinux   = "linux"
@@ -354,15 +370,15 @@ func (c *AppsConfig) applyDisplayDefaults() {
 
 func resolveAppPhoto(repo, photo string) string {
 	if strings.TrimSpace(photo) != "" {
-		return applyGitHubProxy(strings.TrimSpace(photo))
+		return strings.TrimSpace(photo)
 	}
 
 	parts := strings.Split(strings.TrimSpace(repo), "/")
 	if len(parts) == 2 && parts[0] != "" && parts[1] != "" {
-		return applyGitHubProxy(fmt.Sprintf("https://github.com/%s.png", parts[0]))
+		return buildGitHubAvatarURL(parts[0])
 	}
 
-	return applyGitHubProxy(defaultAppPlaceholder)
+	return defaultAppPlaceholder
 }
 
 // GetAppReleaseDetail fetches latest release metadata, README markdown and matched assets for each platform.
@@ -392,20 +408,23 @@ func (a *App) GetAppReleaseDetail(repo, match string) (*AppReleaseDetail, error)
 		return nil, err
 	}
 
-	readme, readmeErr := a.fetchReadme(repo)
+	readmeResult, readmeErr := a.fetchReadme(repo)
 	if readmeErr != nil {
 		// README failure should not block download capabilities.
-		readme = ""
+		readmeResult = readmeFetchResult{}
 	}
 
 	detail := &AppReleaseDetail{
-		Repo:        repo,
-		Match:       match,
-		ReleaseTag:  release.TagName,
-		ReleaseName: release.Name,
-		ReleaseBody: release.Body,
-		Readme:      readme,
-		Downloads:   buildPlatformDownloads(release.Assets, pattern, normalizeArch(goruntime.GOARCH)),
+		Repo:            repo,
+		Match:           match,
+		ReleaseTag:      release.TagName,
+		ReleaseName:     release.Name,
+		ReleaseBody:     release.Body,
+		Readme:          readmeResult.Content,
+		ReadmeSourceURL: readmeResult.SourceURL,
+		ReadmeBranch:    readmeResult.Branch,
+		ReadmeFilePath:  readmeResult.FilePath,
+		Downloads:       buildPlatformDownloads(release.Assets, pattern, normalizeArch(goruntime.GOARCH)),
 	}
 
 	if !release.PublishedAt.IsZero() {
@@ -417,7 +436,7 @@ func (a *App) GetAppReleaseDetail(repo, match string) (*AppReleaseDetail, error)
 
 // StartDownload starts a download task asynchronously and returns the task snapshot immediately.
 func (a *App) StartDownload(request StartDownloadRequest) (*DownloadTaskSnapshot, error) {
-	downloadURL := applyGitHubProxy(strings.TrimSpace(request.DownloadURL))
+	downloadURL := strings.TrimSpace(request.DownloadURL)
 	if downloadURL == "" {
 		return nil, errors.New("download_url is required")
 	}
@@ -557,42 +576,50 @@ func (a *App) fetchReleases(repo string) ([]githubRelease, error) {
 	return releases, nil
 }
 
-func (a *App) fetchReadme(repo string) (string, error) {
-	endpoint := fmt.Sprintf(
-		"%s/repos/%s/readme",
-		strings.TrimRight(a.githubAPIBaseURL, "/"),
-		buildRepoPath(repo),
-	)
+func (a *App) fetchReadme(repo string) (readmeFetchResult, error) {
+	candidates := buildReadmeRawCandidates(repo)
+	if len(candidates) == 0 {
+		return readmeFetchResult{}, errors.New("invalid repo format: expected owner/repo")
+	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 
-	req, err := a.newGitHubRequest(ctx, http.MethodGet, endpoint)
-	if err != nil {
-		return "", err
-	}
-	req.Header.Set("Accept", "application/vnd.github.raw")
+	for _, candidate := range candidates {
+		req, err := http.NewRequestWithContext(ctx, http.MethodGet, candidate.URL, nil)
+		if err != nil {
+			return readmeFetchResult{}, err
+		}
+		req.Header.Set("User-Agent", "ossam-app")
 
-	resp, err := a.apiClient.Do(req)
-	if err != nil {
-		return "", fmt.Errorf("failed to fetch readme: %w", err)
-	}
-	defer resp.Body.Close()
+		resp, err := a.apiClient.Do(req)
+		if err != nil {
+			return readmeFetchResult{}, fmt.Errorf("failed to fetch readme: %w", err)
+		}
 
-	if resp.StatusCode == http.StatusNotFound {
-		return "", nil
+		body, readErr := io.ReadAll(resp.Body)
+		_ = resp.Body.Close()
+		if readErr != nil {
+			return readmeFetchResult{}, fmt.Errorf("failed to read readme response: %w", readErr)
+		}
+
+		if resp.StatusCode == http.StatusNotFound {
+			continue
+		}
+
+		if resp.StatusCode >= http.StatusBadRequest {
+			return readmeFetchResult{}, fmt.Errorf("github raw readme error (%d): %s", resp.StatusCode, strings.TrimSpace(string(body)))
+		}
+
+		return readmeFetchResult{
+			Content:   string(body),
+			SourceURL: candidate.URL,
+			Branch:    candidate.Branch,
+			FilePath:  candidate.FilePath,
+		}, nil
 	}
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return "", fmt.Errorf("failed to read readme response: %w", err)
-	}
-
-	if resp.StatusCode >= http.StatusBadRequest {
-		return "", fmt.Errorf("github readme API error (%d): %s", resp.StatusCode, strings.TrimSpace(string(body)))
-	}
-
-	return string(body), nil
+	return readmeFetchResult{}, nil
 }
 
 func (a *App) fetchRepoStars(repo string) (int, error) {
@@ -633,7 +660,7 @@ func (a *App) fetchRepoStars(repo string) (int, error) {
 }
 
 func (a *App) newGitHubRequest(parent context.Context, method, endpoint string) (*http.Request, error) {
-	req, err := http.NewRequestWithContext(parent, method, applyGitHubProxy(endpoint), nil)
+	req, err := http.NewRequestWithContext(parent, method, endpoint, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -807,7 +834,7 @@ func selectAssetForPlatform(assets []githubAsset, basePattern *regexp.Regexp, pl
 					Platform:    platform,
 					Available:   true,
 					AssetName:   candidate.asset.Name,
-					DownloadURL: applyGitHubProxy(candidate.asset.BrowserDownloadURL),
+					DownloadURL: candidate.asset.BrowserDownloadURL,
 					Arch:        candidate.arch,
 				}
 			}
@@ -819,7 +846,7 @@ func selectAssetForPlatform(assets []githubAsset, basePattern *regexp.Regexp, pl
 		Platform:    platform,
 		Available:   true,
 		AssetName:   first.asset.Name,
-		DownloadURL: applyGitHubProxy(first.asset.BrowserDownloadURL),
+		DownloadURL: first.asset.BrowserDownloadURL,
 		Arch:        first.arch,
 	}
 }
@@ -900,40 +927,39 @@ func buildRepoPath(repo string) string {
 	return url.PathEscape(parts[0]) + "/" + url.PathEscape(parts[1])
 }
 
-func applyGitHubProxy(rawURL string) string {
-	trimmed := strings.TrimSpace(rawURL)
-	if trimmed == "" {
-		return ""
+func buildReadmeRawCandidates(repo string) []readmeCandidate {
+	parts := strings.Split(strings.TrimSpace(repo), "/")
+	if len(parts) != 2 || parts[0] == "" || parts[1] == "" {
+		return nil
 	}
 
-	if strings.HasPrefix(trimmed, githubProxyPrefix) {
-		return trimmed
+	owner := url.PathEscape(parts[0])
+	repoName := url.PathEscape(parts[1])
+	base := fmt.Sprintf("https://raw.githubusercontent.com/%s/%s", owner, repoName)
+	branches := []string{"main", "master"}
+	filePaths := []string{"readme.md", "README.md"}
+
+	candidates := make([]readmeCandidate, 0, len(branches)*len(filePaths))
+	for _, branch := range branches {
+		for _, filePath := range filePaths {
+			rawURL := fmt.Sprintf("%s/%s/%s", base, branch, filePath)
+			candidates = append(candidates, readmeCandidate{
+				URL:      githubReadmeProxy + rawURL,
+				Branch:   branch,
+				FilePath: filePath,
+			})
+		}
 	}
 
-	parsed, err := url.Parse(trimmed)
-	if err != nil {
-		return trimmed
-	}
-
-	host := strings.ToLower(parsed.Hostname())
-	if !isGitHubHost(host) {
-		return trimmed
-	}
-
-	return githubProxyPrefix + trimmed
+	return candidates
 }
 
-func isGitHubHost(host string) bool {
-	if host == "" {
-		return false
+func buildGitHubAvatarURL(owner string) string {
+	owner = strings.TrimSpace(owner)
+	if owner == "" {
+		return defaultAppPlaceholder
 	}
-
-	return host == "github.com" ||
-		strings.HasSuffix(host, ".github.com") ||
-		host == "githubusercontent.com" ||
-		strings.HasSuffix(host, ".githubusercontent.com") ||
-		host == "githubassets.com" ||
-		strings.HasSuffix(host, ".githubassets.com")
+	return "https://avatars.githubusercontent.com/" + url.PathEscape(owner)
 }
 
 func (a *App) nextTaskID() string {

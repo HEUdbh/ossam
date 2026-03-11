@@ -50,11 +50,11 @@ func TestLoadAppsConfigFromFileSuccess(t *testing.T) {
 		t.Fatalf("expected 3 apps, got: %d", len(apps))
 	}
 
-	if apps[0].Photo != "https://ghproxy.net/https://github.com/junegunn.png" {
+	if apps[0].Photo != "https://avatars.githubusercontent.com/junegunn" {
 		t.Fatalf("expected owner avatar fallback, got: %s", apps[0].Photo)
 	}
 
-	if apps[1].Photo != "https://ghproxy.net/"+defaultAppPlaceholder {
+	if apps[1].Photo != defaultAppPlaceholder {
 		t.Fatalf("expected default placeholder fallback, got: %s", apps[1].Photo)
 	}
 
