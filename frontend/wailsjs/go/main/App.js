@@ -9,3 +9,7 @@ export function GetAppsConfig() {
 export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }
+
+export function SelectDownloadDirectory(arg1) {
+  return window['go']['main']['App']['SelectDownloadDirectory'](arg1);
+}

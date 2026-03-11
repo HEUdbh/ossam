@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App struct
@@ -125,6 +127,33 @@ func resolveAppPhoto(repo, photo string) string {
 	}
 
 	return defaultAppPlaceholder
+}
+
+// SelectDownloadDirectory opens a system directory picker for selecting download location.
+func (a *App) SelectDownloadDirectory(defaultDir string) (string, error) {
+	selected, err := runtime.OpenDirectoryDialog(a.ctx, runtime.OpenDialogOptions{
+		Title:            "选择下载目录",
+		DefaultDirectory: resolveDialogDefaultDirectory(defaultDir),
+	})
+	if err != nil {
+		return "", fmt.Errorf("failed to open download directory dialog: %w", err)
+	}
+
+	return strings.TrimSpace(selected), nil
+}
+
+func resolveDialogDefaultDirectory(path string) string {
+	cleanPath := strings.TrimSpace(path)
+	if cleanPath == "" {
+		return ""
+	}
+
+	info, err := os.Stat(cleanPath)
+	if err != nil || !info.IsDir() {
+		return ""
+	}
+
+	return cleanPath
 }
 
 // Greet returns a greeting for the given name

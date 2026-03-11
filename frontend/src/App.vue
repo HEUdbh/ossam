@@ -1,7 +1,11 @@
 <script setup>
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { ElMessageBox } from "element-plus";
 import { Setting, Shop, User } from "@element-plus/icons-vue";
+import { getDownloadDirectory } from "./utils/settings";
+
+let startupDownloadDirectoryChecked = false;
 
 const route = useRoute();
 const router = useRouter();
@@ -36,10 +40,47 @@ const pageSubtitle = computed(() => {
   return "探索精选开源工具";
 });
 
-function openSettings() {
-  const from = isSettingsActive.value ? "/market" : route.fullPath;
+function getSettingsFromRoute() {
+  return isSettingsActive.value ? "/market" : route.fullPath;
+}
+
+function goToDownloadSettings(from) {
   router.push({ name: "settings-download", query: { from } });
 }
+
+function openSettings() {
+  goToDownloadSettings(getSettingsFromRoute());
+}
+
+async function checkDownloadDirectoryOnStartup() {
+  if (startupDownloadDirectoryChecked) {
+    return;
+  }
+  startupDownloadDirectoryChecked = true;
+
+  if (getDownloadDirectory()) {
+    return;
+  }
+
+  try {
+    await ElMessageBox.confirm(
+      "尚未设置下载目录，建议先完成设置以便后续下载。",
+      "下载目录未配置",
+      {
+        type: "warning",
+        confirmButtonText: "去设置",
+        cancelButtonText: "稍后",
+      }
+    );
+    goToDownloadSettings(getSettingsFromRoute());
+  } catch {
+    // User chose to postpone.
+  }
+}
+
+onMounted(() => {
+  checkDownloadDirectoryOnStartup();
+});
 </script>
 
 <template>

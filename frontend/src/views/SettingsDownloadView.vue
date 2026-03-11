@@ -1,17 +1,68 @@
+<script setup>
+import { computed, onMounted, ref } from "vue";
+import { ElMessage } from "element-plus";
+import { SelectDownloadDirectory } from "../../wailsjs/go/main/App";
+import {
+  clearDownloadDirectory,
+  getDownloadDirectory,
+  setDownloadDirectory,
+} from "../utils/settings";
+const downloadDirectory = ref("");
+
+const hasDirectory = computed(() => downloadDirectory.value.length > 0);
+const displayDirectory = computed(() =>
+  hasDirectory.value ? downloadDirectory.value : "未配置"
+);
+
+onMounted(() => {
+  downloadDirectory.value = getDownloadDirectory();
+});
+
+async function chooseDirectory() {
+  try {
+    const selectedDirectory = await SelectDownloadDirectory(
+      downloadDirectory.value
+    );
+    const normalizedDirectory = String(selectedDirectory || "").trim();
+
+    // User cancelled the dialog, keep current configuration unchanged.
+    if (!normalizedDirectory) {
+      return;
+    }
+
+    downloadDirectory.value = setDownloadDirectory(normalizedDirectory);
+    ElMessage.success("下载目录已保存");
+  } catch (error) {
+    ElMessage.error(error?.message || "目录选择失败，请重试");
+  }
+}
+
+function resetDirectory() {
+  if (!hasDirectory.value) {
+    return;
+  }
+
+  downloadDirectory.value = "";
+  clearDownloadDirectory();
+  ElMessage.success("已恢复为未配置");
+}
+</script>
+
 <template>
   <section class="settings-block">
     <h3>下载地址设置</h3>
-    <p>阶段1占位：后续在此配置下载目录、镜像源优先级与下载策略。</p>
+    <p>选择默认下载目录，保存后下次启动仍会保留。</p>
 
-    <div class="option-grid">
-      <div class="option-item">
-        <span class="label">默认目录</span>
-        <span class="value">未配置</span>
-      </div>
-      <div class="option-item">
-        <span class="label">下载源</span>
-        <span class="value">待接入</span>
-      </div>
+    <div class="option-item">
+      <span class="label">当前下载目录</span>
+      <span class="value" :title="displayDirectory">{{ displayDirectory }}</span>
+    </div>
+
+    <div class="actions">
+      <el-button type="primary" @click="chooseDirectory">选择目录</el-button>
+      <el-button :disabled="!hasDirectory" @click="resetDirectory">
+        恢复未配置
+      </el-button>
     </div>
   </section>
 </template>
@@ -27,21 +78,15 @@
   color: var(--text-secondary);
 }
 
-.option-grid {
-  margin-top: 14px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 10px;
-}
-
 .option-item {
+  margin-top: 14px;
   border: 1px solid var(--line-color);
   border-radius: var(--radius-sm);
   background: var(--surface-1);
   padding: 12px;
   display: flex;
-  justify-content: space-between;
-  gap: 12px;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .label {
@@ -51,5 +96,13 @@
 .value {
   color: var(--text-primary);
   font-weight: 600;
+  word-break: break-all;
+}
+
+.actions {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 </style>

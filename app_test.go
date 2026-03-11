@@ -107,6 +107,61 @@ func TestLoadAppsConfigFromFileInvalidFields(t *testing.T) {
 	}
 }
 
+func TestResolveDialogDefaultDirectory(t *testing.T) {
+	t.Parallel()
+
+	baseDir := t.TempDir()
+
+	existingDir := filepath.Join(baseDir, "downloads")
+	if err := os.Mkdir(existingDir, 0o755); err != nil {
+		t.Fatalf("failed to create temp dir: %v", err)
+	}
+
+	filePath := filepath.Join(baseDir, "file.txt")
+	if err := os.WriteFile(filePath, []byte("test"), 0o600); err != nil {
+		t.Fatalf("failed to create temp file: %v", err)
+	}
+
+	cases := []struct {
+		name  string
+		input string
+		want  string
+	}{
+		{
+			name:  "empty path",
+			input: "",
+			want:  "",
+		},
+		{
+			name:  "existing directory",
+			input: existingDir,
+			want:  existingDir,
+		},
+		{
+			name:  "missing directory",
+			input: filepath.Join(baseDir, "missing"),
+			want:  "",
+		},
+		{
+			name:  "file path",
+			input: filePath,
+			want:  "",
+		},
+	}
+
+	for _, tc := range cases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			got := resolveDialogDefaultDirectory(tc.input)
+			if got != tc.want {
+				t.Fatalf("expected %q, got %q", tc.want, got)
+			}
+		})
+	}
+}
+
 func writeTempConfig(t *testing.T, content string) string {
 	t.Helper()
 
