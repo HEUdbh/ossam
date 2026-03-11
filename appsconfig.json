@@ -12,7 +12,7 @@
       {
         "name": "dirsearch",
         "repo": "maurosoria/dirsearch",
-        "photo": "https://cas.hrbeu.edu.cn/favicon.ico",
+        "photo": "",
         "match": "dirsearch-.*\\.tar.gz"
       }
     ],
