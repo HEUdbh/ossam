@@ -19,19 +19,22 @@ func TestLoadAppsConfigFromFileSuccess(t *testing.T) {
         "name": "fzf",
         "repo": "junegunn/fzf",
         "photo": "",
-        "match": ".*\\.zip"
+        "match": ".*\\.zip",
+        "summary": "命令行模糊搜索工具。"
       },
       {
         "name": "placeholder",
         "repo": "invalidrepoformat",
         "photo": "",
-        "match": ".*\\.zip"
+        "match": ".*\\.zip",
+        "summary": "用于测试默认图标回退。"
       },
       {
         "name": "customphoto",
         "repo": "example/demo",
         "photo": "https://example.com/icon.png",
-        "match": ".*\\.zip"
+        "match": ".*\\.zip",
+        "summary": "用于测试自定义图标。"
       }
     ]
   }
@@ -104,6 +107,34 @@ func TestLoadAppsConfigFromFileInvalidFields(t *testing.T) {
 
 	if !strings.Contains(err.Error(), "invalid config fields") {
 		t.Fatalf("expected invalid fields error, got: %v", err)
+	}
+}
+
+func TestLoadAppsConfigFromFileMissingSummary(t *testing.T) {
+	t.Parallel()
+
+	path := writeTempConfig(t, `{
+  "market_name": "ossam",
+  "last_updated": "20260311",
+  "apps": {
+    "DevTools": [
+      {
+        "name": "fzf",
+        "repo": "junegunn/fzf",
+        "photo": "",
+        "match": ".*\\.zip"
+      }
+    ]
+  }
+}`)
+
+	_, err := loadAppsConfigFromFile(path)
+	if err == nil {
+		t.Fatal("expected summary validation error")
+	}
+
+	if !strings.Contains(err.Error(), ".summary is required") {
+		t.Fatalf("expected missing summary error, got: %v", err)
 	}
 }
 

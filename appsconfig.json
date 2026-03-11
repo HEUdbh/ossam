@@ -1,19 +1,77 @@
 {
   "market_name": "ossam",
-  "last_updated": "20260309",
+  "last_updated": "20260311",
   "apps": {
     "Security": [
       {
-        "name": "oneforall",
+        "name": "OneForAll",
         "repo": "shmilylty/OneForAll",
-        "photo": "", 
-        "match": ".*\\.zip"
+        "photo": "",
+        "match": "oneforall.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "OneForAll：安全测试与资产发现工具。"
       },
       {
         "name": "dirsearch",
         "repo": "maurosoria/dirsearch",
         "photo": "",
-        "match": "dirsearch-.*\\.tar.gz"
+        "match": "dirsearch-.*\\\\.tar.gz",
+        "summary": "dirsearch：安全测试与资产发现工具。"
+      },
+      {
+        "name": "nuclei",
+        "repo": "projectdiscovery/nuclei",
+        "photo": "",
+        "match": "nuclei.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "nuclei：安全测试与资产发现工具。"
+      },
+      {
+        "name": "httpx",
+        "repo": "projectdiscovery/httpx",
+        "photo": "",
+        "match": "httpx.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "httpx：安全测试与资产发现工具。"
+      },
+      {
+        "name": "subfinder",
+        "repo": "projectdiscovery/subfinder",
+        "photo": "",
+        "match": "subfinder.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "subfinder：安全测试与资产发现工具。"
+      },
+      {
+        "name": "naabu",
+        "repo": "projectdiscovery/naabu",
+        "photo": "",
+        "match": "naabu.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "naabu：安全测试与资产发现工具。"
+      },
+      {
+        "name": "katana",
+        "repo": "projectdiscovery/katana",
+        "photo": "",
+        "match": "katana.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "katana：安全测试与资产发现工具。"
+      },
+      {
+        "name": "ffuf",
+        "repo": "ffuf/ffuf",
+        "photo": "",
+        "match": "ffuf.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "ffuf：安全测试与资产发现工具。"
+      },
+      {
+        "name": "gobuster",
+        "repo": "OJ/gobuster",
+        "photo": "",
+        "match": "gobuster.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "gobuster：安全测试与资产发现工具。"
+      },
+      {
+        "name": "amass",
+        "repo": "owasp-amass/amass",
+        "photo": "",
+        "match": "amass.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "amass：安全测试与资产发现工具。"
       }
     ],
     "DevTools": [
@@ -21,9 +79,369 @@
         "name": "fzf",
         "repo": "junegunn/fzf",
         "photo": "",
-        "match": "fzf-.*-windows_amd64.zip"
+        "match": "fzf.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "fzf：开发效率与工程协作工具。"
+      },
+      {
+        "name": "ripgrep",
+        "repo": "BurntSushi/ripgrep",
+        "photo": "",
+        "match": "ripgrep.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "ripgrep：开发效率与工程协作工具。"
+      },
+      {
+        "name": "fd",
+        "repo": "sharkdp/fd",
+        "photo": "",
+        "match": "fd.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "fd：开发效率与工程协作工具。"
+      },
+      {
+        "name": "bat",
+        "repo": "sharkdp/bat",
+        "photo": "",
+        "match": "bat.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "bat：开发效率与工程协作工具。"
+      },
+      {
+        "name": "jq",
+        "repo": "jqlang/jq",
+        "photo": "",
+        "match": "jq.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "jq：开发效率与工程协作工具。"
+      },
+      {
+        "name": "lazygit",
+        "repo": "jesseduffield/lazygit",
+        "photo": "",
+        "match": "lazygit.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "lazygit：开发效率与工程协作工具。"
+      },
+      {
+        "name": "lazydocker",
+        "repo": "jesseduffield/lazydocker",
+        "photo": "",
+        "match": "lazydocker.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "lazydocker：开发效率与工程协作工具。"
+      },
+      {
+        "name": "bun",
+        "repo": "oven-sh/bun",
+        "photo": "",
+        "match": "bun.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "bun：开发效率与工程协作工具。"
+      },
+      {
+        "name": "neovim",
+        "repo": "neovim/neovim",
+        "photo": "",
+        "match": "nvim.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "neovim：开发效率与工程协作工具。"
+      },
+      {
+        "name": "helix",
+        "repo": "helix-editor/helix",
+        "photo": "",
+        "match": "helix.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "helix：开发效率与工程协作工具。"
       }
     ],
-    "System": []
+    "System": [
+      {
+        "name": "rclone",
+        "repo": "rclone/rclone",
+        "photo": "",
+        "match": "rclone.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "rclone：系统增强与命令行效率工具。"
+      },
+      {
+        "name": "fastfetch",
+        "repo": "fastfetch-cli/fastfetch",
+        "photo": "",
+        "match": "fastfetch.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "fastfetch：系统增强与命令行效率工具。"
+      },
+      {
+        "name": "delta",
+        "repo": "dandavison/delta",
+        "photo": "",
+        "match": "delta.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "delta：系统增强与命令行效率工具。"
+      },
+      {
+        "name": "hyperfine",
+        "repo": "sharkdp/hyperfine",
+        "photo": "",
+        "match": "hyperfine.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "hyperfine：系统增强与命令行效率工具。"
+      },
+      {
+        "name": "eza",
+        "repo": "eza-community/eza",
+        "photo": "",
+        "match": "eza.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "eza：系统增强与命令行效率工具。"
+      },
+      {
+        "name": "dust",
+        "repo": "bootandy/dust",
+        "photo": "",
+        "match": "dust.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "dust：系统增强与命令行效率工具。"
+      },
+      {
+        "name": "zoxide",
+        "repo": "ajeetdsouza/zoxide",
+        "photo": "",
+        "match": "zoxide.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "zoxide：系统增强与命令行效率工具。"
+      },
+      {
+        "name": "lsd",
+        "repo": "lsd-rs/lsd",
+        "photo": "",
+        "match": "lsd.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "lsd：系统增强与命令行效率工具。"
+      },
+      {
+        "name": "procs",
+        "repo": "sharkdp/procs",
+        "photo": "",
+        "match": "procs.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "procs：系统增强与命令行效率工具。"
+      }
+    ],
+    "Network": [
+      {
+        "name": "caddy",
+        "repo": "caddyserver/caddy",
+        "photo": "",
+        "match": "caddy.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "caddy：网络连接、代理与调试工具。"
+      },
+      {
+        "name": "cloudflared",
+        "repo": "cloudflare/cloudflared",
+        "photo": "",
+        "match": "cloudflared.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "cloudflared：网络连接、代理与调试工具。"
+      },
+      {
+        "name": "tailscale",
+        "repo": "tailscale/tailscale",
+        "photo": "",
+        "match": "tailscale.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "tailscale：网络连接、代理与调试工具。"
+      },
+      {
+        "name": "mitmproxy",
+        "repo": "mitmproxy/mitmproxy",
+        "photo": "",
+        "match": "mitmproxy.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "mitmproxy：网络连接、代理与调试工具。"
+      },
+      {
+        "name": "Xray-core",
+        "repo": "XTLS/Xray-core",
+        "photo": "",
+        "match": "xray.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "Xray-core：网络连接、代理与调试工具。"
+      },
+      {
+        "name": "v2ray-core",
+        "repo": "v2fly/v2ray-core",
+        "photo": "",
+        "match": "v2ray.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "v2ray-core：网络连接、代理与调试工具。"
+      },
+      {
+        "name": "grpcurl",
+        "repo": "fullstorydev/grpcurl",
+        "photo": "",
+        "match": "grpcurl.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "grpcurl：网络连接、代理与调试工具。"
+      },
+      {
+        "name": "mkcert",
+        "repo": "FiloSottile/mkcert",
+        "photo": "",
+        "match": "mkcert.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "mkcert：网络连接、代理与调试工具。"
+      }
+    ],
+    "Database": [
+      {
+        "name": "DBeaver",
+        "repo": "dbeaver/dbeaver",
+        "photo": "",
+        "match": "dbeaver.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "DBeaver：数据库连接、管理与迁移工具。"
+      },
+      {
+        "name": "DB Browser for SQLite",
+        "repo": "sqlitebrowser/sqlitebrowser",
+        "photo": "",
+        "match": "sqlite.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "DB Browser for SQLite：数据库连接、管理与迁移工具。"
+      },
+      {
+        "name": "Beekeeper Studio",
+        "repo": "beekeeper-studio/beekeeper-studio",
+        "photo": "",
+        "match": "beekeeper.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "Beekeeper Studio：数据库连接、管理与迁移工具。"
+      },
+      {
+        "name": "mongosh",
+        "repo": "mongodb-js/mongosh",
+        "photo": "",
+        "match": "mongosh.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "mongosh：数据库连接、管理与迁移工具。"
+      },
+      {
+        "name": "usql",
+        "repo": "xo/usql",
+        "photo": "",
+        "match": "usql.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "usql：数据库连接、管理与迁移工具。"
+      },
+      {
+        "name": "RedisInsight",
+        "repo": "RedisInsight/RedisInsight",
+        "photo": "",
+        "match": "redisinsight.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "RedisInsight：数据库连接、管理与迁移工具。"
+      },
+      {
+        "name": "go-sqlcmd",
+        "repo": "microsoft/go-sqlcmd",
+        "photo": "",
+        "match": "sqlcmd.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "go-sqlcmd：数据库连接、管理与迁移工具。"
+      },
+      {
+        "name": "migrate",
+        "repo": "golang-migrate/migrate",
+        "photo": "",
+        "match": "migrate.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "migrate：数据库连接、管理与迁移工具。"
+      }
+    ],
+    "Terminal": [
+      {
+        "name": "WezTerm",
+        "repo": "wez/wezterm",
+        "photo": "",
+        "match": "wezterm.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "WezTerm：终端增强与 Shell 体验工具。"
+      },
+      {
+        "name": "Alacritty",
+        "repo": "alacritty/alacritty",
+        "photo": "",
+        "match": "alacritty.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "Alacritty：终端增强与 Shell 体验工具。"
+      },
+      {
+        "name": "starship",
+        "repo": "starship/starship",
+        "photo": "",
+        "match": "starship.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "starship：终端增强与 Shell 体验工具。"
+      },
+      {
+        "name": "nushell",
+        "repo": "nushell/nushell",
+        "photo": "",
+        "match": "nushell.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "nushell：终端增强与 Shell 体验工具。"
+      },
+      {
+        "name": "zellij",
+        "repo": "zellij-org/zellij",
+        "photo": "",
+        "match": "zellij.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "zellij：终端增强与 Shell 体验工具。"
+      },
+      {
+        "name": "mise",
+        "repo": "jdx/mise",
+        "photo": "",
+        "match": "mise.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "mise：终端增强与 Shell 体验工具。"
+      },
+      {
+        "name": "fish-shell",
+        "repo": "fish-shell/fish-shell",
+        "photo": "",
+        "match": "fish.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "fish-shell：终端增强与 Shell 体验工具。"
+      },
+      {
+        "name": "gitui",
+        "repo": "extrawurst/gitui",
+        "photo": "",
+        "match": "gitui.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "gitui：终端增强与 Shell 体验工具。"
+      }
+    ],
+    "Utility": [
+      {
+        "name": "OBS Studio",
+        "repo": "obsproject/obs-studio",
+        "photo": "",
+        "match": "obs.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "OBS Studio：办公、笔记与日常效率工具。"
+      },
+      {
+        "name": "Logseq",
+        "repo": "logseq/logseq",
+        "photo": "",
+        "match": "logseq.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "Logseq：办公、笔记与日常效率工具。"
+      },
+      {
+        "name": "Joplin",
+        "repo": "laurent22/joplin",
+        "photo": "",
+        "match": "joplin.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "Joplin：办公、笔记与日常效率工具。"
+      },
+      {
+        "name": "MarkText",
+        "repo": "marktext/marktext",
+        "photo": "",
+        "match": "marktext.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "MarkText：办公、笔记与日常效率工具。"
+      },
+      {
+        "name": "Zettlr",
+        "repo": "Zettlr/Zettlr",
+        "photo": "",
+        "match": "zettlr.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "Zettlr：办公、笔记与日常效率工具。"
+      },
+      {
+        "name": "Flameshot",
+        "repo": "flameshot-org/flameshot",
+        "photo": "",
+        "match": "flameshot.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "Flameshot：办公、笔记与日常效率工具。"
+      },
+      {
+        "name": "LocalSend",
+        "repo": "localsend/localsend",
+        "photo": "",
+        "match": "localsend.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "LocalSend：办公、笔记与日常效率工具。"
+      },
+      {
+        "name": "Ksnip",
+        "repo": "ksnip/ksnip",
+        "photo": "",
+        "match": "ksnip.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+        "summary": "Ksnip：办公、笔记与日常效率工具。"
+      }
+    ]
   }
 }

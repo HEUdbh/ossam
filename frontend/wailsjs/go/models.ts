@@ -5,6 +5,7 @@ export namespace main {
 	    repo: string;
 	    photo: string;
 	    match: string;
+	    summary: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new AppInfo(source);
@@ -16,6 +17,7 @@ export namespace main {
 	        this.repo = source["repo"];
 	        this.photo = source["photo"];
 	        this.match = source["match"];
+	        this.summary = source["summary"];
 	    }
 	}
 	export class PlatformDownload {

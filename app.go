@@ -30,6 +30,7 @@ type App struct {
 	githubAPIBaseURL  string
 	downloadTasks     map[string]*downloadTaskState
 	downloadTasksLock sync.RWMutex
+	repoStarsLock     sync.Mutex
 	taskCounter       uint64
 }
 
@@ -58,10 +59,11 @@ type AppsConfig struct {
 }
 
 type AppInfo struct {
-	Name  string `json:"name"`
-	Repo  string `json:"repo"`
-	Photo string `json:"photo"`
-	Match string `json:"match"`
+	Name    string `json:"name"`
+	Repo    string `json:"repo"`
+	Photo   string `json:"photo"`
+	Match   string `json:"match"`
+	Summary string `json:"summary"`
 }
 
 type PlatformDownload struct {
@@ -129,6 +131,19 @@ type githubAsset struct {
 	BrowserDownloadURL string `json:"browser_download_url"`
 }
 
+type githubRepo struct {
+	StargazersCount int `json:"stargazers_count"`
+}
+
+type repoStarsCache struct {
+	Repos map[string]repoStarsCacheEntry `json:"repos"`
+}
+
+type repoStarsCacheEntry struct {
+	Stars     int    `json:"stars"`
+	FetchedAt string `json:"fetched_at"`
+}
+
 type matchedAsset struct {
 	asset githubAsset
 	arch  string
@@ -150,6 +165,9 @@ const (
 	taskStatusInProgress = "in_progress"
 	taskStatusFailed     = "failed"
 	taskStatusCompleted  = "completed"
+
+	repoStarsWorkers  = 8
+	repoStarsCacheEnv = "OSSAM_STARS_CACHE_PATH"
 )
 
 var platformKeywords = map[string][]*regexp.Regexp{
@@ -193,6 +211,75 @@ var archMatchers = []struct {
 // GetAppsConfig loads app catalog data from the local appsconfig.json file.
 func (a *App) GetAppsConfig() (*AppsConfig, error) {
 	return loadAppsConfigFromFile(appsConfigPath)
+}
+
+// GetRepoStars fetches stargazer counts for repos with cache fallback.
+func (a *App) GetRepoStars(repos []string) (map[string]int, error) {
+	normalizedRepos := normalizeUniqueRepos(repos)
+	if len(normalizedRepos) == 0 {
+		return map[string]int{}, nil
+	}
+
+	cachePath, err := resolveRepoStarsCachePath()
+	if err != nil {
+		return nil, err
+	}
+
+	a.repoStarsLock.Lock()
+	defer a.repoStarsLock.Unlock()
+
+	cacheData, _ := readRepoStarsCache(cachePath)
+	if cacheData.Repos == nil {
+		cacheData.Repos = make(map[string]repoStarsCacheEntry)
+	}
+
+	results := make(map[string]int, len(normalizedRepos))
+	var resultsLock sync.Mutex
+
+	workerCount := repoStarsWorkers
+	if len(normalizedRepos) < workerCount {
+		workerCount = len(normalizedRepos)
+	}
+	if workerCount <= 0 {
+		workerCount = 1
+	}
+
+	jobs := make(chan string)
+	var workers sync.WaitGroup
+	now := time.Now().UTC().Format(time.RFC3339)
+
+	for idx := 0; idx < workerCount; idx++ {
+		workers.Add(1)
+		go func() {
+			defer workers.Done()
+			for repo := range jobs {
+				stars, fetchErr := a.fetchRepoStars(repo)
+				resultsLock.Lock()
+				if fetchErr == nil {
+					results[repo] = stars
+					cacheData.Repos[repo] = repoStarsCacheEntry{
+						Stars:     stars,
+						FetchedAt: now,
+					}
+				} else if entry, exists := cacheData.Repos[repo]; exists {
+					results[repo] = entry.Stars
+				}
+				resultsLock.Unlock()
+			}
+		}()
+	}
+
+	for _, repo := range normalizedRepos {
+		jobs <- repo
+	}
+	close(jobs)
+	workers.Wait()
+
+	if writeErr := writeRepoStarsCache(cachePath, cacheData); writeErr != nil {
+		// Cache write failures should not block stars display.
+	}
+
+	return results, nil
 }
 
 func loadAppsConfigFromFile(path string) (*AppsConfig, error) {
@@ -245,6 +332,9 @@ func (c *AppsConfig) validate() error {
 			}
 			if strings.TrimSpace(app.Match) == "" {
 				return fmt.Errorf("invalid config fields: apps[%s][%d].match is required", category, idx)
+			}
+			if strings.TrimSpace(app.Summary) == "" {
+				return fmt.Errorf("invalid config fields: apps[%s][%d].summary is required", category, idx)
 			}
 		}
 	}
@@ -504,6 +594,43 @@ func (a *App) fetchReadme(repo string) (string, error) {
 	return string(body), nil
 }
 
+func (a *App) fetchRepoStars(repo string) (int, error) {
+	endpoint := fmt.Sprintf(
+		"%s/repos/%s",
+		strings.TrimRight(a.githubAPIBaseURL, "/"),
+		buildRepoPath(repo),
+	)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	defer cancel()
+
+	req, err := a.newGitHubRequest(ctx, http.MethodGet, endpoint)
+	if err != nil {
+		return 0, err
+	}
+
+	resp, err := a.apiClient.Do(req)
+	if err != nil {
+		return 0, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= http.StatusBadRequest {
+		body, readErr := io.ReadAll(resp.Body)
+		if readErr != nil {
+			return 0, fmt.Errorf("github repo API error (%d)", resp.StatusCode)
+		}
+		return 0, fmt.Errorf("github repo API error (%d): %s", resp.StatusCode, strings.TrimSpace(string(body)))
+	}
+
+	var repoInfo githubRepo
+	if err := json.NewDecoder(resp.Body).Decode(&repoInfo); err != nil {
+		return 0, err
+	}
+
+	return repoInfo.StargazersCount, nil
+}
+
 func (a *App) newGitHubRequest(parent context.Context, method, endpoint string) (*http.Request, error) {
 	req, err := http.NewRequestWithContext(parent, method, endpoint, nil)
 	if err != nil {
@@ -519,6 +646,86 @@ func (a *App) newGitHubRequest(parent context.Context, method, endpoint string) 
 	}
 
 	return req, nil
+}
+
+func normalizeUniqueRepos(repos []string) []string {
+	unique := make(map[string]struct{}, len(repos))
+	result := make([]string, 0, len(repos))
+	for _, repo := range repos {
+		normalized := strings.TrimSpace(repo)
+		if !isValidRepo(normalized) {
+			continue
+		}
+		if _, exists := unique[normalized]; exists {
+			continue
+		}
+		unique[normalized] = struct{}{}
+		result = append(result, normalized)
+	}
+	return result
+}
+
+func resolveRepoStarsCachePath() (string, error) {
+	override := strings.TrimSpace(os.Getenv(repoStarsCacheEnv))
+	if override != "" {
+		return override, nil
+	}
+
+	cacheDir, err := os.UserCacheDir()
+	if err != nil {
+		return "", fmt.Errorf("failed to resolve user cache directory: %w", err)
+	}
+
+	return filepath.Join(cacheDir, "ossam", "stars_cache.json"), nil
+}
+
+func readRepoStarsCache(path string) (repoStarsCache, error) {
+	cache := repoStarsCache{Repos: make(map[string]repoStarsCacheEntry)}
+	if strings.TrimSpace(path) == "" {
+		return cache, nil
+	}
+
+	content, err := os.ReadFile(path)
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return cache, nil
+		}
+		return cache, err
+	}
+
+	if len(content) == 0 {
+		return cache, nil
+	}
+
+	if err := json.Unmarshal(content, &cache); err != nil {
+		return repoStarsCache{Repos: make(map[string]repoStarsCacheEntry)}, nil
+	}
+
+	if cache.Repos == nil {
+		cache.Repos = make(map[string]repoStarsCacheEntry)
+	}
+	return cache, nil
+}
+
+func writeRepoStarsCache(path string, cache repoStarsCache) error {
+	if strings.TrimSpace(path) == "" {
+		return nil
+	}
+
+	if cache.Repos == nil {
+		cache.Repos = make(map[string]repoStarsCacheEntry)
+	}
+
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		return err
+	}
+
+	content, err := json.Marshal(cache)
+	if err != nil {
+		return err
+	}
+
+	return os.WriteFile(path, content, 0o600)
 }
 
 func selectLatestRelease(releases []githubRelease) (githubRelease, error) {

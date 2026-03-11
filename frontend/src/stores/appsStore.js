@@ -1,5 +1,9 @@
 import { computed, reactive } from "vue";
-import { GetAppReleaseDetail, GetAppsConfig } from "../../wailsjs/go/main/App";
+import {
+  GetAppReleaseDetail,
+  GetAppsConfig,
+  GetRepoStars,
+} from "../../wailsjs/go/main/App";
 
 const state = reactive({
   config: null,
@@ -7,6 +11,10 @@ const state = reactive({
   loaded: false,
   error: "",
   detailCache: {},
+  repoStars: {},
+  repoStarsLoading: false,
+  repoStarsLoaded: false,
+  repoStarsError: "",
 });
 
 export async function loadAppsConfig(force = false) {
@@ -30,6 +38,67 @@ export async function loadAppsConfig(force = false) {
     state.loaded = false;
   } finally {
     state.loading = false;
+  }
+}
+
+function collectAllRepos() {
+  const apps = state.config?.apps;
+  if (!apps || typeof apps !== "object") {
+    return [];
+  }
+
+  const unique = new Set();
+  Object.values(apps).forEach((appList) => {
+    if (!Array.isArray(appList)) {
+      return;
+    }
+    appList.forEach((app) => {
+      const repo = String(app?.repo || "").trim();
+      if (repo) {
+        unique.add(repo);
+      }
+    });
+  });
+
+  return Array.from(unique);
+}
+
+export async function loadRepoStars(force = false) {
+  if (!state.loaded || !state.config) {
+    return state.repoStars;
+  }
+
+  if (state.repoStarsLoading) {
+    return state.repoStars;
+  }
+
+  if (state.repoStarsLoaded && !force) {
+    return state.repoStars;
+  }
+
+  const repos = collectAllRepos();
+  if (!repos.length) {
+    state.repoStars = {};
+    state.repoStarsLoaded = true;
+    state.repoStarsError = "";
+    return state.repoStars;
+  }
+
+  state.repoStarsLoading = true;
+  state.repoStarsError = "";
+
+  try {
+    const repoStars = await GetRepoStars(repos);
+    state.repoStars = repoStars || {};
+    state.repoStarsLoaded = true;
+    return state.repoStars;
+  } catch (error) {
+    const message = error?.message || String(error);
+    state.repoStarsError = message || "Failed to load repo stars.";
+    state.repoStarsLoaded = false;
+    return state.repoStars;
+  } finally {
+    state.repoStarsLoading = false;
   }
 }
 
@@ -121,11 +190,25 @@ export function useAppsStore() {
     return apps.find((app) => app.name === name);
   };
 
+  const getRepoStarCount = (repo) => {
+    const normalizedRepo = String(repo || "").trim();
+    if (!normalizedRepo) {
+      return null;
+    }
+
+    const value = state.repoStars?.[normalizedRepo];
+    if (typeof value !== "number" || Number.isNaN(value)) {
+      return null;
+    }
+    return value;
+  };
+
   return {
     state,
     categories,
     appsByCategory,
     findApp,
     getAppDetailState,
+    getRepoStarCount,
   };
 }

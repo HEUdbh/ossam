@@ -16,12 +16,7 @@ const fromRoute = computed(() => {
   return "/market";
 });
 
-const activeTab = computed(() => {
-  if (route.name === "settings-about") {
-    return "about";
-  }
-  return "download";
-});
+const activeTab = computed(() => (route.name === "settings-about" ? "about" : "download"));
 
 function closeModal() {
   router.push(fromRoute.value);
@@ -39,8 +34,8 @@ function switchTab(tab) {
 <template>
   <el-dialog
     :model-value="true"
-    width="760px"
-    top="8vh"
+    width="780px"
+    top="7vh"
     class="settings-dialog"
     :show-close="false"
     :close-on-click-modal="false"
@@ -56,7 +51,7 @@ function switchTab(tab) {
       </div>
     </template>
 
-    <el-tabs :model-value="activeTab" @tab-change="switchTab">
+    <el-tabs :model-value="activeTab" class="settings-tabs" @tab-change="switchTab">
       <el-tab-pane name="download" label="下载地址设置" />
       <el-tab-pane name="about" label="关于作者" />
     </el-tabs>
@@ -69,12 +64,18 @@ function switchTab(tab) {
 
 <style scoped>
 :deep(.settings-dialog) {
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
+}
+
+:deep(.settings-dialog .el-dialog) {
+  border: 1px solid var(--line-color);
+  background: linear-gradient(180deg, #ffffff, #f8fdf9);
+  box-shadow: var(--shadow-soft);
 }
 
 :deep(.settings-dialog .el-dialog__header) {
   margin-right: 0;
-  padding: 18px 20px 10px;
+  padding: 18px 20px 12px;
   border-bottom: 1px solid var(--line-color);
 }
 
@@ -101,16 +102,20 @@ function switchTab(tab) {
   font-size: 13px;
 }
 
+.settings-tabs {
+  margin-bottom: 10px;
+}
+
 .dialog-content {
   border: 1px solid var(--line-color);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   background: var(--surface-2);
   padding: 16px;
 }
 
 @media (max-width: 960px) {
   :deep(.settings-dialog) {
-    width: calc(100vw - 24px) !important;
+    width: calc(100vw - 20px) !important;
   }
 
   :deep(.settings-dialog .el-dialog__header),

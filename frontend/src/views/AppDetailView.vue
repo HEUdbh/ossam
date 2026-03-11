@@ -32,7 +32,6 @@ const downloadStates = reactive({
 });
 
 const pollerMap = new Map();
-
 const category = computed(() => String(route.params.category || ""));
 const appName = computed(() => String(route.params.name || ""));
 const app = computed(() => findApp(category.value, appName.value));
@@ -62,7 +61,7 @@ const releaseTitle = computed(() => {
   if (!detail.value) {
     return "";
   }
-  return detail.value.release_name || detail.value.release_tag || "Latest release";
+  return detail.value.release_name || detail.value.release_tag || "Latest Release";
 });
 
 const readmeHtml = computed(() => renderMarkdown(detail.value?.readme));
@@ -116,7 +115,7 @@ function downloadButtonLabel(platform) {
   const label = option?.label || platform;
 
   if (!isPlatformAvailable(platform)) {
-    return `${label} unavailable`;
+    return `${label} 不可用`;
   }
 
   const downloadState = downloadStates[platform];
@@ -124,12 +123,12 @@ function downloadButtonLabel(platform) {
     return `${label} ${downloadState.progress}%`;
   }
   if (downloadState.status === "completed") {
-    return `${label} downloaded`;
+    return `${label} 已下载`;
   }
   if (downloadState.status === "failed") {
-    return `${label} retry`;
+    return `${label} 重试下载`;
   }
-  return `${label} download`;
+  return `${label} 下载`;
 }
 
 function downloadButtonType(platform) {
@@ -146,7 +145,7 @@ function downloadButtonType(platform) {
 function downloadHint(platform) {
   const target = getPlatformDownload(platform);
   if (!target?.available) {
-    return "No matched release asset for this platform.";
+    return "未匹配到该平台可下载资产";
   }
   return `${target.asset_name} (${target.arch || "unknown arch"})`;
 }
@@ -180,7 +179,7 @@ function startTaskPoller(platform, taskId) {
       if (snapshot.status === "completed" || snapshot.status === "failed") {
         clearTaskPoller(platform);
         if (snapshot.status === "completed") {
-          ElMessage.success(`${platform} download completed`);
+          ElMessage.success(`${platform} 下载完成`);
         } else if (snapshot.error) {
           ElMessage.error(snapshot.error);
         }
@@ -190,7 +189,7 @@ function startTaskPoller(platform, taskId) {
       const message = error?.message || String(error);
       downloadStates[platform].status = "failed";
       downloadStates[platform].error = message;
-      ElMessage.error(message || "Failed to query download task");
+      ElMessage.error(message || "下载任务查询失败");
     }
   }, 900);
 
@@ -205,7 +204,7 @@ async function handleDownload(platform) {
 
   const downloadDir = getDownloadDirectory();
   if (!downloadDir) {
-    ElMessage.warning("Please configure a download directory in Settings first.");
+    ElMessage.warning("请先在设置中配置下载目录");
     return;
   }
 
@@ -222,7 +221,7 @@ async function handleDownload(platform) {
     const message = error?.message || String(error);
     downloadStates[platform].status = "failed";
     downloadStates[platform].error = message;
-    ElMessage.error(message || "Failed to start download task");
+    ElMessage.error(message || "启动下载任务失败");
   }
 }
 
@@ -267,31 +266,31 @@ onUnmounted(() => {
     <StatusState
       v-if="state.loading"
       type="loading"
-      title="Loading app detail"
-      description="Reading local app configuration."
+      title="正在加载应用详情"
+      description="正在读取本地应用配置。"
     />
     <StatusState
       v-else-if="state.error"
       type="error"
-      title="Failed to load app config"
+      title="应用配置加载失败"
       :description="state.error"
     />
     <StatusState
       v-else-if="!app"
       type="empty"
-      title="App not found"
-      description="Please check route params and appsconfig.json."
+      title="未找到应用"
+      description="请检查路由参数或配置文件。"
     />
     <StatusState
       v-else-if="detailState.loading && !detailState.loaded"
       type="loading"
-      title="Loading release and README"
-      description="Fetching latest release metadata from GitHub."
+      title="正在拉取 Release 与 README"
+      description="正在从 GitHub 获取最新版本信息。"
     />
     <StatusState
       v-else-if="detailState.error && !detailState.loaded"
       type="error"
-      title="Failed to load detail"
+      title="详情加载失败"
       :description="detailState.error"
     />
 
@@ -299,22 +298,23 @@ onUnmounted(() => {
       <el-card class="overview-card" shadow="never">
         <div class="overview-head">
           <img class="app-icon" :src="app.photo" :alt="app.name" />
+
           <div class="overview-meta">
             <h2>{{ app.name }}</h2>
-            <p>{{ category }}</p>
+            <p class="app-summary">{{ app.summary }}</p>
+
             <div class="meta-inline">
-              <el-space :size="14">
-                <span class="meta-item">
-                  <el-icon><User /></el-icon>
-                  {{ developer }}
-                </span>
-                <a class="repo-link" :href="repoUrl" target="_blank" rel="noreferrer">
-                  <el-icon><Link /></el-icon>
-                  {{ app.repo }}
-                </a>
-              </el-space>
+              <span class="meta-item">
+                <el-icon><User /></el-icon>
+                {{ developer }}
+              </span>
+              <a class="repo-link" :href="repoUrl" target="_blank" rel="noreferrer">
+                <el-icon><Link /></el-icon>
+                {{ app.repo }}
+              </a>
             </div>
-            <p v-if="releaseTitle" class="release-title">Release: {{ releaseTitle }}</p>
+
+            <p class="release-title">最新版本：{{ releaseTitle }}</p>
           </div>
         </div>
 
@@ -337,23 +337,19 @@ onUnmounted(() => {
         v-if="detailState.error && detailState.loaded"
         type="warning"
         :closable="false"
-        :title="`Partial load warning: ${detailState.error}`"
+        :title="`部分内容加载失败：${detailState.error}`"
       />
 
       <el-card class="markdown-card" shadow="never">
-        <template #header>
-          <span>README</span>
-        </template>
+        <template #header>README</template>
         <div v-if="readmeHtml" class="markdown-body" v-html="readmeHtml" />
-        <el-empty v-else description="README not available" :image-size="80" />
+        <el-empty v-else description="暂无 README 内容" :image-size="80" />
       </el-card>
 
       <el-card class="markdown-card" shadow="never">
-        <template #header>
-          <span>Release Notes</span>
-        </template>
+        <template #header>Release Notes</template>
         <div v-if="releaseNotesHtml" class="markdown-body" v-html="releaseNotesHtml" />
-        <el-empty v-else description="Release notes not available" :image-size="80" />
+        <el-empty v-else description="暂无版本说明" :image-size="80" />
       </el-card>
     </div>
   </section>
@@ -368,14 +364,24 @@ onUnmounted(() => {
 }
 
 .detail-toolbar {
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
+  margin-bottom: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  padding-bottom: 6px;
+  background: linear-gradient(180deg, #ffffff 76%, rgba(255, 255, 255, 0));
 }
 
 .back-button {
   gap: 6px;
-  font-weight: 500;
+  font-weight: 600;
+  border-color: #cfe4d6;
+  color: var(--text-secondary);
+}
+
+.back-button:hover {
+  color: var(--brand-color);
+  border-color: rgba(5, 150, 105, 0.35);
 }
 
 .detail-layout {
@@ -387,49 +393,57 @@ onUnmounted(() => {
 
 .overview-card,
 .markdown-card {
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   border-color: var(--line-color);
+}
+
+.overview-card :deep(.el-card__body) {
+  background: linear-gradient(180deg, #ffffff, #f8fdf9);
 }
 
 .overview-head {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 14px;
 }
 
 .app-icon {
-  width: 68px;
-  height: 68px;
-  border-radius: 14px;
+  width: 72px;
+  height: 72px;
+  border-radius: 16px;
   object-fit: cover;
   background: var(--surface-3);
+  border: 1px solid #dbeee2;
+}
+
+.overview-meta {
+  min-width: 0;
 }
 
 .overview-meta h2 {
   margin: 0;
-  font-size: 24px;
+  font-size: 26px;
   line-height: 1.2;
 }
 
-.overview-meta p {
+.app-summary {
   margin: 6px 0 0;
   color: var(--text-secondary);
 }
 
 .meta-inline {
-  margin-top: 6px;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
 }
 
 .meta-item {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-}
-
-.release-title {
-  margin-top: 6px;
-  font-size: 13px;
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
 }
 
 .repo-link {
@@ -444,18 +458,24 @@ onUnmounted(() => {
   text-decoration: underline;
 }
 
+.release-title {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+
 .download-actions {
   margin-top: 16px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   gap: 10px;
 }
 
 .download-item {
   border: 1px solid var(--line-color);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
+  background: rgba(236, 253, 245, 0.55);
   padding: 10px;
-  background: var(--surface-2);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -463,6 +483,7 @@ onUnmounted(() => {
 
 .download-item :deep(.el-button) {
   justify-content: flex-start;
+  font-weight: 600;
 }
 
 .download-hint {
@@ -470,6 +491,11 @@ onUnmounted(() => {
   font-size: 12px;
   color: var(--text-secondary);
   word-break: break-all;
+}
+
+.markdown-card :deep(.el-card__header) {
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 .markdown-body {
@@ -512,7 +538,11 @@ onUnmounted(() => {
   }
 
   .overview-head {
-    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .overview-meta h2 {
+    font-size: 22px;
   }
 }
 </style>

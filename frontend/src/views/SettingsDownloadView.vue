@@ -7,6 +7,7 @@ import {
   getDownloadDirectory,
   setDownloadDirectory,
 } from "../utils/settings";
+
 const downloadDirectory = ref("");
 
 const hasDirectory = computed(() => downloadDirectory.value.length > 0);
@@ -20,9 +21,7 @@ onMounted(() => {
 
 async function chooseDirectory() {
   try {
-    const selectedDirectory = await SelectDownloadDirectory(
-      downloadDirectory.value
-    );
+    const selectedDirectory = await SelectDownloadDirectory(downloadDirectory.value);
     const normalizedDirectory = String(selectedDirectory || "").trim();
 
     // User cancelled the dialog, keep current configuration unchanged.
@@ -60,9 +59,7 @@ function resetDirectory() {
 
     <div class="actions">
       <el-button type="primary" @click="chooseDirectory">选择目录</el-button>
-      <el-button :disabled="!hasDirectory" @click="resetDirectory">
-        恢复未配置
-      </el-button>
+      <el-button :disabled="!hasDirectory" @click="resetDirectory">恢复未配置</el-button>
     </div>
   </section>
 </template>
@@ -81,8 +78,8 @@ function resetDirectory() {
 .option-item {
   margin-top: 14px;
   border: 1px solid var(--line-color);
-  border-radius: var(--radius-sm);
-  background: var(--surface-1);
+  border-radius: var(--radius-md);
+  background: #ffffff;
   padding: 12px;
   display: flex;
   flex-direction: column;

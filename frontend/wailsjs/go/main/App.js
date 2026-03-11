@@ -14,6 +14,10 @@ export function GetDownloadTask(arg1) {
   return window['go']['main']['App']['GetDownloadTask'](arg1);
 }
 
+export function GetRepoStars(arg1) {
+  return window['go']['main']['App']['GetRepoStars'](arg1);
+}
+
 export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }
