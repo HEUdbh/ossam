@@ -2,7 +2,7 @@
 import { computed, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { ElMessageBox } from "element-plus";
-import { Expand, Fold, Setting, Shop, User } from "@element-plus/icons-vue";
+import { ArrowLeft, ArrowRight, Setting, Shop, User } from "@element-plus/icons-vue";
 import { getDownloadDirectory } from "./utils/settings";
 
 let startupDownloadDirectoryChecked = false;
@@ -43,6 +43,7 @@ const pageMeta = computed(() => {
 
 const pageTitle = computed(() => pageMeta.value.title);
 const pageSubtitle = computed(() => pageMeta.value.subtitle);
+const showPageHeader = computed(() => route.name !== "market");
 
 function getSettingsFromRoute() {
   return isSettingsActive.value ? "/market" : route.fullPath;
@@ -117,24 +118,15 @@ watch(
   <div class="app-shell">
     <aside class="primary-sidebar" :class="{ collapsed: sidebarCollapsed }">
       <div class="sidebar-top">
-        <div class="brand-card">
-          <div class="brand-mark">OS</div>
-          <div class="brand-copy">
-            <div class="brand-name">ossam</div>
-            <div class="brand-desc">Open Source App Market</div>
-          </div>
-        </div>
-
         <button
           class="sidebar-toggle"
-          :title="sidebarCollapsed ? '展开侧栏' : '折叠侧栏'"
+          :title="sidebarCollapsed ? '展开侧边栏' : '收起侧边栏'"
           @click="toggleSidebar"
         >
           <el-icon>
-            <Expand v-if="sidebarCollapsed" />
-            <Fold v-else />
+            <ArrowRight v-if="sidebarCollapsed" />
+            <ArrowLeft v-else />
           </el-icon>
-          <span class="nav-label">菜单</span>
         </button>
 
         <nav class="primary-nav">
@@ -166,7 +158,7 @@ watch(
     </aside>
 
     <main class="content-area">
-      <header class="page-header">
+      <header v-if="showPageHeader" class="page-header">
         <div>
           <h1>{{ pageTitle }}</h1>
           <p>{{ pageSubtitle }}</p>

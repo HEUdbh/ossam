@@ -162,11 +162,6 @@ watch(categories, () => {
 
     <section class="apps-panel">
       <header class="apps-header">
-        <div class="apps-heading">
-          <h2>{{ state.config?.market_name || "应用市场" }}</h2>
-          <p>发现并探索高质量开源项目</p>
-        </div>
-
         <div class="apps-actions">
           <el-input
             v-model="searchQuery"
@@ -338,21 +333,9 @@ watch(categories, () => {
 
 .apps-header {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: flex-end;
   gap: 12px;
-}
-
-.apps-heading h2 {
-  margin: 0;
-  font-size: 24px;
-  line-height: 1.2;
-}
-
-.apps-heading p {
-  margin: 6px 0 0;
-  font-size: 14px;
-  color: var(--text-secondary);
 }
 
 .apps-actions {
