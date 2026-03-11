@@ -8,22 +8,22 @@ func TestBuildReadmeRawCandidates(t *testing.T) {
 	got := buildReadmeRawCandidates("owner/repo")
 	want := []readmeCandidate{
 		{
-			URL:      "https://ghproxy.net/https://raw.githubusercontent.com/owner/repo/main/readme.md",
+			URL:      "https://raw.githubusercontent.com/owner/repo/main/readme.md",
 			Branch:   "main",
 			FilePath: "readme.md",
 		},
 		{
-			URL:      "https://ghproxy.net/https://raw.githubusercontent.com/owner/repo/main/README.md",
+			URL:      "https://raw.githubusercontent.com/owner/repo/main/README.md",
 			Branch:   "main",
 			FilePath: "README.md",
 		},
 		{
-			URL:      "https://ghproxy.net/https://raw.githubusercontent.com/owner/repo/master/readme.md",
+			URL:      "https://raw.githubusercontent.com/owner/repo/master/readme.md",
 			Branch:   "master",
 			FilePath: "readme.md",
 		},
 		{
-			URL:      "https://ghproxy.net/https://raw.githubusercontent.com/owner/repo/master/README.md",
+			URL:      "https://raw.githubusercontent.com/owner/repo/master/README.md",
 			Branch:   "master",
 			FilePath: "README.md",
 		},
@@ -36,6 +36,59 @@ func TestBuildReadmeRawCandidates(t *testing.T) {
 		if got[idx] != want[idx] {
 			t.Fatalf("expected candidate %d to be %+v, got %+v", idx, want[idx], got[idx])
 		}
+	}
+}
+
+func TestApplyGitHubProxy(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name string
+		url  string
+		want string
+	}{
+		{
+			name: "github repo url",
+			url:  "https://github.com/owner/repo",
+			want: "https://ghproxy.net/https://github.com/owner/repo",
+		},
+		{
+			name: "github api url",
+			url:  "https://api.github.com/repos/owner/repo",
+			want: "https://ghproxy.net/https://api.github.com/repos/owner/repo",
+		},
+		{
+			name: "raw url",
+			url:  "https://raw.githubusercontent.com/owner/repo/main/README.md",
+			want: "https://ghproxy.net/https://raw.githubusercontent.com/owner/repo/main/README.md",
+		},
+		{
+			name: "avatar url keeps direct",
+			url:  "https://avatars.githubusercontent.com/owner",
+			want: "https://avatars.githubusercontent.com/owner",
+		},
+		{
+			name: "already proxied url",
+			url:  "https://ghproxy.net/https://github.com/owner/repo",
+			want: "https://ghproxy.net/https://github.com/owner/repo",
+		},
+		{
+			name: "non github url",
+			url:  "https://example.com/file.zip",
+			want: "https://example.com/file.zip",
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			got := applyGitHubProxy(tc.url)
+			if got != tc.want {
+				t.Fatalf("expected %q, got %q", tc.want, got)
+			}
+		})
 	}
 }
 

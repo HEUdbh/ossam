@@ -168,7 +168,7 @@ type readmeFetchResult struct {
 const (
 	appsConfigPath        = "appsconfig.json"
 	defaultAppPlaceholder = "https://github.githubassets.com/favicons/favicon.png"
-	githubReadmeProxy     = "https://ghproxy.net/"
+	githubProxyPrefix     = "https://ghproxy.net/"
 
 	platformWindows = "windows"
 	platformLinux   = "linux"
@@ -436,7 +436,7 @@ func (a *App) GetAppReleaseDetail(repo, match string) (*AppReleaseDetail, error)
 
 // StartDownload starts a download task asynchronously and returns the task snapshot immediately.
 func (a *App) StartDownload(request StartDownloadRequest) (*DownloadTaskSnapshot, error) {
-	downloadURL := strings.TrimSpace(request.DownloadURL)
+	downloadURL := applyGitHubProxy(strings.TrimSpace(request.DownloadURL))
 	if downloadURL == "" {
 		return nil, errors.New("download_url is required")
 	}
@@ -586,7 +586,8 @@ func (a *App) fetchReadme(repo string) (readmeFetchResult, error) {
 	defer cancel()
 
 	for _, candidate := range candidates {
-		req, err := http.NewRequestWithContext(ctx, http.MethodGet, candidate.URL, nil)
+		requestURL := applyGitHubProxy(candidate.URL)
+		req, err := http.NewRequestWithContext(ctx, http.MethodGet, requestURL, nil)
 		if err != nil {
 			return readmeFetchResult{}, err
 		}
@@ -613,7 +614,7 @@ func (a *App) fetchReadme(repo string) (readmeFetchResult, error) {
 
 		return readmeFetchResult{
 			Content:   string(body),
-			SourceURL: candidate.URL,
+			SourceURL: requestURL,
 			Branch:    candidate.Branch,
 			FilePath:  candidate.FilePath,
 		}, nil
@@ -628,6 +629,7 @@ func (a *App) fetchRepoStars(repo string) (int, error) {
 		strings.TrimRight(a.githubAPIBaseURL, "/"),
 		buildRepoPath(repo),
 	)
+	endpoint = applyGitHubProxy(endpoint)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
@@ -834,7 +836,7 @@ func selectAssetForPlatform(assets []githubAsset, basePattern *regexp.Regexp, pl
 					Platform:    platform,
 					Available:   true,
 					AssetName:   candidate.asset.Name,
-					DownloadURL: candidate.asset.BrowserDownloadURL,
+					DownloadURL: applyGitHubProxy(candidate.asset.BrowserDownloadURL),
 					Arch:        candidate.arch,
 				}
 			}
@@ -846,7 +848,7 @@ func selectAssetForPlatform(assets []githubAsset, basePattern *regexp.Regexp, pl
 		Platform:    platform,
 		Available:   true,
 		AssetName:   first.asset.Name,
-		DownloadURL: first.asset.BrowserDownloadURL,
+		DownloadURL: applyGitHubProxy(first.asset.BrowserDownloadURL),
 		Arch:        first.arch,
 	}
 }
@@ -927,6 +929,47 @@ func buildRepoPath(repo string) string {
 	return url.PathEscape(parts[0]) + "/" + url.PathEscape(parts[1])
 }
 
+func applyGitHubProxy(rawURL string) string {
+	rawURL = strings.TrimSpace(rawURL)
+	if rawURL == "" {
+		return ""
+	}
+
+	if strings.HasPrefix(rawURL, githubProxyPrefix) {
+		return rawURL
+	}
+
+	parsed, err := url.Parse(rawURL)
+	if err != nil || parsed.Hostname() == "" {
+		return rawURL
+	}
+
+	if !isGitHubHost(parsed.Hostname()) {
+		return rawURL
+	}
+
+	return githubProxyPrefix + rawURL
+}
+
+func isGitHubHost(host string) bool {
+	host = strings.ToLower(strings.TrimSpace(host))
+	if host == "" {
+		return false
+	}
+
+	// Avatar URLs should stay direct to avoid redirect/proxy issues.
+	if host == "avatars.githubusercontent.com" || host == "github.githubassets.com" {
+		return false
+	}
+
+	switch host {
+	case "github.com", "api.github.com", "raw.githubusercontent.com", "codeload.github.com", "objects.githubusercontent.com", "githubusercontent.com":
+		return true
+	}
+
+	return strings.HasSuffix(host, ".github.com") || strings.HasSuffix(host, ".githubusercontent.com")
+}
+
 func buildReadmeRawCandidates(repo string) []readmeCandidate {
 	parts := strings.Split(strings.TrimSpace(repo), "/")
 	if len(parts) != 2 || parts[0] == "" || parts[1] == "" {
@@ -944,7 +987,7 @@ func buildReadmeRawCandidates(repo string) []readmeCandidate {
 		for _, filePath := range filePaths {
 			rawURL := fmt.Sprintf("%s/%s/%s", base, branch, filePath)
 			candidates = append(candidates, readmeCandidate{
-				URL:      githubReadmeProxy + rawURL,
+				URL:      rawURL,
 				Branch:   branch,
 				FilePath: filePath,
 			})

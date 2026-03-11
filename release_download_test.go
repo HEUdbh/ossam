@@ -121,6 +121,32 @@ func TestBuildPlatformDownloadsMarksUnavailableWhenMissing(t *testing.T) {
 	}
 }
 
+func TestSelectAssetForPlatformAppliesProxyForGitHubDownloadURL(t *testing.T) {
+	t.Parallel()
+
+	pattern, err := compileCaseInsensitiveRegex(`tool-v1\.0\.0-.*`)
+	if err != nil {
+		t.Fatalf("failed to compile regex: %v", err)
+	}
+
+	assets := []githubAsset{
+		{
+			Name:               "tool-v1.0.0-windows-amd64.zip",
+			BrowserDownloadURL: "https://github.com/owner/repo/releases/download/v1.0.0/tool-v1.0.0-windows-amd64.zip",
+		},
+	}
+
+	selected := selectAssetForPlatform(assets, pattern, platformWindows, archAMD64)
+	if !selected.Available {
+		t.Fatal("expected selected asset to be available")
+	}
+
+	want := "https://ghproxy.net/https://github.com/owner/repo/releases/download/v1.0.0/tool-v1.0.0-windows-amd64.zip"
+	if selected.DownloadURL != want {
+		t.Fatalf("expected proxied download URL %q, got %q", want, selected.DownloadURL)
+	}
+}
+
 func TestStartDownloadLifecycleSuccess(t *testing.T) {
 	payload := strings.Repeat("ossam-test-", 4096)
 	server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, _ *http.Request) {

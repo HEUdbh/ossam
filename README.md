@@ -182,14 +182,14 @@
 | Request Purpose | Trigger Location | URL Template | Proxy Prefix Applied | Notes |
 | --- | --- | --- | --- | --- |
 | Release list query | `fetchReleases -> newGitHubRequest` | `https://api.github.com/repos/{owner}/{repo}/releases?per_page=30` | No | Sent directly by `newGitHubRequest`. |
-| Repository stars query | `fetchRepoStars -> newGitHubRequest` | `https://api.github.com/repos/{owner}/{repo}` | No | Sent directly by `newGitHubRequest`. |
+| Repository stars query | `fetchRepoStars -> newGitHubRequest` | `https://api.github.com/repos/{owner}/{repo}` | Yes | URL is processed by proxy helper before request. |
 | README fetch (ghproxy + raw) | `fetchReadme -> buildReadmeRawCandidates` | `https://ghproxy.net/https://raw.githubusercontent.com/{owner}/{repo}/main/readme.md`<br>`https://ghproxy.net/https://raw.githubusercontent.com/{owner}/{repo}/main/README.md`<br>`https://ghproxy.net/https://raw.githubusercontent.com/{owner}/{repo}/master/readme.md`<br>`https://ghproxy.net/https://raw.githubusercontent.com/{owner}/{repo}/master/README.md` | Yes | Candidates are requested in order until first success. |
-| Release asset download URL (`browser_download_url`) | `selectAssetForPlatform` | `https://github.com/{owner}/{repo}/releases/download/{tag}/{asset}` (typical shape) | No | `downloads[*].download_url` keeps original GitHub URL. |
-| `StartDownload` input URL | `StartDownload` | Frontend-provided `download_url` | No | Uses original incoming URL after validation. |
+| Release asset download URL (`browser_download_url`) | `selectAssetForPlatform` | `https://github.com/{owner}/{repo}/releases/download/{tag}/{asset}` (typical shape) | Yes | GitHub download URLs are rewritten through proxy helper. |
+| `StartDownload` input URL | `StartDownload` | Frontend-provided `download_url` | Yes (GitHub only) | GitHub URLs are rewritten through proxy helper; non-GitHub URLs keep direct access. |
 | Default app avatar | `resolveAppPhoto -> buildGitHubAvatarURL` | `https://avatars.githubusercontent.com/{owner}` | No | Default avatar uses direct URL. |
 | Default placeholder icon | `resolveAppPhoto` | `https://github.githubassets.com/favicons/favicon.png` | No | Placeholder icon uses direct URL. |
 | Custom `photo` field | `resolveAppPhoto` | Original value from `appsconfig.json` | No | Returned as-is, no URL rewrite. |
 
-- Runtime GitHub requests use direct URLs except README fetch, which prepends `https://ghproxy.net/`.
+- Runtime GitHub requests are proxied by default, except release list API and avatar-related URLs.
 - Non-GitHub URLs are passed through as-is.
 
