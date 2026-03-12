@@ -179,8 +179,18 @@ function startTaskPoller(platform, taskId) {
       if (snapshot.status === "completed" || snapshot.status === "failed") {
         clearTaskPoller(platform);
         if (snapshot.status === "completed") {
+          console.info("[download] task completed", {
+            platform,
+            taskId,
+            snapshot,
+          });
           ElMessage.success(`${platform} 下载完成`);
         } else if (snapshot.error) {
+          console.error("[download] task failed", {
+            platform,
+            taskId,
+            snapshot,
+          });
           ElMessage.error(snapshot.error);
         }
       }
@@ -189,6 +199,12 @@ function startTaskPoller(platform, taskId) {
       const message = error?.message || String(error);
       downloadStates[platform].status = "failed";
       downloadStates[platform].error = message;
+      console.error("[download] poller request failed", {
+        platform,
+        taskId,
+        error,
+        currentState: { ...downloadStates[platform] },
+      });
       ElMessage.error(message || "下载任务查询失败");
     }
   }, 900);
@@ -208,6 +224,14 @@ async function handleDownload(platform) {
     return;
   }
 
+  console.info("[download] start request", {
+    platform,
+    assetName: target.asset_name,
+    arch: target.arch,
+    downloadURL: target.download_url,
+    downloadDir,
+  });
+
   try {
     const snapshot = await StartDownload({
       download_url: target.download_url,
@@ -215,12 +239,23 @@ async function handleDownload(platform) {
       platform,
       download_dir: downloadDir,
     });
+    console.info("[download] task started", {
+      platform,
+      snapshot,
+    });
     applyTaskSnapshot(platform, snapshot);
     startTaskPoller(platform, snapshot.task_id);
   } catch (error) {
     const message = error?.message || String(error);
     downloadStates[platform].status = "failed";
     downloadStates[platform].error = message;
+    console.error("[download] start request failed", {
+      platform,
+      target,
+      downloadDir,
+      error,
+      currentState: { ...downloadStates[platform] },
+    });
     ElMessage.error(message || "启动下载任务失败");
   }
 }

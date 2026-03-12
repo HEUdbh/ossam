@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -185,6 +186,7 @@ const (
 	taskStatusInProgress = "in_progress"
 	taskStatusFailed     = "failed"
 	taskStatusCompleted  = "completed"
+	downloadErrorBodyMax = 2048
 
 	repoStarsWorkers  = 8
 	repoStarsCacheEnv = "OSSAM_STARS_CACHE_PATH"
@@ -427,7 +429,7 @@ func (a *App) GetAppReleaseDetail(repo, match string) (*AppReleaseDetail, error)
 		ReadmeSourceURL: readmeResult.SourceURL,
 		ReadmeBranch:    readmeResult.Branch,
 		ReadmeFilePath:  readmeResult.FilePath,
-		Downloads:       buildPlatformDownloads(release.Assets, release.ZipballURL, pattern, normalizeArch(goruntime.GOARCH)),
+		Downloads:       buildPlatformDownloads(release.Assets, resolveSourceCodeZipURL(repo, release), pattern, normalizeArch(goruntime.GOARCH)),
 	}
 
 	if !release.PublishedAt.IsZero() {
@@ -439,7 +441,8 @@ func (a *App) GetAppReleaseDetail(repo, match string) (*AppReleaseDetail, error)
 
 // StartDownload starts a download task asynchronously and returns the task snapshot immediately.
 func (a *App) StartDownload(request StartDownloadRequest) (*DownloadTaskSnapshot, error) {
-	downloadURL := applyGitHubProxy(strings.TrimSpace(request.DownloadURL))
+	originalDownloadURL := strings.TrimSpace(request.DownloadURL)
+	downloadURL := applyGitHubProxy(originalDownloadURL)
 	if downloadURL == "" {
 		return nil, errors.New("download_url is required")
 	}
@@ -485,6 +488,15 @@ func (a *App) StartDownload(request StartDownloadRequest) (*DownloadTaskSnapshot
 	}
 
 	a.setTask(taskID, task)
+	log.Printf(
+		"download task created task_id=%s platform=%s original_url=%q proxied_url=%q file=%q path=%q",
+		taskID,
+		task.Platform,
+		originalDownloadURL,
+		downloadURL,
+		task.FileName,
+		task.FilePath,
+	)
 	go a.runDownloadTask(taskID)
 
 	return a.GetDownloadTask(taskID)
@@ -960,6 +972,16 @@ func buildRepoPath(repo string) string {
 	return url.PathEscape(parts[0]) + "/" + url.PathEscape(parts[1])
 }
 
+func resolveSourceCodeZipURL(repo string, release githubRelease) string {
+	repoPath := buildRepoPath(repo)
+	tag := strings.TrimSpace(release.TagName)
+	if repoPath != "" && tag != "" {
+		return fmt.Sprintf("https://github.com/%s/archive/refs/tags/%s.zip", repoPath, url.PathEscape(tag))
+	}
+
+	return strings.TrimSpace(release.ZipballURL)
+}
+
 func applyGitHubProxy(rawURL string) string {
 	rawURL = strings.TrimSpace(rawURL)
 	if rawURL == "" {
@@ -1078,6 +1100,7 @@ func (a *App) runDownloadTask(taskID string) {
 		return
 	}
 	request.Header.Set("User-Agent", "ossam-app")
+	log.Printf("download request start task_id=%s method=%s url=%q", taskID, request.Method, request.URL.String())
 
 	resp, err := a.downloadClient.Do(request)
 	if err != nil {
@@ -1085,9 +1108,22 @@ func (a *App) runDownloadTask(taskID string) {
 		return
 	}
 	defer resp.Body.Close()
+	log.Printf(
+		"download response task_id=%s status=%d content_type=%q content_length=%q location=%q server=%q",
+		taskID,
+		resp.StatusCode,
+		resp.Header.Get("Content-Type"),
+		resp.Header.Get("Content-Length"),
+		resp.Header.Get("Location"),
+		resp.Header.Get("Server"),
+	)
 
 	if resp.StatusCode >= http.StatusBadRequest {
-		a.failTask(taskID, fmt.Errorf("download request failed with status %d", resp.StatusCode))
+		snippet, snippetErr := readResponseBodySnippet(resp.Body, downloadErrorBodyMax)
+		if snippetErr != nil {
+			log.Printf("download response body read failed task_id=%s err=%v", taskID, snippetErr)
+		}
+		a.failTask(taskID, fmt.Errorf("download request failed: status=%d url=%s body=%s", resp.StatusCode, request.URL.String(), snippet))
 		return
 	}
 
@@ -1112,6 +1148,7 @@ func (a *App) runDownloadTask(taskID string) {
 
 	buffer := make([]byte, 32*1024)
 	var downloadedBytes int64
+	lastLoggedProgressBucket := -1
 
 	for {
 		readSize, readErr := resp.Body.Read(buffer)
@@ -1132,6 +1169,17 @@ func (a *App) runDownloadTask(taskID string) {
 				progress = int((downloadedBytes * 100) / totalBytes)
 				if progress > 99 {
 					progress = 99
+				}
+				progressBucket := progress / 10
+				if progressBucket > lastLoggedProgressBucket {
+					lastLoggedProgressBucket = progressBucket
+					log.Printf(
+						"download progress task_id=%s progress=%d downloaded=%d total=%d",
+						taskID,
+						progress,
+						downloadedBytes,
+						totalBytes,
+					)
 				}
 			}
 
@@ -1175,9 +1223,31 @@ func (a *App) runDownloadTask(taskID string) {
 			snapshot.TotalBytes = downloadedBytes
 		}
 	})
+	log.Printf(
+		"download completed task_id=%s file=%q path=%q downloaded=%d",
+		taskID,
+		initialSnapshot.FileName,
+		initialSnapshot.FilePath,
+		downloadedBytes,
+	)
 }
 
 func (a *App) failTask(taskID string, err error) {
+	state := a.getTask(taskID)
+	if state != nil {
+		snapshot := a.readTaskSnapshot(state)
+		log.Printf(
+			"download failed task_id=%s platform=%s file=%q url=%q err=%v",
+			taskID,
+			snapshot.Platform,
+			snapshot.FileName,
+			snapshot.DownloadURL,
+			err,
+		)
+	} else {
+		log.Printf("download failed task_id=%s err=%v", taskID, err)
+	}
+
 	a.updateTask(taskID, func(snapshot *DownloadTaskSnapshot) {
 		snapshot.Status = taskStatusFailed
 		snapshot.Error = err.Error()
@@ -1237,4 +1307,30 @@ func makeUniqueFilePath(directory, fileName string) string {
 			return candidate
 		}
 	}
+}
+
+func readResponseBodySnippet(reader io.Reader, limit int64) (string, error) {
+	if limit <= 0 {
+		limit = downloadErrorBodyMax
+	}
+
+	content, err := io.ReadAll(io.LimitReader(reader, limit+1))
+	if err != nil {
+		return "", err
+	}
+
+	truncated := int64(len(content)) > limit
+	if truncated {
+		content = content[:limit]
+	}
+
+	snippet := strings.TrimSpace(string(content))
+	if snippet == "" {
+		snippet = "<empty>"
+	}
+	if truncated {
+		snippet += "...(truncated)"
+	}
+
+	return snippet, nil
 }
