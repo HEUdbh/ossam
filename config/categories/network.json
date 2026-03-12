@@ -1,0 +1,54 @@
+{
+  "apps": [
+    {
+      "name": "caddy",
+      "repo": "caddyserver/caddy",
+      "photo": "",
+      "summary": "caddy：网络连接、代理与调试工具。"
+    },
+    {
+      "name": "cloudflared",
+      "repo": "cloudflare/cloudflared",
+      "photo": "",
+      "summary": "cloudflared：网络连接、代理与调试工具。"
+    },
+    {
+      "name": "tailscale",
+      "repo": "tailscale/tailscale",
+      "photo": "",
+      "summary": "tailscale：网络连接、代理与调试工具。"
+    },
+    {
+      "name": "mitmproxy",
+      "repo": "mitmproxy/mitmproxy",
+      "photo": "",
+      "summary": "mitmproxy：网络连接、代理与调试工具。"
+    },
+    {
+      "name": "Xray-core",
+      "repo": "XTLS/Xray-core",
+      "photo": "",
+      "summary": "Xray-core：网络连接、代理与调试工具。",
+      "match": "xray.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$"
+    },
+    {
+      "name": "v2ray-core",
+      "repo": "v2fly/v2ray-core",
+      "photo": "",
+      "summary": "v2ray-core：网络连接、代理与调试工具。",
+      "match": "v2ray.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$"
+    },
+    {
+      "name": "grpcurl",
+      "repo": "fullstorydev/grpcurl",
+      "photo": "",
+      "summary": "grpcurl：网络连接、代理与调试工具。"
+    },
+    {
+      "name": "mkcert",
+      "repo": "FiloSottile/mkcert",
+      "photo": "",
+      "summary": "mkcert：网络连接、代理与调试工具。"
+    }
+  ]
+}

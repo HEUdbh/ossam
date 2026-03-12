@@ -1,0 +1,65 @@
+{
+  "apps": [
+    {
+      "name": "OneForAll",
+      "repo": "shmilylty/OneForAll",
+      "photo": "",
+      "summary": "OneForAll：安全测试与资产发现工具。"
+    },
+    {
+      "name": "dirsearch",
+      "repo": "maurosoria/dirsearch",
+      "photo": "",
+      "summary": "dirsearch：安全测试与资产发现工具。",
+      "match": "dirsearch-.*\\\\.tar.gz"
+    },
+    {
+      "name": "nuclei",
+      "repo": "projectdiscovery/nuclei",
+      "photo": "",
+      "summary": "nuclei：安全测试与资产发现工具。"
+    },
+    {
+      "name": "httpx",
+      "repo": "projectdiscovery/httpx",
+      "photo": "",
+      "summary": "httpx：安全测试与资产发现工具。"
+    },
+    {
+      "name": "subfinder",
+      "repo": "projectdiscovery/subfinder",
+      "photo": "",
+      "summary": "subfinder：安全测试与资产发现工具。"
+    },
+    {
+      "name": "naabu",
+      "repo": "projectdiscovery/naabu",
+      "photo": "",
+      "summary": "naabu：安全测试与资产发现工具。"
+    },
+    {
+      "name": "katana",
+      "repo": "projectdiscovery/katana",
+      "photo": "",
+      "summary": "katana：安全测试与资产发现工具。"
+    },
+    {
+      "name": "ffuf",
+      "repo": "ffuf/ffuf",
+      "photo": "",
+      "summary": "ffuf：安全测试与资产发现工具。"
+    },
+    {
+      "name": "gobuster",
+      "repo": "OJ/gobuster",
+      "photo": "",
+      "summary": "gobuster：安全测试与资产发现工具。"
+    },
+    {
+      "name": "amass",
+      "repo": "owasp-amass/amass",
+      "photo": "",
+      "summary": "amass：安全测试与资产发现工具。"
+    }
+  ]
+}

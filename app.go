@@ -69,6 +69,23 @@ type AppInfo struct {
 	Summary string `json:"summary"`
 }
 
+type rulesConfig struct {
+	MarketName    string            `json:"market_name"`
+	LastUpdated   string            `json:"last_updated"`
+	DefaultMatch  string            `json:"default_match"`
+	PlatformMatch map[string]string `json:"platform_match"`
+	Categories    []categoryRule    `json:"categories"`
+}
+
+type categoryRule struct {
+	Name string `json:"name"`
+	File string `json:"file"`
+}
+
+type categoryAppsConfig struct {
+	Apps []AppInfo `json:"apps"`
+}
+
 type PlatformDownload struct {
 	Platform    string `json:"platform"`
 	Available   bool   `json:"available"`
@@ -170,7 +187,7 @@ type readmeFetchResult struct {
 }
 
 const (
-	appsConfigPath        = "appsconfig.json"
+	rulesConfigPath       = "config/rules.json"
 	defaultAppPlaceholder = "https://github.githubassets.com/favicons/favicon.png"
 	githubProxyPrefix     = "https://ghproxy.net/"
 
@@ -191,18 +208,6 @@ const (
 	repoStarsWorkers  = 8
 	repoStarsCacheEnv = "OSSAM_STARS_CACHE_PATH"
 )
-
-var platformKeywords = map[string][]*regexp.Regexp{
-	platformWindows: {
-		regexp.MustCompile(`(^|[^a-z0-9])(windows|win32|win64|win)([^a-z0-9]|$)`),
-	},
-	platformLinux: {
-		regexp.MustCompile(`(^|[^a-z0-9])(linux|gnu|musl)([^a-z0-9]|$)`),
-	},
-	platformMacOS: {
-		regexp.MustCompile(`(^|[^a-z0-9])(darwin|macos|osx|mac)([^a-z0-9]|$)`),
-	},
-}
 
 var archMatchers = []struct {
 	arch     string
@@ -230,9 +235,9 @@ var archMatchers = []struct {
 	},
 }
 
-// GetAppsConfig loads app catalog data from the local appsconfig.json file.
+// GetAppsConfig loads app catalog data from config/rules.json and category files.
 func (a *App) GetAppsConfig() (*AppsConfig, error) {
-	return loadAppsConfigFromFile(appsConfigPath)
+	return loadAppsConfigFromFiles(rulesConfigPath)
 }
 
 // GetRepoStars fetches stargazer counts for repos with cache fallback.
@@ -304,18 +309,58 @@ func (a *App) GetRepoStars(repos []string) (map[string]int, error) {
 	return results, nil
 }
 
-func loadAppsConfigFromFile(path string) (*AppsConfig, error) {
-	content, err := os.ReadFile(path)
+func loadAppsConfigFromFiles(path string) (*AppsConfig, error) {
+	rules, err := loadRulesConfigFromFile(path)
 	if err != nil {
-		if errors.Is(err, os.ErrNotExist) {
-			return nil, fmt.Errorf("config file not found: %s", path)
-		}
-		return nil, fmt.Errorf("failed to read config file: %w", err)
+		return nil, err
 	}
 
-	var cfg AppsConfig
-	if err := json.Unmarshal(content, &cfg); err != nil {
-		return nil, fmt.Errorf("invalid JSON format in appsconfig.json: %w", err)
+	cfg := &AppsConfig{
+		MarketName:  rules.MarketName,
+		LastUpdated: rules.LastUpdated,
+		Apps:        make(map[string][]AppInfo, len(rules.Categories)),
+	}
+
+	for _, category := range rules.Categories {
+		categoryFilePath := resolveCategoryFilePath(path, category.File)
+		apps, err := loadCategoryAppsFromFile(categoryFilePath)
+		if err != nil {
+			return nil, fmt.Errorf("failed to load category %s: %w", category.Name, err)
+		}
+
+		resolvedApps := make([]AppInfo, len(apps))
+		for idx, app := range apps {
+			name := strings.TrimSpace(app.Name)
+			repo := strings.TrimSpace(app.Repo)
+			summary := strings.TrimSpace(app.Summary)
+			if name == "" {
+				return nil, fmt.Errorf("invalid config fields: %s.apps[%d].name is required", category.Name, idx)
+			}
+			if repo == "" {
+				return nil, fmt.Errorf("invalid config fields: %s.apps[%d].repo is required", category.Name, idx)
+			}
+			if summary == "" {
+				return nil, fmt.Errorf("invalid config fields: %s.apps[%d].summary is required", category.Name, idx)
+			}
+
+			match := strings.TrimSpace(app.Match)
+			if match == "" {
+				match = rules.DefaultMatch
+			}
+			if _, err := compileCaseInsensitiveRegex(match); err != nil {
+				return nil, fmt.Errorf("invalid config fields: %s.apps[%d].match: %w", category.Name, idx, err)
+			}
+
+			resolvedApps[idx] = AppInfo{
+				Name:    name,
+				Repo:    repo,
+				Photo:   strings.TrimSpace(app.Photo),
+				Match:   match,
+				Summary: summary,
+			}
+		}
+
+		cfg.Apps[category.Name] = resolvedApps
 	}
 
 	if err := cfg.validate(); err != nil {
@@ -324,7 +369,121 @@ func loadAppsConfigFromFile(path string) (*AppsConfig, error) {
 
 	cfg.applyDisplayDefaults()
 
+	return cfg, nil
+}
+
+func loadRulesConfigFromFile(path string) (*rulesConfig, error) {
+	content, err := os.ReadFile(path)
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return nil, fmt.Errorf("rules config file not found: %s", path)
+		}
+		return nil, fmt.Errorf("failed to read rules config file: %w", err)
+	}
+
+	var cfg rulesConfig
+	if err := json.Unmarshal(content, &cfg); err != nil {
+		return nil, fmt.Errorf("invalid JSON format in rules config: %w", err)
+	}
+
+	if strings.TrimSpace(cfg.MarketName) == "" {
+		return nil, errors.New("invalid rules config fields: market_name is required")
+	}
+	if strings.TrimSpace(cfg.LastUpdated) == "" {
+		return nil, errors.New("invalid rules config fields: last_updated is required")
+	}
+	cfg.DefaultMatch = strings.TrimSpace(cfg.DefaultMatch)
+	if cfg.DefaultMatch == "" {
+		return nil, errors.New("invalid rules config fields: default_match is required")
+	}
+	if _, err := compileCaseInsensitiveRegex(cfg.DefaultMatch); err != nil {
+		return nil, fmt.Errorf("invalid rules config fields: default_match: %w", err)
+	}
+	if _, err := compilePlatformMatchers(cfg.PlatformMatch); err != nil {
+		return nil, fmt.Errorf("invalid rules config fields: platform_match: %w", err)
+	}
+	if len(cfg.Categories) == 0 {
+		return nil, errors.New("invalid rules config fields: categories is required")
+	}
+
+	seenCategories := make(map[string]struct{}, len(cfg.Categories))
+	for idx := range cfg.Categories {
+		cfg.Categories[idx].Name = strings.TrimSpace(cfg.Categories[idx].Name)
+		cfg.Categories[idx].File = strings.TrimSpace(cfg.Categories[idx].File)
+		if cfg.Categories[idx].Name == "" {
+			return nil, fmt.Errorf("invalid rules config fields: categories[%d].name is required", idx)
+		}
+		if cfg.Categories[idx].File == "" {
+			return nil, fmt.Errorf("invalid rules config fields: categories[%d].file is required", idx)
+		}
+		if _, exists := seenCategories[cfg.Categories[idx].Name]; exists {
+			return nil, fmt.Errorf("invalid rules config fields: duplicate category name %q", cfg.Categories[idx].Name)
+		}
+		seenCategories[cfg.Categories[idx].Name] = struct{}{}
+	}
+
 	return &cfg, nil
+}
+
+func loadCategoryAppsFromFile(path string) ([]AppInfo, error) {
+	content, err := os.ReadFile(path)
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return nil, fmt.Errorf("category file not found: %s", path)
+		}
+		return nil, fmt.Errorf("failed to read category file: %w", err)
+	}
+
+	var categoryCfg categoryAppsConfig
+	if err := json.Unmarshal(content, &categoryCfg); err != nil {
+		return nil, fmt.Errorf("invalid JSON format in category file: %w", err)
+	}
+	if categoryCfg.Apps == nil {
+		return nil, errors.New("invalid category config fields: apps is required")
+	}
+
+	return categoryCfg.Apps, nil
+}
+
+func resolveCategoryFilePath(rulesPath, categoryPath string) string {
+	trimmed := strings.TrimSpace(categoryPath)
+	if trimmed == "" {
+		return ""
+	}
+	if filepath.IsAbs(trimmed) {
+		return trimmed
+	}
+
+	cleaned := filepath.Clean(trimmed)
+	rulesDir := filepath.Dir(rulesPath)
+	relativeCandidate := filepath.Join(rulesDir, cleaned)
+	if _, err := os.Stat(relativeCandidate); err == nil {
+		return relativeCandidate
+	}
+
+	return cleaned
+}
+
+func compilePlatformMatchers(platformMatch map[string]string) (map[string]*regexp.Regexp, error) {
+	if platformMatch == nil {
+		return nil, errors.New("is required")
+	}
+
+	matchers := make(map[string]*regexp.Regexp, 3)
+	for _, platform := range []string{platformWindows, platformLinux, platformMacOS} {
+		pattern := strings.TrimSpace(platformMatch[platform])
+		if pattern == "" {
+			return nil, fmt.Errorf("%s is required", platform)
+		}
+		// Match keyword-like tokens to avoid accidental substring hits from loose rules.
+		compiled, err := compileCaseInsensitiveRegex(`(^|[^a-z0-9])(?:` + pattern + `)([^a-z0-9]|$)`)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %w", platform, err)
+		}
+		matchers[platform] = compiled
+	}
+
+	return matchers, nil
 }
 
 func (c *AppsConfig) validate() error {
@@ -402,6 +561,14 @@ func (a *App) GetAppReleaseDetail(repo, match string) (*AppReleaseDetail, error)
 	if err != nil {
 		return nil, fmt.Errorf("invalid match regular expression: %w", err)
 	}
+	rules, err := loadRulesConfigFromFile(rulesConfigPath)
+	if err != nil {
+		return nil, err
+	}
+	platformMatchers, err := compilePlatformMatchers(rules.PlatformMatch)
+	if err != nil {
+		return nil, fmt.Errorf("invalid platform_match rules: %w", err)
+	}
 
 	releases, err := a.fetchReleases(repo)
 	if err != nil {
@@ -429,7 +596,7 @@ func (a *App) GetAppReleaseDetail(repo, match string) (*AppReleaseDetail, error)
 		ReadmeSourceURL: readmeResult.SourceURL,
 		ReadmeBranch:    readmeResult.Branch,
 		ReadmeFilePath:  readmeResult.FilePath,
-		Downloads:       buildPlatformDownloads(release.Assets, resolveSourceCodeZipURL(repo, release), pattern, normalizeArch(goruntime.GOARCH)),
+		Downloads:       buildPlatformDownloads(release.Assets, resolveSourceCodeZipURL(repo, release), pattern, normalizeArch(goruntime.GOARCH), platformMatchers),
 	}
 
 	if !release.PublishedAt.IsZero() {
@@ -813,7 +980,7 @@ func selectLatestRelease(releases []githubRelease) (githubRelease, error) {
 	return githubRelease{}, errors.New("no usable release found for this repository")
 }
 
-func buildPlatformDownloads(assets []githubAsset, sourceZipURL string, basePattern *regexp.Regexp, localArch string) map[string]PlatformDownload {
+func buildPlatformDownloads(assets []githubAsset, sourceZipURL string, basePattern *regexp.Regexp, localArch string, platformMatchers map[string]*regexp.Regexp) map[string]PlatformDownload {
 	downloads := map[string]PlatformDownload{
 		platformWindows: {
 			Platform:  platformWindows,
@@ -830,20 +997,20 @@ func buildPlatformDownloads(assets []githubAsset, sourceZipURL string, basePatte
 	}
 
 	for _, platform := range []string{platformWindows, platformLinux, platformMacOS} {
-		selected := selectAssetForPlatform(assets, sourceZipURL, basePattern, platform, localArch)
+		selected := selectAssetForPlatform(assets, sourceZipURL, basePattern, platform, localArch, platformMatchers)
 		downloads[platform] = selected
 	}
 
 	return downloads
 }
 
-func selectAssetForPlatform(assets []githubAsset, sourceZipURL string, basePattern *regexp.Regexp, platform, localArch string) PlatformDownload {
+func selectAssetForPlatform(assets []githubAsset, sourceZipURL string, basePattern *regexp.Regexp, platform, localArch string, platformMatchers map[string]*regexp.Regexp) PlatformDownload {
 	matched := make([]matchedAsset, 0)
 	for _, asset := range assets {
 		if basePattern == nil || !basePattern.MatchString(asset.Name) {
 			continue
 		}
-		if !matchesPlatform(asset.Name, platform) {
+		if !matchesPlatform(asset.Name, platform, platformMatchers) {
 			continue
 		}
 
@@ -900,20 +1067,15 @@ func compileCaseInsensitiveRegex(pattern string) (*regexp.Regexp, error) {
 	return regexp.Compile("(?i:" + pattern + ")")
 }
 
-func matchesPlatform(assetName, platform string) bool {
-	patterns, ok := platformKeywords[platform]
-	if !ok {
+func matchesPlatform(assetName, platform string, platformMatchers map[string]*regexp.Regexp) bool {
+	if platformMatchers == nil {
 		return false
 	}
-
-	lowerName := strings.ToLower(assetName)
-	for _, pattern := range patterns {
-		if pattern.MatchString(lowerName) {
-			return true
-		}
+	pattern, ok := platformMatchers[platform]
+	if !ok || pattern == nil {
+		return false
 	}
-
-	return false
+	return pattern.MatchString(assetName)
 }
 
 func detectAssetArch(assetName string) string {

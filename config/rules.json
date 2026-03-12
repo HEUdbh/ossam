@@ -1,0 +1,40 @@
+{
+  "market_name": "ossam",
+  "last_updated": "20260311",
+  "default_match": ".*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+  "platform_match": {
+    "windows": "(windows|win)",
+    "linux": "linux",
+    "macos": "(mac|macos)"
+  },
+  "categories": [
+    {
+      "name": "Security",
+      "file": "config/categories/security.json"
+    },
+    {
+      "name": "DevTools",
+      "file": "config/categories/devtools.json"
+    },
+    {
+      "name": "System",
+      "file": "config/categories/system.json"
+    },
+    {
+      "name": "Network",
+      "file": "config/categories/network.json"
+    },
+    {
+      "name": "Database",
+      "file": "config/categories/database.json"
+    },
+    {
+      "name": "Terminal",
+      "file": "config/categories/terminal.json"
+    },
+    {
+      "name": "Utility",
+      "file": "config/categories/utility.json"
+    }
+  ]
+}

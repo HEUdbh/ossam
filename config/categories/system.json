@@ -1,0 +1,58 @@
+{
+  "apps": [
+    {
+      "name": "rclone",
+      "repo": "rclone/rclone",
+      "photo": "",
+      "summary": "rclone：系统增强与命令行效率工具。"
+    },
+    {
+      "name": "fastfetch",
+      "repo": "fastfetch-cli/fastfetch",
+      "photo": "",
+      "summary": "fastfetch：系统增强与命令行效率工具。"
+    },
+    {
+      "name": "delta",
+      "repo": "dandavison/delta",
+      "photo": "",
+      "summary": "delta：系统增强与命令行效率工具。"
+    },
+    {
+      "name": "hyperfine",
+      "repo": "sharkdp/hyperfine",
+      "photo": "",
+      "summary": "hyperfine：系统增强与命令行效率工具。"
+    },
+    {
+      "name": "eza",
+      "repo": "eza-community/eza",
+      "photo": "",
+      "summary": "eza：系统增强与命令行效率工具。"
+    },
+    {
+      "name": "dust",
+      "repo": "bootandy/dust",
+      "photo": "",
+      "summary": "dust：系统增强与命令行效率工具。"
+    },
+    {
+      "name": "zoxide",
+      "repo": "ajeetdsouza/zoxide",
+      "photo": "",
+      "summary": "zoxide：系统增强与命令行效率工具。"
+    },
+    {
+      "name": "lsd",
+      "repo": "lsd-rs/lsd",
+      "photo": "",
+      "summary": "lsd：系统增强与命令行效率工具。"
+    },
+    {
+      "name": "procs",
+      "repo": "sharkdp/procs",
+      "photo": "",
+      "summary": "procs：系统增强与命令行效率工具。"
+    }
+  ]
+}

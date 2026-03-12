@@ -1,0 +1,54 @@
+{
+  "apps": [
+    {
+      "name": "DBeaver",
+      "repo": "dbeaver/dbeaver",
+      "photo": "",
+      "summary": "DBeaver：数据库连接、管理与迁移工具。"
+    },
+    {
+      "name": "DB Browser for SQLite",
+      "repo": "sqlitebrowser/sqlitebrowser",
+      "photo": "",
+      "summary": "DB Browser for SQLite：数据库连接、管理与迁移工具。",
+      "match": "sqlite.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$"
+    },
+    {
+      "name": "Beekeeper Studio",
+      "repo": "beekeeper-studio/beekeeper-studio",
+      "photo": "",
+      "summary": "Beekeeper Studio：数据库连接、管理与迁移工具。"
+    },
+    {
+      "name": "mongosh",
+      "repo": "mongodb-js/mongosh",
+      "photo": "",
+      "summary": "mongosh：数据库连接、管理与迁移工具。"
+    },
+    {
+      "name": "usql",
+      "repo": "xo/usql",
+      "photo": "",
+      "summary": "usql：数据库连接、管理与迁移工具。"
+    },
+    {
+      "name": "RedisInsight",
+      "repo": "RedisInsight/RedisInsight",
+      "photo": "",
+      "summary": "RedisInsight：数据库连接、管理与迁移工具。"
+    },
+    {
+      "name": "go-sqlcmd",
+      "repo": "microsoft/go-sqlcmd",
+      "photo": "",
+      "summary": "go-sqlcmd：数据库连接、管理与迁移工具。",
+      "match": "sqlcmd.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$"
+    },
+    {
+      "name": "migrate",
+      "repo": "golang-migrate/migrate",
+      "photo": "",
+      "summary": "migrate：数据库连接、管理与迁移工具。"
+    }
+  ]
+}

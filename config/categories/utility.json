@@ -1,0 +1,53 @@
+{
+  "apps": [
+    {
+      "name": "OBS Studio",
+      "repo": "obsproject/obs-studio",
+      "photo": "",
+      "summary": "OBS Studio：办公、笔记与日常效率工具。",
+      "match": "obs.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$"
+    },
+    {
+      "name": "Logseq",
+      "repo": "logseq/logseq",
+      "photo": "",
+      "summary": "Logseq：办公、笔记与日常效率工具。"
+    },
+    {
+      "name": "Joplin",
+      "repo": "laurent22/joplin",
+      "photo": "",
+      "summary": "Joplin：办公、笔记与日常效率工具。"
+    },
+    {
+      "name": "MarkText",
+      "repo": "marktext/marktext",
+      "photo": "",
+      "summary": "MarkText：办公、笔记与日常效率工具。"
+    },
+    {
+      "name": "Zettlr",
+      "repo": "Zettlr/Zettlr",
+      "photo": "",
+      "summary": "Zettlr：办公、笔记与日常效率工具。"
+    },
+    {
+      "name": "Flameshot",
+      "repo": "flameshot-org/flameshot",
+      "photo": "",
+      "summary": "Flameshot：办公、笔记与日常效率工具。"
+    },
+    {
+      "name": "LocalSend",
+      "repo": "localsend/localsend",
+      "photo": "",
+      "summary": "LocalSend：办公、笔记与日常效率工具。"
+    },
+    {
+      "name": "Ksnip",
+      "repo": "ksnip/ksnip",
+      "photo": "",
+      "summary": "Ksnip：办公、笔记与日常效率工具。"
+    }
+  ]
+}

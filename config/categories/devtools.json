@@ -1,0 +1,65 @@
+{
+  "apps": [
+    {
+      "name": "fzf",
+      "repo": "junegunn/fzf",
+      "photo": "",
+      "summary": "fzf：开发效率与工程协作工具。"
+    },
+    {
+      "name": "ripgrep",
+      "repo": "BurntSushi/ripgrep",
+      "photo": "",
+      "summary": "ripgrep：开发效率与工程协作工具。"
+    },
+    {
+      "name": "fd",
+      "repo": "sharkdp/fd",
+      "photo": "",
+      "summary": "fd：开发效率与工程协作工具。"
+    },
+    {
+      "name": "bat",
+      "repo": "sharkdp/bat",
+      "photo": "",
+      "summary": "bat：开发效率与工程协作工具。"
+    },
+    {
+      "name": "jq",
+      "repo": "jqlang/jq",
+      "photo": "",
+      "summary": "jq：开发效率与工程协作工具。"
+    },
+    {
+      "name": "lazygit",
+      "repo": "jesseduffield/lazygit",
+      "photo": "",
+      "summary": "lazygit：开发效率与工程协作工具。"
+    },
+    {
+      "name": "lazydocker",
+      "repo": "jesseduffield/lazydocker",
+      "photo": "",
+      "summary": "lazydocker：开发效率与工程协作工具。"
+    },
+    {
+      "name": "bun",
+      "repo": "oven-sh/bun",
+      "photo": "",
+      "summary": "bun：开发效率与工程协作工具。"
+    },
+    {
+      "name": "neovim",
+      "repo": "neovim/neovim",
+      "photo": "",
+      "summary": "neovim：开发效率与工程协作工具。",
+      "match": "nvim.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$"
+    },
+    {
+      "name": "helix",
+      "repo": "helix-editor/helix",
+      "photo": "",
+      "summary": "helix：开发效率与工程协作工具。"
+    }
+  ]
+}

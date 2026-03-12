@@ -1,0 +1,53 @@
+{
+  "apps": [
+    {
+      "name": "WezTerm",
+      "repo": "wez/wezterm",
+      "photo": "",
+      "summary": "WezTerm：终端增强与 Shell 体验工具。"
+    },
+    {
+      "name": "Alacritty",
+      "repo": "alacritty/alacritty",
+      "photo": "",
+      "summary": "Alacritty：终端增强与 Shell 体验工具。"
+    },
+    {
+      "name": "starship",
+      "repo": "starship/starship",
+      "photo": "",
+      "summary": "starship：终端增强与 Shell 体验工具。"
+    },
+    {
+      "name": "nushell",
+      "repo": "nushell/nushell",
+      "photo": "",
+      "summary": "nushell：终端增强与 Shell 体验工具。"
+    },
+    {
+      "name": "zellij",
+      "repo": "zellij-org/zellij",
+      "photo": "",
+      "summary": "zellij：终端增强与 Shell 体验工具。"
+    },
+    {
+      "name": "mise",
+      "repo": "jdx/mise",
+      "photo": "",
+      "summary": "mise：终端增强与 Shell 体验工具。"
+    },
+    {
+      "name": "fish-shell",
+      "repo": "fish-shell/fish-shell",
+      "photo": "",
+      "summary": "fish-shell：终端增强与 Shell 体验工具。",
+      "match": "fish.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$"
+    },
+    {
+      "name": "gitui",
+      "repo": "extrawurst/gitui",
+      "photo": "",
+      "summary": "gitui：终端增强与 Shell 体验工具。"
+    }
+  ]
+}

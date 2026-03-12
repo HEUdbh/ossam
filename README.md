@@ -120,7 +120,7 @@
 ## 阶段 1：项目骨架与配置读取
 
 - 阶段目标：搭建可运行的桌面应用最小闭环，完成配置驱动能力。
-- 功能清单：初始化并稳定现有 Go + Wails + Vue 工程；读取本地 `appsconfig.json`；建立配置解析与异常提示（文件缺失、JSON 格式错误）。
+- 功能清单：初始化并稳定现有 Go + Wails + Vue 工程；读取 `config/rules.json` 与 `config/categories/*.json`；建立配置解析与异常提示（文件缺失、JSON 格式错误）。
 - 阶段产出：应用可启动；可从本地配置加载并展示基础应用数据。
 
 ## 阶段 2：GitHub Release 拉取与下载核心
@@ -160,7 +160,7 @@
 - 后端：Go 1.23（见 `go.mod`）
 - 桌面框架：Wails v2
 - 前端：Vue 3 + Vite 3（见 `frontend/package.json`）
-- 数据驱动：本地 JSON 配置文件（`appsconfig.json`）
+- 数据驱动：本地 JSON 配置文件（`config/rules.json` + `config/categories/*.json`）
 
 ## 2. 可选升级方向
 
@@ -168,14 +168,16 @@
 - 下载任务持久化：将下载任务状态持久化到本地存储，支持重启恢复与断点续传落地。
 - 日志与监控补充：增加结构化日志、关键链路埋点与错误聚合，提升问题定位效率。
 
-## 3. appsconfig 配置契约说明（文档约定）
+## 3. config 配置契约说明（文档约定）
 
-本小节用于明确当前配置字段语义，不修改 `appsconfig.json` 既有结构。
+本小节用于明确当前配置字段语义：规则位于 `config/rules.json`，分类应用位于 `config/categories/*.json`。
 
 - `name`：应用名称（展示名），建议在同一分类内保持唯一。
 - `repo`：GitHub 仓库标识，格式为 `owner/repo`。
 - `photo`：应用图标地址，可为空；为空时可回退到默认图标或仓库作者头像策略。
-- `match`：用于匹配 Release 资产文件名的正则表达式，需与目标平台产物命名规则一致。
+- `match`??????????? `config/rules.json` ? `default_match`??????????????????
+- `default_match`??????????????????? `match` ????
+- `platform_match`?????????windows/linux/macos??????????????
 
 ## GitHub Request Mapping
 
@@ -188,9 +190,8 @@
 | `StartDownload` input URL | `StartDownload` | Frontend-provided `download_url` | Yes (GitHub only) | GitHub URLs are rewritten through proxy helper; non-GitHub URLs keep direct access. |
 | Default app avatar | `resolveAppPhoto -> buildGitHubAvatarURL` | `https://avatars.githubusercontent.com/{owner}` | No | Default avatar uses direct URL. |
 | Default placeholder icon | `resolveAppPhoto` | `https://github.githubassets.com/favicons/favicon.png` | No | Placeholder icon uses direct URL. |
-| Custom `photo` field | `resolveAppPhoto` | Original value from `appsconfig.json` | No | Returned as-is, no URL rewrite. |
+| Custom `photo` field | `resolveAppPhoto` | Original value from `config/categories/*.json` | No | Returned as-is, no URL rewrite. |
 
 - Runtime GitHub requests are proxied by default; release list API is routed via `ossam.hqs.qzz.io`, and avatar-related URLs remain direct.
 - Non-GitHub URLs are passed through as-is.
 - When platform-specific release assets are missing, the missing platform download falls back to `Source code(zip)` and still uses `ghproxy` acceleration.
-

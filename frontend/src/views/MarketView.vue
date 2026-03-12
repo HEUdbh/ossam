@@ -65,7 +65,7 @@ const emptyTitle = computed(() =>
 const emptyDescription = computed(() =>
   isSearchMode.value
     ? "请尝试更换关键词，支持按名称、简介、仓库地址进行搜索。"
-    : "可在 appsconfig.json 中补充该分类的应用条目。"
+    : "可在 config/rules.json 和 config/categories/*.json 中补充该分类的应用条目。"
 );
 
 function getCategoryDisplayName(category) {
