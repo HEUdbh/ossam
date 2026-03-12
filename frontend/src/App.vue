@@ -1,9 +1,10 @@
-<script setup>
+﻿<script setup>
 import { computed, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { ElMessageBox } from "element-plus";
 import { ArrowLeft, ArrowRight, Setting, Shop, User } from "@element-plus/icons-vue";
-import { getDownloadDirectory } from "./utils/settings";
+import { SetCDNSettings } from "../wailsjs/go/main/App";
+import { getCDNSettings, getDownloadDirectory, setCDNSettings } from "./utils/settings";
 
 let startupDownloadDirectoryChecked = false;
 const SIDEBAR_COLLAPSE_KEY = "ossam.ui.primarySidebarCollapsed";
@@ -32,7 +33,7 @@ const pageMeta = computed(() => {
   if (route.path.startsWith("/settings")) {
     return {
       title: "设置",
-      subtitle: "管理下载目录与作者相关信息",
+      subtitle: "管理下载目录、CDN 加速与作者相关信息",
     };
   }
   return {
@@ -101,7 +102,22 @@ async function checkDownloadDirectoryOnStartup() {
   }
 }
 
+async function syncCDNSettingsOnStartup() {
+  try {
+    const localSettings = getCDNSettings();
+    const synced = await SetCDNSettings(localSettings);
+    setCDNSettings({
+      enabled: synced.enabled,
+      selected_source: synced.selected_source,
+      custom_sources: synced.custom_sources,
+    });
+  } catch {
+    // Keep startup resilient even if CDN sync fails.
+  }
+}
+
 onMounted(() => {
+  syncCDNSettingsOnStartup();
   checkDownloadDirectoryOnStartup();
 });
 

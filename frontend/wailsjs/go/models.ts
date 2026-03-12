@@ -124,6 +124,24 @@ export namespace main {
 		    return a;
 		}
 	}
+	export class CDNSettings {
+	    enabled: boolean;
+	    selected_source: string;
+	    builtin_sources: string[];
+	    custom_sources: string[];
+	
+	    static createFrom(source: any = {}) {
+	        return new CDNSettings(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.enabled = source["enabled"];
+	        this.selected_source = source["selected_source"];
+	        this.builtin_sources = source["builtin_sources"];
+	        this.custom_sources = source["custom_sources"];
+	    }
+	}
 	export class DownloadTaskSnapshot {
 	    task_id: string;
 	    status: string;
@@ -167,6 +185,22 @@ export namespace main {
 	    }
 	}
 	
+	export class SetCDNSettingsRequest {
+	    enabled: boolean;
+	    selected_source: string;
+	    custom_sources: string[];
+	
+	    static createFrom(source: any = {}) {
+	        return new SetCDNSettingsRequest(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.enabled = source["enabled"];
+	        this.selected_source = source["selected_source"];
+	        this.custom_sources = source["custom_sources"];
+	    }
+	}
 	export class StartDownloadRequest {
 	    download_url: string;
 	    file_name: string;

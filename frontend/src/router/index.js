@@ -3,6 +3,7 @@ import AppDetailView from "../views/AppDetailView.vue";
 import MarketView from "../views/MarketView.vue";
 import MineView from "../views/MineView.vue";
 import SettingsAboutView from "../views/SettingsAboutView.vue";
+import SettingsCDNView from "../views/SettingsCDNView.vue";
 import SettingsDownloadView from "../views/SettingsDownloadView.vue";
 import SettingsModalView from "../views/SettingsModalView.vue";
 
@@ -40,6 +41,11 @@ const router = createRouter({
           path: "download",
           name: "settings-download",
           component: SettingsDownloadView,
+        },
+        {
+          path: "cdn",
+          name: "settings-cdn",
+          component: SettingsCDNView,
         },
         {
           path: "about",

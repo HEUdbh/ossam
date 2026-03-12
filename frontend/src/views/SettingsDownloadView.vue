@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import { computed, onMounted, ref } from "vue";
 import { ElMessage } from "element-plus";
 import { SelectDownloadDirectory } from "../../wailsjs/go/main/App";
@@ -24,7 +24,7 @@ async function chooseDirectory() {
     const selectedDirectory = await SelectDownloadDirectory(downloadDirectory.value);
     const normalizedDirectory = String(selectedDirectory || "").trim();
 
-    // User cancelled the dialog, keep current configuration unchanged.
+    // 用户取消选择时，保持当前配置不变。
     if (!normalizedDirectory) {
       return;
     }
@@ -49,7 +49,7 @@ function resetDirectory() {
 
 <template>
   <section class="settings-block">
-    <h3>下载地址设置</h3>
+    <h3>下载目录设置</h3>
     <p>选择默认下载目录，保存后下次启动仍会保留。</p>
 
     <div class="option-item">

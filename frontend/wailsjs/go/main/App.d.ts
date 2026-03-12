@@ -6,6 +6,8 @@ export function GetAppReleaseDetail(arg1:string,arg2:string):Promise<main.AppRel
 
 export function GetAppsConfig():Promise<main.AppsConfig>;
 
+export function GetCDNSettings():Promise<main.CDNSettings>;
+
 export function GetDownloadTask(arg1:string):Promise<main.DownloadTaskSnapshot>;
 
 export function GetRepoStars(arg1:Array<string>):Promise<Record<string, number>>;
@@ -13,5 +15,7 @@ export function GetRepoStars(arg1:Array<string>):Promise<Record<string, number>>
 export function Greet(arg1:string):Promise<string>;
 
 export function SelectDownloadDirectory(arg1:string):Promise<string>;
+
+export function SetCDNSettings(arg1:main.SetCDNSettingsRequest):Promise<main.CDNSettings>;
 
 export function StartDownload(arg1:main.StartDownloadRequest):Promise<main.DownloadTaskSnapshot>;

@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
@@ -16,14 +16,23 @@ const fromRoute = computed(() => {
   return "/market";
 });
 
-const activeTab = computed(() => (route.name === "settings-about" ? "about" : "download"));
+const activeTab = computed(() => {
+  if (route.name === "settings-about") {
+    return "about";
+  }
+  if (route.name === "settings-cdn") {
+    return "cdn";
+  }
+  return "download";
+});
 
 function closeModal() {
   router.push(fromRoute.value);
 }
 
 function switchTab(tab) {
-  const routeName = tab === "about" ? "settings-about" : "settings-download";
+  const routeName =
+    tab === "about" ? "settings-about" : tab === "cdn" ? "settings-cdn" : "settings-download";
   router.push({
     name: routeName,
     query: { from: fromRoute.value },
@@ -45,15 +54,16 @@ function switchTab(tab) {
       <div class="dialog-header">
         <div>
           <h2>设置</h2>
-          <p>管理下载行为与作者信息</p>
+          <p>管理下载目录、CDN 加速与作者信息。</p>
         </div>
         <el-button text @click="closeModal">关闭</el-button>
       </div>
     </template>
 
     <el-tabs :model-value="activeTab" class="settings-tabs" @tab-change="switchTab">
-      <el-tab-pane name="download" label="下载地址设置" />
-      <el-tab-pane name="about" label="关于作者" />
+      <el-tab-pane name="download" label="下载设置" />
+      <el-tab-pane name="cdn" label="CDN 设置" />
+      <el-tab-pane name="about" label="关于" />
     </el-tabs>
 
     <div class="dialog-content">

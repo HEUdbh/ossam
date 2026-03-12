@@ -10,6 +10,10 @@ export function GetAppsConfig() {
   return window['go']['main']['App']['GetAppsConfig']();
 }
 
+export function GetCDNSettings() {
+  return window['go']['main']['App']['GetCDNSettings']();
+}
+
 export function GetDownloadTask(arg1) {
   return window['go']['main']['App']['GetDownloadTask'](arg1);
 }
@@ -24,6 +28,10 @@ export function Greet(arg1) {
 
 export function SelectDownloadDirectory(arg1) {
   return window['go']['main']['App']['SelectDownloadDirectory'](arg1);
+}
+
+export function SetCDNSettings(arg1) {
+  return window['go']['main']['App']['SetCDNSettings'](arg1);
 }
 
 export function StartDownload(arg1) {

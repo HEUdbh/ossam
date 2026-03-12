@@ -187,6 +187,79 @@ func TestBuildPlatformDownloadsSourceFallbackWhenNoPlatformKeyword(t *testing.T)
 	}
 }
 
+func TestSetCDNSettingsValidateAndFallback(t *testing.T) {
+	state := newCDNSettingsState()
+	app := &App{cdnSettings: state}
+
+	settings, err := app.SetCDNSettings(SetCDNSettingsRequest{
+		Enabled:        true,
+		SelectedSource: "https://invalid-source.example/",
+		CustomSources: []string{
+			"https://cdn-a.example",
+		},
+	})
+	if err != nil {
+		t.Fatalf("set settings failed: %v", err)
+	}
+
+	if settings.SelectedSource != defaultCDNSource {
+		t.Fatalf("expected fallback selected source %q, got %q", defaultCDNSource, settings.SelectedSource)
+	}
+
+	if len(settings.CustomSources) != 1 || settings.CustomSources[0] != "https://cdn-a.example/" {
+		t.Fatalf("unexpected custom sources: %+v", settings.CustomSources)
+	}
+
+	_, err = app.SetCDNSettings(SetCDNSettingsRequest{
+		Enabled:        true,
+		SelectedSource: defaultCDNSource,
+		CustomSources: []string{
+			"https://ghproxy.net/",
+		},
+	})
+	if err == nil {
+		t.Fatal("expected error when trying to overwrite built-in source")
+	}
+}
+
+func TestResolveGitHubURLWithCDNToggleAndSwitch(t *testing.T) {
+	settings := CDNSettings{
+		Enabled:        true,
+		SelectedSource: "https://ghfast.top/",
+		BuiltinSources: []string{"https://ghproxy.net/", "https://ghfast.top/"},
+		CustomSources:  []string{},
+	}
+
+	rawGitHubURL := "https://github.com/owner/repo/releases/download/v1.0.0/tool.zip"
+	proxiedByOld := "https://ghproxy.net/" + rawGitHubURL
+
+	rewritten := resolveGitHubURL(proxiedByOld, settings)
+	expected := "https://ghfast.top/" + rawGitHubURL
+	if rewritten != expected {
+		t.Fatalf("expected rewritten URL %q, got %q", expected, rewritten)
+	}
+
+	settings.Enabled = false
+	direct := resolveGitHubURL(proxiedByOld, settings)
+	if direct != rawGitHubURL {
+		t.Fatalf("expected direct URL %q when CDN disabled, got %q", rawGitHubURL, direct)
+	}
+}
+
+func TestResolveGitHubURLKeepsReleaseProxyUntouched(t *testing.T) {
+	settings := CDNSettings{
+		Enabled:        true,
+		SelectedSource: "https://ghproxy.net/",
+		BuiltinSources: []string{"https://ghproxy.net/", "https://ghfast.top/"},
+		CustomSources:  []string{},
+	}
+
+	releaseProxyURL := "https://ossam.hqs.qzz.io/api/releases/owner/repo?per_page=30"
+	if got := resolveGitHubURL(releaseProxyURL, settings); got != releaseProxyURL {
+		t.Fatalf("release proxy URL should not be changed, got %q", got)
+	}
+}
+
 func containsKeyword(keywords []string, target string) bool {
 	for _, keyword := range keywords {
 		if keyword == target {

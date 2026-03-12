@@ -30,6 +30,7 @@ type App struct {
 	downloadClient    *http.Client
 	githubAPIBaseURL  string
 	releaseAPIBaseURL string
+	cdnSettings       *cdnSettingsState
 	downloadTasks     map[string]*downloadTaskState
 	downloadTasksLock sync.RWMutex
 	repoStarsLock     sync.Mutex
@@ -45,6 +46,7 @@ func NewApp() *App {
 		downloadClient:    &http.Client{},
 		githubAPIBaseURL:  "https://api.github.com",
 		releaseAPIBaseURL: "https://ossam.hqs.qzz.io",
+		cdnSettings:       globalCDNSettings,
 		downloadTasks:     make(map[string]*downloadTaskState),
 	}
 }
@@ -53,6 +55,135 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+}
+
+func newCDNSettingsState() *cdnSettingsState {
+	return &cdnSettingsState{
+		settings: CDNSettings{
+			Enabled:        true,
+			SelectedSource: defaultCDNSource,
+			BuiltinSources: cloneStringSlice(builtinCDNSources),
+			CustomSources:  []string{},
+		},
+	}
+}
+
+func (s *cdnSettingsState) getSnapshot() CDNSettings {
+	s.lock.RLock()
+	defer s.lock.RUnlock()
+
+	return CDNSettings{
+		Enabled:        s.settings.Enabled,
+		SelectedSource: s.settings.SelectedSource,
+		BuiltinSources: cloneStringSlice(s.settings.BuiltinSources),
+		CustomSources:  cloneStringSlice(s.settings.CustomSources),
+	}
+}
+
+func (s *cdnSettingsState) update(request SetCDNSettingsRequest) (CDNSettings, error) {
+	builtin := cloneStringSlice(builtinCDNSources)
+	normalizedCustom, err := normalizeCustomCDNSources(request.CustomSources, builtin)
+	if err != nil {
+		return CDNSettings{}, err
+	}
+
+	candidates := append(cloneStringSlice(builtin), normalizedCustom...)
+	if len(candidates) == 0 {
+		return CDNSettings{}, errors.New("invalid CDN sources: at least one source is required")
+	}
+
+	selected := strings.TrimSpace(request.SelectedSource)
+	if selected != "" {
+		selected, err = normalizeCDNSourceURL(selected)
+		if err != nil {
+			return CDNSettings{}, fmt.Errorf("invalid selected_source: %w", err)
+		}
+	}
+	if selected == "" || !containsString(candidates, selected) {
+		selected = candidates[0]
+	}
+
+	next := CDNSettings{
+		Enabled:        request.Enabled,
+		SelectedSource: selected,
+		BuiltinSources: builtin,
+		CustomSources:  normalizedCustom,
+	}
+
+	s.lock.Lock()
+	s.settings = next
+	s.lock.Unlock()
+
+	return next, nil
+}
+
+func normalizeCustomCDNSources(sources []string, builtin []string) ([]string, error) {
+	builtinSet := make(map[string]struct{}, len(builtin))
+	for _, item := range builtin {
+		builtinSet[item] = struct{}{}
+	}
+
+	normalized := make([]string, 0, len(sources))
+	seen := make(map[string]struct{}, len(sources))
+	for idx, source := range sources {
+		normalizedSource, err := normalizeCDNSourceURL(source)
+		if err != nil {
+			return nil, fmt.Errorf("custom_sources[%d]: %w", idx, err)
+		}
+		if _, isBuiltin := builtinSet[normalizedSource]; isBuiltin {
+			return nil, fmt.Errorf("custom_sources[%d]: built-in source %q cannot be modified or removed", idx, normalizedSource)
+		}
+		if _, exists := seen[normalizedSource]; exists {
+			continue
+		}
+		seen[normalizedSource] = struct{}{}
+		normalized = append(normalized, normalizedSource)
+	}
+
+	return normalized, nil
+}
+
+func normalizeCDNSourceURL(raw string) (string, error) {
+	raw = strings.TrimSpace(raw)
+	if raw == "" {
+		return "", errors.New("source URL is required")
+	}
+
+	parsed, err := url.ParseRequestURI(raw)
+	if err != nil {
+		return "", fmt.Errorf("invalid URL format")
+	}
+	if strings.ToLower(parsed.Scheme) != "https" {
+		return "", errors.New("only https URLs are supported")
+	}
+	if strings.TrimSpace(parsed.Host) == "" {
+		return "", errors.New("host is required")
+	}
+	if parsed.RawQuery != "" || parsed.Fragment != "" {
+		return "", errors.New("query and fragment are not allowed")
+	}
+
+	normalized := strings.TrimRight(parsed.String(), "/") + "/"
+	return normalized, nil
+}
+
+func cloneStringSlice(values []string) []string {
+	if len(values) == 0 {
+		return []string{}
+	}
+
+	cloned := make([]string, len(values))
+	copy(cloned, values)
+	return cloned
+}
+
+func containsString(values []string, target string) bool {
+	for _, value := range values {
+		if value == target {
+			return true
+		}
+	}
+	return false
 }
 
 type AppsConfig struct {
@@ -187,10 +318,29 @@ type readmeFetchResult struct {
 	FilePath  string
 }
 
+type CDNSettings struct {
+	Enabled        bool     `json:"enabled"`
+	SelectedSource string   `json:"selected_source"`
+	BuiltinSources []string `json:"builtin_sources"`
+	CustomSources  []string `json:"custom_sources"`
+}
+
+type SetCDNSettingsRequest struct {
+	Enabled        bool     `json:"enabled"`
+	SelectedSource string   `json:"selected_source"`
+	CustomSources  []string `json:"custom_sources"`
+}
+
+type cdnSettingsState struct {
+	lock     sync.RWMutex
+	settings CDNSettings
+}
+
 const (
 	rulesConfigPath       = "config/rules.json"
 	defaultAppPlaceholder = "https://github.githubassets.com/favicons/favicon.png"
-	githubProxyPrefix     = "https://ghproxy.net/"
+	defaultCDNSource      = "https://ghproxy.net/"
+	alternateCDNSource    = "https://ghfast.top/"
 
 	platformWindows = "windows"
 	platformLinux   = "linux"
@@ -211,6 +361,8 @@ const (
 )
 
 var supportedPlatforms = []string{platformWindows, platformLinux, platformMacOS}
+var builtinCDNSources = []string{defaultCDNSource, alternateCDNSource}
+var globalCDNSettings = newCDNSettingsState()
 
 var archMatchers = []struct {
 	arch     string
@@ -241,6 +393,27 @@ var archMatchers = []struct {
 // GetAppsConfig loads app catalog data from config/rules.json and category files.
 func (a *App) GetAppsConfig() (*AppsConfig, error) {
 	return loadAppsConfigFromFiles(rulesConfigPath)
+}
+
+// GetCDNSettings returns current CDN acceleration settings.
+func (a *App) GetCDNSettings() (*CDNSettings, error) {
+	if a.cdnSettings == nil {
+		a.cdnSettings = globalCDNSettings
+	}
+	settings := a.cdnSettings.getSnapshot()
+	return &settings, nil
+}
+
+// SetCDNSettings updates CDN acceleration settings.
+func (a *App) SetCDNSettings(request SetCDNSettingsRequest) (*CDNSettings, error) {
+	if a.cdnSettings == nil {
+		a.cdnSettings = globalCDNSettings
+	}
+	settings, err := a.cdnSettings.update(request)
+	if err != nil {
+		return nil, err
+	}
+	return &settings, nil
 }
 
 // GetRepoStars fetches stargazer counts for repos with cache fallback.
@@ -1306,25 +1479,92 @@ func resolveSourceCodeZipURL(repo string, release githubRelease) string {
 }
 
 func applyGitHubProxy(rawURL string) string {
+	settings := globalCDNSettings.getSnapshot()
+	return resolveGitHubURL(rawURL, settings)
+}
+
+func resolveGitHubURL(rawURL string, settings CDNSettings) string {
 	rawURL = strings.TrimSpace(rawURL)
 	if rawURL == "" {
 		return ""
 	}
 
-	if strings.HasPrefix(rawURL, githubProxyPrefix) {
-		return rawURL
-	}
-
-	parsed, err := url.Parse(rawURL)
+	unwrappedURL := unwrapKnownCDNPrefixes(rawURL, settings)
+	parsed, err := url.Parse(unwrappedURL)
 	if err != nil || parsed.Hostname() == "" {
 		return rawURL
 	}
-
 	if !isGitHubHost(parsed.Hostname()) {
 		return rawURL
 	}
 
-	return githubProxyPrefix + rawURL
+	if !settings.Enabled {
+		return unwrappedURL
+	}
+
+	selectedSource := resolveSelectedCDNSource(settings)
+	if selectedSource == "" {
+		return unwrappedURL
+	}
+
+	return selectedSource + unwrappedURL
+}
+
+func resolveSelectedCDNSource(settings CDNSettings) string {
+	allSources := append(cloneStringSlice(settings.BuiltinSources), settings.CustomSources...)
+	if len(allSources) == 0 {
+		return ""
+	}
+
+	selected := strings.TrimSpace(settings.SelectedSource)
+	if selected == "" {
+		return allSources[0]
+	}
+
+	normalized, err := normalizeCDNSourceURL(selected)
+	if err != nil {
+		return allSources[0]
+	}
+	if containsString(allSources, normalized) {
+		return normalized
+	}
+
+	return allSources[0]
+}
+
+func unwrapKnownCDNPrefixes(rawURL string, settings CDNSettings) string {
+	normalized := strings.TrimSpace(rawURL)
+	if normalized == "" {
+		return normalized
+	}
+
+	knownSources := append(cloneStringSlice(settings.BuiltinSources), settings.CustomSources...)
+	if len(knownSources) == 0 {
+		return normalized
+	}
+
+	for {
+		changed := false
+		for _, source := range knownSources {
+			source = strings.TrimSpace(source)
+			if source == "" {
+				continue
+			}
+			if strings.HasPrefix(normalized, source) {
+				next := strings.TrimPrefix(normalized, source)
+				if next == "" {
+					continue
+				}
+				normalized = next
+				changed = true
+			}
+		}
+		if !changed {
+			break
+		}
+	}
+
+	return normalized
 }
 
 func isGitHubHost(host string) bool {
