@@ -181,7 +181,7 @@
 
 | Request Purpose | Trigger Location | URL Template | Proxy Prefix Applied | Notes |
 | --- | --- | --- | --- | --- |
-| Release list query | `fetchReleases -> newGitHubRequest` | `https://api.github.com/repos/{owner}/{repo}/releases?per_page=30` | No | Sent directly by `newGitHubRequest`. |
+| Release list query | `fetchReleases -> newReleaseProxyRequest` | `https://ossam.hqs.qzz.io/api/releases/{owner}/{repo}?per_page=30` | N/A | Routed via the release proxy worker endpoint. |
 | Repository stars query | `fetchRepoStars -> newGitHubRequest` | `https://api.github.com/repos/{owner}/{repo}` | Yes | URL is processed by proxy helper before request. |
 | README fetch (ghproxy + raw) | `fetchReadme -> buildReadmeRawCandidates` | `https://ghproxy.net/https://raw.githubusercontent.com/{owner}/{repo}/main/readme.md`<br>`https://ghproxy.net/https://raw.githubusercontent.com/{owner}/{repo}/main/README.md`<br>`https://ghproxy.net/https://raw.githubusercontent.com/{owner}/{repo}/master/readme.md`<br>`https://ghproxy.net/https://raw.githubusercontent.com/{owner}/{repo}/master/README.md` | Yes | Candidates are requested in order until first success. |
 | Release asset download URL (`browser_download_url`) | `selectAssetForPlatform` | `https://github.com/{owner}/{repo}/releases/download/{tag}/{asset}` (typical shape) | Yes | GitHub download URLs are rewritten through proxy helper. |
@@ -190,6 +190,6 @@
 | Default placeholder icon | `resolveAppPhoto` | `https://github.githubassets.com/favicons/favicon.png` | No | Placeholder icon uses direct URL. |
 | Custom `photo` field | `resolveAppPhoto` | Original value from `appsconfig.json` | No | Returned as-is, no URL rewrite. |
 
-- Runtime GitHub requests are proxied by default, except release list API and avatar-related URLs.
+- Runtime GitHub requests are proxied by default; release list API is routed via `ossam.hqs.qzz.io`, and avatar-related URLs remain direct.
 - Non-GitHub URLs are passed through as-is.
 

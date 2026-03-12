@@ -28,6 +28,7 @@ type App struct {
 	apiClient         *http.Client
 	downloadClient    *http.Client
 	githubAPIBaseURL  string
+	releaseAPIBaseURL string
 	downloadTasks     map[string]*downloadTaskState
 	downloadTasksLock sync.RWMutex
 	repoStarsLock     sync.Mutex
@@ -40,9 +41,10 @@ func NewApp() *App {
 		apiClient: &http.Client{
 			Timeout: 20 * time.Second,
 		},
-		downloadClient:   &http.Client{},
-		githubAPIBaseURL: "https://api.github.com",
-		downloadTasks:    make(map[string]*downloadTaskState),
+		downloadClient:    &http.Client{},
+		githubAPIBaseURL:  "https://api.github.com",
+		releaseAPIBaseURL: "https://ossam.hqs.qzz.io",
+		downloadTasks:     make(map[string]*downloadTaskState),
 	}
 }
 
@@ -539,38 +541,43 @@ func (a *App) Greet(name string) string {
 }
 
 func (a *App) fetchReleases(repo string) ([]githubRelease, error) {
+	repoPath := buildRepoPath(repo)
+	if repoPath == "" {
+		return nil, errors.New("invalid repo format: expected owner/repo")
+	}
+
 	endpoint := fmt.Sprintf(
-		"%s/repos/%s/releases?per_page=30",
-		strings.TrimRight(a.githubAPIBaseURL, "/"),
-		buildRepoPath(repo),
+		"%s/api/releases/%s?per_page=30",
+		strings.TrimRight(a.releaseAPIBaseURL, "/"),
+		repoPath,
 	)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 
-	req, err := a.newGitHubRequest(ctx, http.MethodGet, endpoint)
+	req, err := a.newReleaseProxyRequest(ctx, endpoint)
 	if err != nil {
 		return nil, err
 	}
 
 	resp, err := a.apiClient.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("failed to fetch releases: %w", err)
+		return nil, fmt.Errorf("failed to fetch releases from proxy: %w", err)
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read releases response: %w", err)
+		return nil, fmt.Errorf("failed to read release proxy response: %w", err)
 	}
 
 	if resp.StatusCode >= http.StatusBadRequest {
-		return nil, fmt.Errorf("github release API error (%d): %s", resp.StatusCode, strings.TrimSpace(string(body)))
+		return nil, fmt.Errorf("release proxy API error (%d): %s", resp.StatusCode, strings.TrimSpace(string(body)))
 	}
 
 	var releases []githubRelease
 	if err := json.Unmarshal(body, &releases); err != nil {
-		return nil, fmt.Errorf("failed to parse release response: %w", err)
+		return nil, fmt.Errorf("failed to parse release proxy response: %w", err)
 	}
 
 	return releases, nil
@@ -674,6 +681,18 @@ func (a *App) newGitHubRequest(parent context.Context, method, endpoint string) 
 	if token != "" {
 		req.Header.Set("Authorization", "Bearer "+token)
 	}
+
+	return req, nil
+}
+
+func (a *App) newReleaseProxyRequest(parent context.Context, endpoint string) (*http.Request, error) {
+	req, err := http.NewRequestWithContext(parent, http.MethodGet, endpoint, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Accept", "application/vnd.github+json")
+	req.Header.Set("User-Agent", "ossam-app")
 
 	return req, nil
 }
