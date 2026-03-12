@@ -70,11 +70,12 @@ type AppInfo struct {
 }
 
 type rulesConfig struct {
-	MarketName    string            `json:"market_name"`
-	LastUpdated   string            `json:"last_updated"`
-	DefaultMatch  string            `json:"default_match"`
-	PlatformMatch map[string]string `json:"platform_match"`
-	Categories    []categoryRule    `json:"categories"`
+	MarketName       string              `json:"market_name"`
+	LastUpdated      string              `json:"last_updated"`
+	DefaultMatch     string              `json:"default_match"`
+	PlatformKeywords map[string][]string `json:"platform_keywords"`
+	PlatformMatch    map[string]string   `json:"platform_match"`
+	Categories       []categoryRule      `json:"categories"`
 }
 
 type categoryRule struct {
@@ -208,6 +209,8 @@ const (
 	repoStarsWorkers  = 8
 	repoStarsCacheEnv = "OSSAM_STARS_CACHE_PATH"
 )
+
+var supportedPlatforms = []string{platformWindows, platformLinux, platformMacOS}
 
 var archMatchers = []struct {
 	arch     string
@@ -347,6 +350,7 @@ func loadAppsConfigFromFiles(path string) (*AppsConfig, error) {
 			if match == "" {
 				match = rules.DefaultMatch
 			}
+			match = normalizeMatchPattern(match)
 			if _, err := compileCaseInsensitiveRegex(match); err != nil {
 				return nil, fmt.Errorf("invalid config fields: %s.apps[%d].match: %w", category.Name, idx, err)
 			}
@@ -392,16 +396,18 @@ func loadRulesConfigFromFile(path string) (*rulesConfig, error) {
 	if strings.TrimSpace(cfg.LastUpdated) == "" {
 		return nil, errors.New("invalid rules config fields: last_updated is required")
 	}
-	cfg.DefaultMatch = strings.TrimSpace(cfg.DefaultMatch)
+	cfg.DefaultMatch = normalizeMatchPattern(cfg.DefaultMatch)
 	if cfg.DefaultMatch == "" {
 		return nil, errors.New("invalid rules config fields: default_match is required")
 	}
 	if _, err := compileCaseInsensitiveRegex(cfg.DefaultMatch); err != nil {
 		return nil, fmt.Errorf("invalid rules config fields: default_match: %w", err)
 	}
-	if _, err := compilePlatformMatchers(cfg.PlatformMatch); err != nil {
-		return nil, fmt.Errorf("invalid rules config fields: platform_match: %w", err)
+	resolvedKeywords, err := resolvePlatformKeywords(cfg.PlatformKeywords, cfg.PlatformMatch)
+	if err != nil {
+		return nil, fmt.Errorf("invalid rules config fields: platform keywords: %w", err)
 	}
+	cfg.PlatformKeywords = resolvedKeywords
 	if len(cfg.Categories) == 0 {
 		return nil, errors.New("invalid rules config fields: categories is required")
 	}
@@ -464,26 +470,90 @@ func resolveCategoryFilePath(rulesPath, categoryPath string) string {
 	return cleaned
 }
 
-func compilePlatformMatchers(platformMatch map[string]string) (map[string]*regexp.Regexp, error) {
-	if platformMatch == nil {
-		return nil, errors.New("is required")
-	}
+func resolvePlatformKeywords(platformKeywords map[string][]string, platformMatch map[string]string) (map[string][]string, error) {
+	resolved := make(map[string][]string, len(supportedPlatforms))
 
-	matchers := make(map[string]*regexp.Regexp, 3)
-	for _, platform := range []string{platformWindows, platformLinux, platformMacOS} {
-		pattern := strings.TrimSpace(platformMatch[platform])
-		if pattern == "" {
+	for _, platform := range supportedPlatforms {
+		rawKeywords := platformKeywords[platform]
+		if len(rawKeywords) == 0 {
+			rawKeywords = extractKeywordsFromPlatformMatch(platformMatch[platform])
+		}
+		normalized := normalizeKeywords(rawKeywords)
+		if len(normalized) == 0 {
 			return nil, fmt.Errorf("%s is required", platform)
 		}
-		// Match keyword-like tokens to avoid accidental substring hits from loose rules.
-		compiled, err := compileCaseInsensitiveRegex(`(^|[^a-z0-9])(?:` + pattern + `)([^a-z0-9]|$)`)
-		if err != nil {
-			return nil, fmt.Errorf("%s: %w", platform, err)
-		}
-		matchers[platform] = compiled
+		resolved[platform] = normalized
 	}
 
-	return matchers, nil
+	return resolved, nil
+}
+
+func extractKeywordsFromPlatformMatch(pattern string) []string {
+	pattern = strings.TrimSpace(pattern)
+	if pattern == "" {
+		return nil
+	}
+
+	trimmed := strings.TrimPrefix(pattern, "(?:")
+	if trimmed == pattern {
+		trimmed = strings.TrimPrefix(pattern, "(")
+	}
+	trimmed = strings.TrimSuffix(trimmed, ")")
+	trimmed = strings.TrimSpace(trimmed)
+
+	parts := strings.Split(trimmed, "|")
+	keywords := make([]string, 0, len(parts))
+	for _, part := range parts {
+		part = strings.TrimSpace(part)
+		if part == "" {
+			continue
+		}
+
+		sanitized := make([]rune, 0, len(part))
+		for _, r := range strings.ToLower(part) {
+			if (r >= 'a' && r <= 'z') || (r >= '0' && r <= '9') {
+				sanitized = append(sanitized, r)
+			}
+		}
+		if len(sanitized) > 0 {
+			keywords = append(keywords, string(sanitized))
+		}
+	}
+
+	return keywords
+}
+
+func normalizeKeywords(keywords []string) []string {
+	if len(keywords) == 0 {
+		return nil
+	}
+
+	normalized := make([]string, 0, len(keywords))
+	seen := make(map[string]struct{}, len(keywords))
+	for _, keyword := range keywords {
+		keyword = strings.ToLower(strings.TrimSpace(keyword))
+		if keyword == "" {
+			continue
+		}
+
+		sanitized := make([]rune, 0, len(keyword))
+		for _, r := range keyword {
+			if (r >= 'a' && r <= 'z') || (r >= '0' && r <= '9') {
+				sanitized = append(sanitized, r)
+			}
+		}
+		if len(sanitized) == 0 {
+			continue
+		}
+		normalizedKeyword := string(sanitized)
+		if _, exists := seen[normalizedKeyword]; exists {
+			continue
+		}
+		seen[normalizedKeyword] = struct{}{}
+		normalized = append(normalized, normalizedKeyword)
+	}
+
+	return normalized
 }
 
 func (c *AppsConfig) validate() error {
@@ -556,6 +626,7 @@ func (a *App) GetAppReleaseDetail(repo, match string) (*AppReleaseDetail, error)
 	if match == "" {
 		return nil, errors.New("invalid match: regular expression is required")
 	}
+	match = normalizeMatchPattern(match)
 
 	pattern, err := compileCaseInsensitiveRegex(match)
 	if err != nil {
@@ -565,9 +636,9 @@ func (a *App) GetAppReleaseDetail(repo, match string) (*AppReleaseDetail, error)
 	if err != nil {
 		return nil, err
 	}
-	platformMatchers, err := compilePlatformMatchers(rules.PlatformMatch)
+	platformKeywords, err := resolvePlatformKeywords(rules.PlatformKeywords, rules.PlatformMatch)
 	if err != nil {
-		return nil, fmt.Errorf("invalid platform_match rules: %w", err)
+		return nil, fmt.Errorf("invalid platform rules: %w", err)
 	}
 
 	releases, err := a.fetchReleases(repo)
@@ -596,7 +667,7 @@ func (a *App) GetAppReleaseDetail(repo, match string) (*AppReleaseDetail, error)
 		ReadmeSourceURL: readmeResult.SourceURL,
 		ReadmeBranch:    readmeResult.Branch,
 		ReadmeFilePath:  readmeResult.FilePath,
-		Downloads:       buildPlatformDownloads(release.Assets, resolveSourceCodeZipURL(repo, release), pattern, normalizeArch(goruntime.GOARCH), platformMatchers),
+		Downloads:       buildPlatformDownloads(release.Assets, resolveSourceCodeZipURL(repo, release), pattern, normalizeArch(goruntime.GOARCH), platformKeywords),
 	}
 
 	if !release.PublishedAt.IsZero() {
@@ -980,7 +1051,7 @@ func selectLatestRelease(releases []githubRelease) (githubRelease, error) {
 	return githubRelease{}, errors.New("no usable release found for this repository")
 }
 
-func buildPlatformDownloads(assets []githubAsset, sourceZipURL string, basePattern *regexp.Regexp, localArch string, platformMatchers map[string]*regexp.Regexp) map[string]PlatformDownload {
+func buildPlatformDownloads(assets []githubAsset, sourceZipURL string, basePattern *regexp.Regexp, localArch string, platformKeywords map[string][]string) map[string]PlatformDownload {
 	downloads := map[string]PlatformDownload{
 		platformWindows: {
 			Platform:  platformWindows,
@@ -996,21 +1067,21 @@ func buildPlatformDownloads(assets []githubAsset, sourceZipURL string, basePatte
 		},
 	}
 
-	for _, platform := range []string{platformWindows, platformLinux, platformMacOS} {
-		selected := selectAssetForPlatform(assets, sourceZipURL, basePattern, platform, localArch, platformMatchers)
+	for _, platform := range supportedPlatforms {
+		selected := selectAssetForPlatform(assets, sourceZipURL, basePattern, platform, localArch, platformKeywords)
 		downloads[platform] = selected
 	}
 
 	return downloads
 }
 
-func selectAssetForPlatform(assets []githubAsset, sourceZipURL string, basePattern *regexp.Regexp, platform, localArch string, platformMatchers map[string]*regexp.Regexp) PlatformDownload {
+func selectAssetForPlatform(assets []githubAsset, sourceZipURL string, basePattern *regexp.Regexp, platform, localArch string, platformKeywords map[string][]string) PlatformDownload {
 	matched := make([]matchedAsset, 0)
 	for _, asset := range assets {
 		if basePattern == nil || !basePattern.MatchString(asset.Name) {
 			continue
 		}
-		if !matchesPlatform(asset.Name, platform, platformMatchers) {
+		if !matchesPlatform(asset.Name, platform, platformKeywords) {
 			continue
 		}
 
@@ -1064,18 +1135,108 @@ func selectAssetForPlatform(assets []githubAsset, sourceZipURL string, basePatte
 }
 
 func compileCaseInsensitiveRegex(pattern string) (*regexp.Regexp, error) {
-	return regexp.Compile("(?i:" + pattern + ")")
+	return regexp.Compile("(?i:" + normalizeMatchPattern(pattern) + ")")
 }
 
-func matchesPlatform(assetName, platform string, platformMatchers map[string]*regexp.Regexp) bool {
-	if platformMatchers == nil {
+func normalizeMatchPattern(pattern string) string {
+	pattern = strings.TrimSpace(pattern)
+	for strings.Contains(pattern, `\\`) {
+		pattern = strings.ReplaceAll(pattern, `\\`, `\`)
+	}
+	return pattern
+}
+
+func matchesPlatform(assetName, platform string, platformKeywords map[string][]string) bool {
+	matchedPlatforms := detectAssetPlatforms(assetName, platformKeywords)
+	if len(matchedPlatforms) != 1 {
 		return false
 	}
-	pattern, ok := platformMatchers[platform]
-	if !ok || pattern == nil {
+	return matchedPlatforms[0] == platform
+}
+
+func detectAssetPlatforms(assetName string, platformKeywords map[string][]string) []string {
+	if platformKeywords == nil {
+		return nil
+	}
+
+	tokens := tokenizeAssetName(assetName)
+	if len(tokens) == 0 {
+		return nil
+	}
+
+	matched := make([]string, 0, len(supportedPlatforms))
+	for _, platform := range supportedPlatforms {
+		keywords := platformKeywords[platform]
+		if len(keywords) == 0 {
+			continue
+		}
+
+		for _, keyword := range keywords {
+			if matchesKeywordInTokens(tokens, keyword) {
+				matched = append(matched, platform)
+				break
+			}
+		}
+	}
+
+	return matched
+}
+
+func tokenizeAssetName(assetName string) []string {
+	if strings.TrimSpace(assetName) == "" {
+		return nil
+	}
+
+	lowerName := strings.ToLower(assetName)
+	normalized := strings.Map(func(r rune) rune {
+		if (r >= 'a' && r <= 'z') || (r >= '0' && r <= '9') {
+			return r
+		}
+		return ' '
+	}, lowerName)
+
+	return strings.Fields(normalized)
+}
+
+func matchesKeywordInTokens(tokens []string, keyword string) bool {
+	if len(tokens) == 0 || keyword == "" {
 		return false
 	}
-	return pattern.MatchString(assetName)
+
+	for _, token := range tokens {
+		if token == keyword {
+			return true
+		}
+
+		// For short keywords (e.g. "win", "mac"), only allow digit suffix/prefix variants like win64.
+		if len(keyword) <= 3 {
+			if strings.HasPrefix(token, keyword) && isDigits(token[len(keyword):]) {
+				return true
+			}
+			if strings.HasSuffix(token, keyword) && isDigits(token[:len(token)-len(keyword)]) {
+				return true
+			}
+			continue
+		}
+
+		if strings.HasPrefix(token, keyword) || strings.HasSuffix(token, keyword) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func isDigits(text string) bool {
+	if text == "" {
+		return false
+	}
+	for _, r := range text {
+		if r < '0' || r > '9' {
+			return false
+		}
+	}
+	return true
 }
 
 func detectAssetArch(assetName string) string {

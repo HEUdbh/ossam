@@ -11,7 +11,7 @@
       "repo": "sqlitebrowser/sqlitebrowser",
       "photo": "",
       "summary": "DB Browser for SQLite：数据库连接、管理与迁移工具。",
-      "match": "sqlite.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$"
+      "match": "sqlite.*\\.(zip|tar\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$"
     },
     {
       "name": "Beekeeper Studio",
@@ -42,7 +42,7 @@
       "repo": "microsoft/go-sqlcmd",
       "photo": "",
       "summary": "go-sqlcmd：数据库连接、管理与迁移工具。",
-      "match": "sqlcmd.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$"
+      "match": "sqlcmd.*\\.(zip|tar\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$"
     },
     {
       "name": "migrate",

@@ -41,7 +41,7 @@
       "repo": "fish-shell/fish-shell",
       "photo": "",
       "summary": "fish-shell：终端增强与 Shell 体验工具。",
-      "match": "fish.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$"
+      "match": "fish.*\\.(zip|tar\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$"
     },
     {
       "name": "gitui",

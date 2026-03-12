@@ -53,7 +53,7 @@
       "repo": "neovim/neovim",
       "photo": "",
       "summary": "neovim：开发效率与工程协作工具。",
-      "match": "nvim.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$"
+      "match": "nvim.*\\.(zip|tar\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$"
     },
     {
       "name": "helix",

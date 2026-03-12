@@ -5,7 +5,7 @@
       "repo": "obsproject/obs-studio",
       "photo": "",
       "summary": "OBS Studio：办公、笔记与日常效率工具。",
-      "match": "obs.*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$"
+      "match": "obs.*\\.(zip|tar\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$"
     },
     {
       "name": "Logseq",

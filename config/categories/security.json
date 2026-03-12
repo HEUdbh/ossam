@@ -11,7 +11,7 @@
       "repo": "maurosoria/dirsearch",
       "photo": "",
       "summary": "dirsearch：安全测试与资产发现工具。",
-      "match": "dirsearch-.*\\\\.tar.gz"
+      "match": "dirsearch-.*\\.tar.gz"
     },
     {
       "name": "nuclei",

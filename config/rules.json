@@ -1,7 +1,26 @@
 {
   "market_name": "ossam",
   "last_updated": "20260311",
-  "default_match": ".*\\\\.(zip|tar\\\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+  "default_match": ".*\\.(zip|tar\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+  "platform_keywords": {
+    "windows": [
+      "windows",
+      "win",
+      "win32",
+      "win64"
+    ],
+    "linux": [
+      "linux",
+      "gnu",
+      "musl"
+    ],
+    "macos": [
+      "mac",
+      "macos",
+      "darwin",
+      "osx"
+    ]
+  },
   "platform_match": {
     "windows": "(windows|win)",
     "linux": "linux",
