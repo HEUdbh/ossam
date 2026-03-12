@@ -125,6 +125,7 @@ type githubRelease struct {
 	TagName     string        `json:"tag_name"`
 	Name        string        `json:"name"`
 	Body        string        `json:"body"`
+	ZipballURL  string        `json:"zipball_url"`
 	Draft       bool          `json:"draft"`
 	Prerelease  bool          `json:"prerelease"`
 	PublishedAt time.Time     `json:"published_at"`
@@ -426,7 +427,7 @@ func (a *App) GetAppReleaseDetail(repo, match string) (*AppReleaseDetail, error)
 		ReadmeSourceURL: readmeResult.SourceURL,
 		ReadmeBranch:    readmeResult.Branch,
 		ReadmeFilePath:  readmeResult.FilePath,
-		Downloads:       buildPlatformDownloads(release.Assets, pattern, normalizeArch(goruntime.GOARCH)),
+		Downloads:       buildPlatformDownloads(release.Assets, release.ZipballURL, pattern, normalizeArch(goruntime.GOARCH)),
 	}
 
 	if !release.PublishedAt.IsZero() {
@@ -800,7 +801,7 @@ func selectLatestRelease(releases []githubRelease) (githubRelease, error) {
 	return githubRelease{}, errors.New("no usable release found for this repository")
 }
 
-func buildPlatformDownloads(assets []githubAsset, basePattern *regexp.Regexp, localArch string) map[string]PlatformDownload {
+func buildPlatformDownloads(assets []githubAsset, sourceZipURL string, basePattern *regexp.Regexp, localArch string) map[string]PlatformDownload {
 	downloads := map[string]PlatformDownload{
 		platformWindows: {
 			Platform:  platformWindows,
@@ -817,17 +818,17 @@ func buildPlatformDownloads(assets []githubAsset, basePattern *regexp.Regexp, lo
 	}
 
 	for _, platform := range []string{platformWindows, platformLinux, platformMacOS} {
-		selected := selectAssetForPlatform(assets, basePattern, platform, localArch)
+		selected := selectAssetForPlatform(assets, sourceZipURL, basePattern, platform, localArch)
 		downloads[platform] = selected
 	}
 
 	return downloads
 }
 
-func selectAssetForPlatform(assets []githubAsset, basePattern *regexp.Regexp, platform, localArch string) PlatformDownload {
+func selectAssetForPlatform(assets []githubAsset, sourceZipURL string, basePattern *regexp.Regexp, platform, localArch string) PlatformDownload {
 	matched := make([]matchedAsset, 0)
 	for _, asset := range assets {
-		if !basePattern.MatchString(asset.Name) {
+		if basePattern == nil || !basePattern.MatchString(asset.Name) {
 			continue
 		}
 		if !matchesPlatform(asset.Name, platform) {
@@ -841,6 +842,17 @@ func selectAssetForPlatform(assets []githubAsset, basePattern *regexp.Regexp, pl
 	}
 
 	if len(matched) == 0 {
+		sourceZipURL = strings.TrimSpace(sourceZipURL)
+		if sourceZipURL != "" {
+			return PlatformDownload{
+				Platform:    platform,
+				Available:   true,
+				AssetName:   "source-code.zip",
+				DownloadURL: applyGitHubProxy(sourceZipURL),
+				Arch:        "source",
+			}
+		}
+
 		return PlatformDownload{
 			Platform:  platform,
 			Available: false,

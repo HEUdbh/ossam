@@ -192,4 +192,5 @@
 
 - Runtime GitHub requests are proxied by default; release list API is routed via `ossam.hqs.qzz.io`, and avatar-related URLs remain direct.
 - Non-GitHub URLs are passed through as-is.
+- When platform-specific release assets are missing, the missing platform download falls back to `Source code(zip)` and still uses `ghproxy` acceleration.
 

@@ -484,6 +484,7 @@ onUnmounted(() => {
 .download-item :deep(.el-button) {
   justify-content: flex-start;
   font-weight: 600;
+  border-radius: 12px;
 }
 
 .download-hint {

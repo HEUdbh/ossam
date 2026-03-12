@@ -43,7 +43,7 @@ const pageMeta = computed(() => {
 
 const pageTitle = computed(() => pageMeta.value.title);
 const pageSubtitle = computed(() => pageMeta.value.subtitle);
-const showPageHeader = computed(() => route.name !== "market");
+const showPageHeader = computed(() => route.name !== "market" && route.name !== "app-detail");
 
 function getSettingsFromRoute() {
   return isSettingsActive.value ? "/market" : route.fullPath;
