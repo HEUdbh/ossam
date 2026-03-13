@@ -179,7 +179,7 @@ function heroStyle(item) {
   }
 
   return {
-    backgroundImage: `linear-gradient(102deg, rgba(15,23,42,.85), rgba(15,23,42,.35)), url("${photo}")`,
+    backgroundImage: `linear-gradient(100deg, rgba(15,23,42,.82), rgba(15,23,42,.38)), url("${photo}")`,
   };
 }
 
@@ -268,9 +268,7 @@ watch(categories, () => {
       </section>
 
       <section class="apps-section">
-        <div class="apps-section-title">
-          {{ isSearchMode ? "匹配应用" : "更多应用" }}
-        </div>
+        <div class="apps-section-title">{{ isSearchMode ? "匹配应用" : "更多应用" }}</div>
 
         <div class="compact-grid" :class="{ searching: isSearchMode }">
           <router-link
@@ -304,12 +302,12 @@ watch(categories, () => {
 .market-view {
   height: 100%;
   min-height: 0;
-  padding: 18px 18px 14px;
+  padding: 16px 18px;
   display: flex;
   flex-direction: column;
   gap: 14px;
   overflow-y: auto;
-  background: linear-gradient(180deg, #ffffff 0%, #fbfefc 100%);
+  background: #fff;
 }
 
 .market-header {
@@ -321,9 +319,8 @@ watch(categories, () => {
 
 .market-header h1 {
   margin: 0;
-  font-size: 34px;
+  font-size: 30px;
   line-height: 1.1;
-  letter-spacing: 0.2px;
 }
 
 .market-header p {
@@ -335,22 +332,25 @@ watch(categories, () => {
   margin-bottom: 2px;
 }
 
+.hero-section {
+  border: 1px solid var(--line-color);
+}
+
 .hero-section :deep(.el-carousel__container) {
-  border-radius: var(--radius-lg);
+  border-radius: 0;
 }
 
 .hero-section :deep(.el-carousel__button) {
-  background: rgba(15, 23, 42, 0.4);
+  background: rgba(15, 23, 42, 0.42);
 }
 
 .hero-card {
   height: 100%;
-  border-radius: var(--radius-lg);
   text-decoration: none;
   color: #e2e8f0;
   background:
-    linear-gradient(102deg, rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.35)),
-    linear-gradient(120deg, #1f2937, #334155);
+    linear-gradient(100deg, rgba(15, 23, 42, 0.82), rgba(15, 23, 42, 0.38)),
+    linear-gradient(110deg, #1f2937, #334155);
   background-size: cover;
   background-position: center;
   display: flex;
@@ -395,51 +395,49 @@ watch(categories, () => {
 .apps-section {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .apps-section-title {
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .compact-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  border-top: 1px solid var(--line-color);
+  border-left: 1px solid var(--line-color);
 }
 
 .compact-grid.searching {
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
 
 .compact-card {
-  border: 1px solid var(--line-color);
-  border-radius: var(--radius-lg);
-  background: #fff;
-  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
   text-decoration: none;
   color: var(--text-primary);
   display: grid;
-  grid-template-columns: 56px minmax(0, 1fr);
+  grid-template-columns: 52px minmax(0, 1fr);
   gap: 12px;
-  padding: 14px;
-  transition: all 0.2s ease;
+  padding: 12px;
+  border-right: 1px solid var(--line-color);
+  border-bottom: 1px solid var(--line-color);
+  background: #fff;
+  transition: background-color 0.2s ease;
 }
 
 .compact-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(18, 199, 123, 0.36);
-  box-shadow: 0 12px 24px rgba(18, 199, 123, 0.16);
+  background: #f5fbf7;
 }
 
 .compact-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 12px;
+  width: 52px;
+  height: 52px;
+  border-radius: 6px;
   border: 1px solid #e8f1ed;
   object-fit: cover;
   background: var(--surface-3);
@@ -460,17 +458,17 @@ watch(categories, () => {
   margin: 0;
   min-width: 0;
   font-size: 16px;
-  line-height: 1.25;
+  line-height: 1.2;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
 .compact-body p {
-  margin: 7px 0 0;
+  margin: 6px 0 0;
   color: var(--text-secondary);
   font-size: 13px;
-  line-height: 1.55;
+  line-height: 1.5;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -478,7 +476,7 @@ watch(categories, () => {
 }
 
 .compact-star {
-  margin-top: 10px;
+  margin-top: 8px;
   display: inline-block;
   color: var(--warning-color);
   font-size: 13px;
@@ -487,20 +485,19 @@ watch(categories, () => {
 
 @media (max-width: 960px) {
   .market-view {
-    padding: 14px;
-    gap: 12px;
+    padding: 12px;
   }
 
   .market-header h1 {
-    font-size: 28px;
+    font-size: 24px;
   }
 
   .hero-section :deep(.el-carousel__container) {
-    height: 200px !important;
+    height: 196px !important;
   }
 
   .hero-content h2 {
-    font-size: 24px;
+    font-size: 22px;
   }
 }
 </style>

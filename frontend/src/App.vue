@@ -4,6 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import { ElMessage, ElMessageBox } from "element-plus";
 import {
   ArrowLeft,
+  ArrowRight,
   Connection,
   DataAnalysis,
   Grid,
@@ -28,12 +29,14 @@ let startupDownloadDirectoryChecked = false;
 let searchSyncTimer = null;
 
 const LAST_CATEGORY_KEY = "ossam.market.lastCategory";
+const SIDEBAR_COLLAPSE_KEY = "ossam.ui.sidebarCollapsed";
 
 const route = useRoute();
 const router = useRouter();
 const { categories } = useAppsStore();
 
 const globalSearch = ref("");
+const sidebarCollapsed = ref(readSidebarCollapsed());
 
 const isMineActive = computed(() => route.path.startsWith("/mine"));
 const isSettingsActive = computed(() => route.path.startsWith("/settings"));
@@ -73,6 +76,24 @@ const activeCategory = computed(() => {
 
 function getCategoryIcon(category) {
   return CATEGORY_ICON_MAP[category] || Grid;
+}
+
+function readSidebarCollapsed() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+  return window.localStorage.getItem(SIDEBAR_COLLAPSE_KEY) === "1";
+}
+
+function persistSidebarCollapsed(value) {
+  if (typeof window === "undefined") {
+    return;
+  }
+  window.localStorage.setItem(SIDEBAR_COLLAPSE_KEY, value ? "1" : "0");
+}
+
+function toggleSidebar() {
+  sidebarCollapsed.value = !sidebarCollapsed.value;
 }
 
 function readLastCategory() {
@@ -143,11 +164,15 @@ function selectCategory(category) {
   }
 
   persistLastCategory(category);
+
+  const query = { category };
+  if (typeof route.query.q === "string" && route.query.q.trim()) {
+    query.q = route.query.q.trim();
+  }
+
   router.push({
     name: "market",
-    query: {
-      category,
-    },
+    query,
   });
 }
 
@@ -253,77 +278,109 @@ watch(
   },
   { immediate: true }
 );
+
+watch(
+  sidebarCollapsed,
+  (value) => {
+    persistSidebarCollapsed(value);
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
-  <div class="app-shell">
-    <aside class="app-sidebar">
-      <div class="sidebar-label">分类</div>
-
-      <nav class="category-nav">
-        <button
-          v-for="category in categories"
-          :key="category"
-          class="category-nav-item"
-          :class="{ active: category === activeCategory }"
-          @click="selectCategory(category)"
-        >
-          <el-icon>
-            <component :is="getCategoryIcon(category)" />
-          </el-icon>
-          <span>{{ getCategoryDisplayName(category) }}</span>
+  <div class="app-root">
+    <header class="global-topbar">
+      <div class="topbar-left">
+        <button class="back-button" title="返回" @click="handleBack">
+          <el-icon><ArrowLeft /></el-icon>
         </button>
-      </nav>
 
-      <div class="sidebar-divider" />
+        <div class="brand-wrap">
+          <img class="brand-logo" src="./assets/images/logo-universal.png" alt="ossam" />
+          <span class="brand-name">ossam</span>
+        </div>
+      </div>
 
-      <button class="sidebar-link" :class="{ active: isMineActive }" @click="openMine">
-        <el-icon><User /></el-icon>
-        <span>我的</span>
-      </button>
+      <div class="topbar-center">
+        <el-input
+          v-model="globalSearch"
+          clearable
+          class="global-search"
+          placeholder="搜索应用名称、简介或仓库"
+        >
+          <template #prefix>
+            <el-icon><Search /></el-icon>
+          </template>
+        </el-input>
+      </div>
 
-      <el-button class="settings-button" :class="{ active: isSettingsActive }" @click="openSettings">
-        <el-icon><Setting /></el-icon>
-        <span>设置</span>
-      </el-button>
-    </aside>
+      <div class="topbar-right">
+        <el-button text @click="notifyAuthPending('登录')">登录</el-button>
+        <el-button text class="register-btn" @click="notifyAuthPending('注册')">注册</el-button>
+      </div>
+    </header>
 
-    <main class="content-area">
-      <header class="global-topbar">
-        <div class="topbar-left">
-          <button class="back-button" title="返回" @click="handleBack">
-            <el-icon><ArrowLeft /></el-icon>
-          </button>
-
-          <div class="brand-wrap">
-            <img class="brand-logo" src="./assets/images/logo-universal.png" alt="ossam" />
-            <span class="brand-name">ossam</span>
+    <div class="app-shell">
+      <aside class="app-sidebar" :class="{ collapsed: sidebarCollapsed }">
+        <div class="sidebar-top">
+          <div class="sidebar-head">
+            <span v-if="!sidebarCollapsed" class="sidebar-label">分类</span>
+            <button
+              class="sidebar-toggle"
+              :title="sidebarCollapsed ? '展开侧边栏' : '折叠侧边栏'"
+              @click="toggleSidebar"
+            >
+              <el-icon>
+                <ArrowRight v-if="sidebarCollapsed" />
+                <ArrowLeft v-else />
+              </el-icon>
+            </button>
           </div>
-        </div>
 
-        <div class="topbar-center">
-          <el-input
-            v-model="globalSearch"
-            clearable
-            class="global-search"
-            placeholder="搜索应用名称、简介或仓库"
+          <nav class="category-nav">
+            <button
+              v-for="category in categories"
+              :key="category"
+              class="category-nav-item"
+              :class="{ active: category === activeCategory }"
+              :title="getCategoryDisplayName(category)"
+              @click="selectCategory(category)"
+            >
+              <el-icon>
+                <component :is="getCategoryIcon(category)" />
+              </el-icon>
+              <span class="nav-label">{{ getCategoryDisplayName(category) }}</span>
+            </button>
+          </nav>
+
+          <div class="sidebar-divider" />
+
+          <button
+            class="sidebar-link"
+            :class="{ active: isMineActive }"
+            title="我的"
+            @click="openMine"
           >
-            <template #prefix>
-              <el-icon><Search /></el-icon>
-            </template>
-          </el-input>
+            <el-icon><User /></el-icon>
+            <span class="nav-label">我的</span>
+          </button>
         </div>
 
-        <div class="topbar-right">
-          <el-button text @click="notifyAuthPending('登录')">登录</el-button>
-          <el-button text @click="notifyAuthPending('注册')">注册</el-button>
-          <el-button type="primary" plain @click="openMine">管理</el-button>
-        </div>
-      </header>
+        <el-button
+          class="settings-button"
+          :class="{ active: isSettingsActive }"
+          title="设置"
+          @click="openSettings"
+        >
+          <el-icon><Setting /></el-icon>
+          <span class="nav-label">设置</span>
+        </el-button>
+      </aside>
 
-      <section class="page-content">
+      <main class="content-area">
         <router-view />
-      </section>
-    </main>
+      </main>
+    </div>
   </div>
 </template>

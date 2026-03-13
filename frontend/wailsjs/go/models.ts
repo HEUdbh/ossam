@@ -1,5 +1,25 @@
 export namespace main {
 	
+	export class AppContributor {
+	    login: string;
+	    display_name: string;
+	    avatar_url: string;
+	    profile_url: string;
+	    contributions: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new AppContributor(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.login = source["login"];
+	        this.display_name = source["display_name"];
+	        this.avatar_url = source["avatar_url"];
+	        this.profile_url = source["profile_url"];
+	        this.contributions = source["contributions"];
+	    }
+	}
 	export class AppInfo {
 	    name: string;
 	    repo: string;
@@ -18,6 +38,44 @@ export namespace main {
 	        this.photo = source["photo"];
 	        this.match = source["match"];
 	        this.summary = source["summary"];
+	    }
+	}
+	export class ReleaseCDNMeta {
+	    enabled: boolean;
+	    selected_source: string;
+	    label: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new ReleaseCDNMeta(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.enabled = source["enabled"];
+	        this.selected_source = source["selected_source"];
+	        this.label = source["label"];
+	    }
+	}
+	export class ReleaseAssetInfo {
+	    name: string;
+	    download_url: string;
+	    size: number;
+	    download_count: number;
+	    updated_at: string;
+	    platform: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new ReleaseAssetInfo(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.name = source["name"];
+	        this.download_url = source["download_url"];
+	        this.size = source["size"];
+	        this.download_count = source["download_count"];
+	        this.updated_at = source["updated_at"];
+	        this.platform = source["platform"];
 	    }
 	}
 	export class PlatformDownload {
@@ -52,6 +110,9 @@ export namespace main {
 	    readme_branch: string;
 	    readme_file_path: string;
 	    downloads: Record<string, PlatformDownload>;
+	    contributors: AppContributor[];
+	    release_assets: ReleaseAssetInfo[];
+	    cdn_meta: ReleaseCDNMeta;
 	
 	    static createFrom(source: any = {}) {
 	        return new AppReleaseDetail(source);
@@ -70,6 +131,9 @@ export namespace main {
 	        this.readme_branch = source["readme_branch"];
 	        this.readme_file_path = source["readme_file_path"];
 	        this.downloads = this.convertValues(source["downloads"], PlatformDownload, true);
+	        this.contributors = this.convertValues(source["contributors"], AppContributor);
+	        this.release_assets = this.convertValues(source["release_assets"], ReleaseAssetInfo);
+	        this.cdn_meta = this.convertValues(source["cdn_meta"], ReleaseCDNMeta);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -184,6 +248,8 @@ export namespace main {
 	        this.resume_offset = source["resume_offset"];
 	    }
 	}
+	
+	
 	
 	export class SetCDNSettingsRequest {
 	    enabled: boolean;

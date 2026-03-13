@@ -73,24 +73,21 @@ function switchTab(tab) {
 </template>
 
 <style scoped>
-:deep(.settings-dialog) {
-  border-radius: var(--radius-xl);
-}
-
 :deep(.settings-dialog .el-dialog) {
+  border-radius: 0;
   border: 1px solid var(--line-color);
-  background: linear-gradient(180deg, #ffffff, #f8fdf9);
-  box-shadow: var(--shadow-soft);
+  background: #fff;
+  box-shadow: none;
 }
 
 :deep(.settings-dialog .el-dialog__header) {
   margin-right: 0;
-  padding: 18px 20px 12px;
+  padding: 14px 16px 10px;
   border-bottom: 1px solid var(--line-color);
 }
 
 :deep(.settings-dialog .el-dialog__body) {
-  padding: 12px 20px 20px;
+  padding: 10px 16px 16px;
 }
 
 .dialog-header {
@@ -103,7 +100,7 @@ function switchTab(tab) {
 .dialog-header h2 {
   margin: 0;
   font-size: 20px;
-  line-height: 1.3;
+  line-height: 1.2;
 }
 
 .dialog-header p {
@@ -117,10 +114,9 @@ function switchTab(tab) {
 }
 
 .dialog-content {
-  border: 1px solid var(--line-color);
-  border-radius: var(--radius-lg);
-  background: var(--surface-2);
-  padding: 16px;
+  border-top: 1px solid var(--line-color);
+  background: #fff;
+  padding: 14px 0 0;
 }
 
 @media (max-width: 960px) {
@@ -130,8 +126,8 @@ function switchTab(tab) {
 
   :deep(.settings-dialog .el-dialog__header),
   :deep(.settings-dialog .el-dialog__body) {
-    padding-left: 14px;
-    padding-right: 14px;
+    padding-left: 12px;
+    padding-right: 12px;
   }
 }
 </style>

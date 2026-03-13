@@ -1,37 +1,38 @@
-<script setup>
-import { computed, onUnmounted, reactive, watch } from "vue";
-import { ElMessage } from "element-plus";
-import { ArrowLeft, Link, User } from "@element-plus/icons-vue";
+﻿<script setup>
+import { computed, nextTick, onMounted, onUnmounted, reactive, ref, watch } from "vue";
+import { ElMessage, ElMessageBox } from "element-plus";
+import { Download, Link, Star, User } from "@element-plus/icons-vue";
 import DOMPurify from "dompurify";
 import { marked } from "marked";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { GetDownloadTask, StartDownload } from "../../wailsjs/go/main/App";
 import StatusState from "../components/StatusState.vue";
 import {
   getAppDetailState,
   loadAppDetail,
   loadAppsConfig,
+  loadRepoStars,
   useAppsStore,
 } from "../stores/appsStore";
 import { getDownloadDirectory } from "../utils/settings";
+import { getCategoryDisplayName } from "../utils/marketMeta";
 
 const route = useRoute();
-const router = useRouter();
-const { state, findApp } = useAppsStore();
+const { state, findApp, getRepoStarCount } = useAppsStore();
 
-const platformOptions = [
-  { key: "windows", label: "Windows" },
-  { key: "linux", label: "Linux" },
-  { key: "macos", label: "macOS" },
-];
+const releaseAssetsPanelRef = ref(null);
+const selectedAssetKey = ref("");
+let taskPoller = null;
 
-const downloadStates = reactive({
-  windows: createDownloadState(),
-  linux: createDownloadState(),
-  macos: createDownloadState(),
+const downloadTask = reactive({
+  task_id: "",
+  status: "",
+  progress: 0,
+  error: "",
+  file_name: "",
+  platform: "",
 });
 
-const pollerMap = new Map();
 const category = computed(() => String(route.params.category || ""));
 const appName = computed(() => String(route.params.name || ""));
 const app = computed(() => findApp(category.value, appName.value));
@@ -46,7 +47,15 @@ const developer = computed(() => {
   if (parts.length === 2 && parts[0]) {
     return parts[0];
   }
-  return "Unknown";
+  return "unknown";
+});
+
+const iconSrc = computed(() => {
+  const photo = String(app.value?.photo || "").trim();
+  if (photo) {
+    return photo;
+  }
+  return `https://avatars.githubusercontent.com/${developer.value}`;
 });
 
 const repoUrl = computed(() => {
@@ -59,162 +68,187 @@ const repoUrl = computed(() => {
 
 const releaseTitle = computed(() => {
   if (!detail.value) {
-    return "";
+    return "-";
   }
   return detail.value.release_name || detail.value.release_tag || "Latest Release";
 });
 
+const releasePublishedLabel = computed(() => formatDate(detail.value?.release_published_at));
+const starsLabel = computed(() => formatStarCount(getRepoStarCount(app.value?.repo)));
+
+const availablePlatformCount = computed(() =>
+  Object.values(downloads.value || {}).filter((item) => item?.available).length
+);
+
 const readmeHtml = computed(() => renderMarkdown(detail.value?.readme));
 const releaseNotesHtml = computed(() => renderMarkdown(detail.value?.release_body));
 
-function goBack() {
-  const hasRouterBack = Boolean(window.history.state?.back);
-  if (hasRouterBack || window.history.length > 1) {
-    router.back();
-    return;
+const contributors = computed(() => {
+  if (!Array.isArray(detail.value?.contributors)) {
+    return [];
+  }
+  return detail.value.contributors.slice(0, 4);
+});
+
+const releaseAssets = computed(() => {
+  if (!Array.isArray(detail.value?.release_assets)) {
+    return [];
+  }
+  return detail.value.release_assets.map((asset, index) => ({
+    ...asset,
+    key: `${asset.name || "asset"}-${index}`,
+  }));
+});
+
+const selectedAsset = computed(() =>
+  releaseAssets.value.find((item) => item.key === selectedAssetKey.value) || null
+);
+
+const cdnMeta = computed(() => {
+  const meta = detail.value?.cdn_meta;
+  if (!meta || typeof meta !== "object") {
+    return {
+      enabled: false,
+      selected_source: "",
+      label: "直连",
+    };
   }
 
-  const nextQuery = category.value ? { category: category.value } : {};
-  router.push({ name: "market", query: nextQuery });
-}
-
-function createDownloadState() {
   return {
-    taskId: "",
-    status: "",
-    progress: 0,
-    error: "",
+    enabled: Boolean(meta.enabled),
+    selected_source: String(meta.selected_source || ""),
+    label: String(meta.label || (meta.enabled ? "CDN" : "直连")),
   };
+});
+
+const cdnBadgeText = computed(() =>
+  cdnMeta.value.enabled ? `CDN已启用 (${cdnMeta.value.label})` : "直连"
+);
+
+function resetDownloadTask() {
+  clearTaskPoller();
+  downloadTask.task_id = "";
+  downloadTask.status = "";
+  downloadTask.progress = 0;
+  downloadTask.error = "";
+  downloadTask.file_name = "";
+  downloadTask.platform = "";
 }
 
-function resetDownloadStates() {
-  platformOptions.forEach(({ key }) => {
-    clearTaskPoller(key);
-    downloadStates[key].taskId = "";
-    downloadStates[key].status = "";
-    downloadStates[key].progress = 0;
-    downloadStates[key].error = "";
-  });
+function isDownloadBusy() {
+  return downloadTask.status === "started" || downloadTask.status === "in_progress";
 }
 
-function getPlatformDownload(platform) {
-  return downloads.value?.[platform] || null;
-}
-
-function isPlatformAvailable(platform) {
-  return Boolean(getPlatformDownload(platform)?.available);
-}
-
-function isTaskBusy(platform) {
-  const status = downloadStates[platform].status;
-  return status === "started" || status === "in_progress";
-}
-
-function downloadButtonLabel(platform) {
-  const option = platformOptions.find((item) => item.key === platform);
-  const label = option?.label || platform;
-
-  if (!isPlatformAvailable(platform)) {
-    return `${label} 不可用`;
-  }
-
-  const downloadState = downloadStates[platform];
-  if (downloadState.status === "started" || downloadState.status === "in_progress") {
-    return `${label} ${downloadState.progress}%`;
-  }
-  if (downloadState.status === "completed") {
-    return `${label} 已下载`;
-  }
-  if (downloadState.status === "failed") {
-    return `${label} 重试下载`;
-  }
-  return `${label} 下载`;
-}
-
-function downloadButtonType(platform) {
-  const status = downloadStates[platform].status;
-  if (status === "completed") {
-    return "success";
-  }
-  if (status === "failed") {
-    return "danger";
-  }
-  return "primary";
-}
-
-function downloadHint(platform) {
-  const target = getPlatformDownload(platform);
-  if (!target?.available) {
-    return "未匹配到该平台可下载资产";
-  }
-  return `${target.asset_name} (${target.arch || "unknown arch"})`;
-}
-
-function applyTaskSnapshot(platform, snapshot) {
+function applyTaskSnapshot(snapshot) {
   if (!snapshot) {
     return;
   }
-
-  downloadStates[platform].taskId = snapshot.task_id || "";
-  downloadStates[platform].status = snapshot.status || "";
-  downloadStates[platform].progress = Number(snapshot.progress || 0);
-  downloadStates[platform].error = snapshot.error || "";
+  downloadTask.task_id = snapshot.task_id || "";
+  downloadTask.status = snapshot.status || "";
+  downloadTask.progress = Number(snapshot.progress || 0);
+  downloadTask.error = snapshot.error || "";
+  downloadTask.file_name = snapshot.file_name || "";
+  downloadTask.platform = snapshot.platform || "";
 }
 
-function clearTaskPoller(platform) {
-  const timer = pollerMap.get(platform);
-  if (timer) {
-    clearInterval(timer);
-    pollerMap.delete(platform);
+function clearTaskPoller() {
+  if (taskPoller) {
+    clearInterval(taskPoller);
+    taskPoller = null;
   }
 }
 
-function startTaskPoller(platform, taskId) {
-  clearTaskPoller(platform);
+function startTaskPoller(taskId) {
+  clearTaskPoller();
 
-  const timer = setInterval(async () => {
+  taskPoller = setInterval(async () => {
     try {
       const snapshot = await GetDownloadTask(taskId);
-      applyTaskSnapshot(platform, snapshot);
+      applyTaskSnapshot(snapshot);
+
       if (snapshot.status === "completed" || snapshot.status === "failed") {
-        clearTaskPoller(platform);
+        clearTaskPoller();
         if (snapshot.status === "completed") {
-          console.info("[download] task completed", {
-            platform,
-            taskId,
-            snapshot,
-          });
-          ElMessage.success(`${platform} 下载完成`);
+          ElMessage.success("下载完成");
         } else if (snapshot.error) {
-          console.error("[download] task failed", {
-            platform,
-            taskId,
-            snapshot,
-          });
           ElMessage.error(snapshot.error);
         }
       }
     } catch (error) {
-      clearTaskPoller(platform);
+      clearTaskPoller();
       const message = error?.message || String(error);
-      downloadStates[platform].status = "failed";
-      downloadStates[platform].error = message;
-      console.error("[download] poller request failed", {
-        platform,
-        taskId,
-        error,
-        currentState: { ...downloadStates[platform] },
-      });
+      downloadTask.status = "failed";
+      downloadTask.error = message;
       ElMessage.error(message || "下载任务查询失败");
     }
   }, 900);
-
-  pollerMap.set(platform, timer);
 }
 
-async function handleDownload(platform) {
-  const target = getPlatformDownload(platform);
-  if (!target?.available || isTaskBusy(platform)) {
+async function startDownloadForAsset(asset, downloadDir) {
+  if (!asset || isDownloadBusy()) {
+    return;
+  }
+
+  const platform = ["windows", "linux", "macos"].includes(asset.platform) ? asset.platform : "";
+
+  try {
+    const snapshot = await StartDownload({
+      download_url: asset.download_url,
+      file_name: asset.name || "release-asset",
+      platform,
+      download_dir: downloadDir,
+    });
+    applyTaskSnapshot(snapshot);
+    startTaskPoller(snapshot.task_id);
+  } catch (error) {
+    const message = error?.message || String(error);
+    downloadTask.status = "failed";
+    downloadTask.error = message;
+    ElMessage.error(message || "启动下载任务失败");
+  }
+}
+
+async function scrollToReleaseAssets() {
+  await nextTick();
+  if (releaseAssetsPanelRef.value && typeof releaseAssetsPanelRef.value.scrollIntoView === "function") {
+    releaseAssetsPanelRef.value.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+      inline: "nearest",
+    });
+  }
+}
+
+function buildLocalTargetPath(downloadDir, fileName) {
+  const dir = String(downloadDir || "").trim();
+  const name = String(fileName || "release-asset").trim() || "release-asset";
+  if (!dir) {
+    return name;
+  }
+
+  const normalizedDir = dir.endsWith("\\") || dir.endsWith("/") ? dir.slice(0, -1) : dir;
+  const separator = normalizedDir.includes("\\") ? "\\" : "/";
+  return `${normalizedDir}${separator}${name}`;
+}
+
+function escapeHtml(value) {
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+async function selectAsset(asset) {
+  if (!asset) {
+    return;
+  }
+
+  selectedAssetKey.value = asset.key;
+
+  if (isDownloadBusy()) {
+    ElMessage.warning("当前有下载任务进行中，请稍后重试。");
     return;
   }
 
@@ -224,39 +258,26 @@ async function handleDownload(platform) {
     return;
   }
 
-  console.info("[download] start request", {
-    platform,
-    assetName: target.asset_name,
-    arch: target.arch,
-    downloadURL: target.download_url,
-    downloadDir,
-  });
+  const localTargetPath = buildLocalTargetPath(downloadDir, asset.name || "release-asset");
+  const message = `
+    <div style="line-height:1.7">
+      <div><strong>目标文件：</strong>${escapeHtml(asset.name || "release-asset")}</div>
+      <div><strong>下载地址：</strong></div>
+      <div style="word-break:break-all;color:#475569;">${escapeHtml(localTargetPath)}</div>
+      <div style="margin-top:6px;"><strong>链路：</strong>${escapeHtml(cdnBadgeText.value)}</div>
+    </div>
+  `;
 
   try {
-    const snapshot = await StartDownload({
-      download_url: target.download_url,
-      file_name: target.asset_name,
-      platform,
-      download_dir: downloadDir,
+    await ElMessageBox.confirm(message, "确认下载", {
+      confirmButtonText: "下载",
+      cancelButtonText: "取消",
+      dangerouslyUseHTMLString: true,
+      type: "info",
     });
-    console.info("[download] task started", {
-      platform,
-      snapshot,
-    });
-    applyTaskSnapshot(platform, snapshot);
-    startTaskPoller(platform, snapshot.task_id);
-  } catch (error) {
-    const message = error?.message || String(error);
-    downloadStates[platform].status = "failed";
-    downloadStates[platform].error = message;
-    console.error("[download] start request failed", {
-      platform,
-      target,
-      downloadDir,
-      error,
-      currentState: { ...downloadStates[platform] },
-    });
-    ElMessage.error(message || "启动下载任务失败");
+    await startDownloadForAsset(asset, downloadDir);
+  } catch {
+    // User cancelled.
   }
 }
 
@@ -270,12 +291,92 @@ function renderMarkdown(source) {
   return DOMPurify.sanitize(typeof html === "string" ? html : "");
 }
 
-loadAppsConfig();
+function formatDate(value) {
+  const raw = String(value || "").trim();
+  if (!raw) {
+    return "-";
+  }
+
+  const date = new Date(raw);
+  if (Number.isNaN(date.getTime())) {
+    return raw;
+  }
+
+  return date.toLocaleDateString("zh-CN", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+
+function formatStarCount(value) {
+  if (typeof value !== "number" || Number.isNaN(value) || value < 0) {
+    return "-";
+  }
+  if (value < 1000) {
+    return String(value);
+  }
+  if (value < 10000) {
+    return `${(value / 1000).toFixed(1)}k`;
+  }
+  if (value < 1000000) {
+    return `${Math.round(value / 1000)}k`;
+  }
+  return `${(value / 1000000).toFixed(1)}m`;
+}
+
+function formatAssetSize(size) {
+  const bytes = Number(size || 0);
+  if (!Number.isFinite(bytes) || bytes <= 0) {
+    return "-";
+  }
+
+  if (bytes < 1024) {
+    return `${bytes} B`;
+  }
+  if (bytes < 1024 * 1024) {
+    return `${(bytes / 1024).toFixed(1)} KB`;
+  }
+  if (bytes < 1024 * 1024 * 1024) {
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  }
+  return `${(bytes / (1024 * 1024 * 1024)).toFixed(1)} GB`;
+}
+
+function formatDownloadCount(value) {
+  const count = Number(value || 0);
+  if (!Number.isFinite(count) || count < 0) {
+    return "-";
+  }
+  return count.toLocaleString("en-US");
+}
+
+onMounted(async () => {
+  await loadAppsConfig();
+  if (!state.repoStarsLoaded && !state.repoStarsLoading) {
+    void loadRepoStars();
+  }
+});
+
+watch(
+  releaseAssets,
+  (assets) => {
+    if (!assets.length) {
+      selectedAssetKey.value = "";
+      return;
+    }
+
+    if (!assets.some((asset) => asset.key === selectedAssetKey.value)) {
+      selectedAssetKey.value = assets[0].key;
+    }
+  },
+  { immediate: true }
+);
 
 watch(
   () => [app.value?.repo, app.value?.match],
   async ([repo, match]) => {
-    resetDownloadStates();
+    resetDownloadTask();
     if (!repo || !match || !app.value) {
       return;
     }
@@ -285,24 +386,17 @@ watch(
 );
 
 onUnmounted(() => {
-  resetDownloadStates();
+  resetDownloadTask();
 });
 </script>
 
 <template>
   <section class="detail-page">
-    <div class="detail-toolbar">
-      <el-button class="back-button" plain @click="goBack">
-        <el-icon><ArrowLeft /></el-icon>
-        <span>返回</span>
-      </el-button>
-    </div>
-
     <StatusState
       v-if="state.loading"
       type="loading"
       title="正在加载应用详情"
-      description="正在读取本地应用配置。"
+      description="正在读取应用配置，请稍候。"
     />
     <StatusState
       v-else-if="state.error"
@@ -330,62 +424,159 @@ onUnmounted(() => {
     />
 
     <div v-else class="detail-layout">
-      <el-card class="overview-card" shadow="never">
-        <div class="overview-head">
-          <img class="app-icon" :src="app.photo" :alt="app.name" />
+      <section class="hero-section clean-card">
+        <div class="hero-main">
+          <img class="hero-icon" :src="iconSrc" :alt="app.name" />
 
-          <div class="overview-meta">
-            <h2>{{ app.name }}</h2>
-            <p class="app-summary">{{ app.summary }}</p>
+          <div class="hero-meta">
+            <h1>{{ app.name }}</h1>
+            <p class="hero-owner">by @{{ developer }}</p>
+            <div class="hero-tags">
+              <span class="tag">{{ getCategoryDisplayName(category) }}</span>
+              <span class="tag muted">{{ releaseTitle }}</span>
+            </div>
+            <p class="hero-summary">{{ app.summary }}</p>
+          </div>
+        </div>
 
-            <div class="meta-inline">
-              <span class="meta-item">
-                <el-icon><User /></el-icon>
-                {{ developer }}
-              </span>
-              <a class="repo-link" :href="repoUrl" target="_blank" rel="noreferrer">
-                <el-icon><Link /></el-icon>
-                {{ app.repo }}
+        <div class="hero-actions">
+          <el-button class="focus-release-btn" type="primary" @click="scrollToReleaseAssets">
+            <el-icon><Download /></el-icon>
+            <span>选择 Release 包</span>
+          </el-button>
+
+          <a class="source-btn" :href="repoUrl" target="_blank" rel="noreferrer">
+            <el-icon><Link /></el-icon>
+            <span>View Source</span>
+          </a>
+
+          <div class="cdn-badge" :class="{ enabled: cdnMeta.enabled }">
+            {{ cdnBadgeText }}
+          </div>
+        </div>
+      </section>
+
+      <section class="metrics-row">
+        <article class="metric-item clean-card">
+          <el-icon><Star /></el-icon>
+          <div>
+            <p class="metric-label">Stars</p>
+            <p class="metric-value">{{ starsLabel }}</p>
+          </div>
+        </article>
+        <article class="metric-item clean-card">
+          <el-icon><User /></el-icon>
+          <div>
+            <p class="metric-label">Author</p>
+            <p class="metric-value">@{{ developer }}</p>
+          </div>
+        </article>
+        <article class="metric-item clean-card">
+          <el-icon><Link /></el-icon>
+          <div>
+            <p class="metric-label">Latest</p>
+            <p class="metric-value ellipsis">{{ releaseTitle }}</p>
+          </div>
+        </article>
+        <article class="metric-item clean-card">
+          <el-icon><Star /></el-icon>
+          <div>
+            <p class="metric-label">Platforms</p>
+            <p class="metric-value">{{ availablePlatformCount }}</p>
+          </div>
+        </article>
+      </section>
+
+      <section class="content-grid">
+        <div class="left-column">
+          <article class="panel clean-card">
+            <header class="panel-head">
+              <h2>README.md</h2>
+              <a class="panel-link" :href="repoUrl" target="_blank" rel="noreferrer">GitHub</a>
+            </header>
+
+            <div v-if="readmeHtml" class="markdown-body" v-html="readmeHtml" />
+            <el-empty v-else description="暂无 README 内容" :image-size="80" />
+          </article>
+
+          <article class="panel clean-card">
+            <header class="panel-head">
+              <h2>Version History</h2>
+            </header>
+
+            <div class="version-item">
+              <div class="version-head">
+                <strong>{{ releaseTitle }}</strong>
+                <span class="latest-pill">Latest</span>
+              </div>
+              <p class="version-date">{{ releasePublishedLabel }}</p>
+              <div v-if="releaseNotesHtml" class="markdown-body" v-html="releaseNotesHtml" />
+              <el-empty v-else description="暂无版本说明" :image-size="72" />
+            </div>
+          </article>
+        </div>
+
+        <aside class="right-column">
+          <article class="side-panel clean-card">
+            <h3>Contributors</h3>
+            <div v-if="contributors.length" class="contributors-list">
+              <a
+                v-for="contributor in contributors"
+                :key="`${contributor.login}-${contributor.profile_url}`"
+                class="contributor-item"
+                :href="contributor.profile_url || '#'"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <img class="contributor-avatar" :src="contributor.avatar_url" :alt="contributor.display_name" />
+                <div class="contributor-meta">
+                  <strong>{{ contributor.display_name }}</strong>
+                  <span>{{ contributor.contributions }} commits</span>
+                </div>
               </a>
             </div>
+            <el-empty v-else description="暂无贡献者信息" :image-size="72" />
+          </article>
 
-            <p class="release-title">最新版本：{{ releaseTitle }}</p>
+          <article ref="releaseAssetsPanelRef" class="side-panel clean-card">
+            <h3>Latest Release Assets</h3>
+            <div v-if="releaseAssets.length" class="asset-list">
+              <button
+                v-for="asset in releaseAssets"
+                :key="asset.key"
+                class="asset-item"
+                :class="{ active: selectedAsset?.key === asset.key }"
+                @click="selectAsset(asset)"
+              >
+                <div class="asset-head">
+                  <strong class="asset-name">{{ asset.name }}</strong>
+                  <span class="asset-cdn" :class="{ enabled: cdnMeta.enabled }">{{ cdnBadgeText }}</span>
+                </div>
+                <div class="asset-meta">
+                  <span>大小 {{ formatAssetSize(asset.size) }}</span>
+                  <span>下载 {{ formatDownloadCount(asset.download_count) }}</span>
+                </div>
+              </button>
+            </div>
+            <el-empty v-else description="当前版本暂无可下载资产" :image-size="72" />
+          </article>
+
+          <div v-if="downloadTask.status || downloadTask.error" class="asset-download-status">
+            <p>
+              下载状态：{{ downloadTask.status || "idle" }}
+              <span v-if="isDownloadBusy()">({{ downloadTask.progress }}%)</span>
+            </p>
+            <p v-if="downloadTask.error" class="download-error">{{ downloadTask.error }}</p>
           </div>
-        </div>
 
-        <div class="download-actions">
-          <div v-for="item in platformOptions" :key="item.key" class="download-item">
-            <el-button
-              :type="downloadButtonType(item.key)"
-              :loading="isTaskBusy(item.key)"
-              :disabled="!isPlatformAvailable(item.key) || isTaskBusy(item.key)"
-              @click="handleDownload(item.key)"
-            >
-              {{ downloadButtonLabel(item.key) }}
-            </el-button>
-            <div class="download-hint">{{ downloadHint(item.key) }}</div>
-          </div>
-        </div>
-      </el-card>
-
-      <el-alert
-        v-if="detailState.error && detailState.loaded"
-        type="warning"
-        :closable="false"
-        :title="`部分内容加载失败：${detailState.error}`"
-      />
-
-      <el-card class="markdown-card" shadow="never">
-        <template #header>README</template>
-        <div v-if="readmeHtml" class="markdown-body" v-html="readmeHtml" />
-        <el-empty v-else description="暂无 README 内容" :image-size="80" />
-      </el-card>
-
-      <el-card class="markdown-card" shadow="never">
-        <template #header>Release Notes</template>
-        <div v-if="releaseNotesHtml" class="markdown-body" v-html="releaseNotesHtml" />
-        <el-empty v-else description="暂无版本说明" :image-size="80" />
-      </el-card>
+          <el-alert
+            v-if="detailState.error && detailState.loaded"
+            type="warning"
+            :closable="false"
+            :title="`部分内容加载失败：${detailState.error}`"
+          />
+        </aside>
+      </section>
     </div>
   </section>
 </template>
@@ -394,149 +585,397 @@ onUnmounted(() => {
 .detail-page {
   height: 100%;
   padding: 18px;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.detail-toolbar {
-  margin-bottom: 12px;
-  position: sticky;
-  top: 0;
-  z-index: 3;
-  padding-bottom: 6px;
-  background: linear-gradient(180deg, #ffffff 76%, rgba(255, 255, 255, 0));
-}
-
-.back-button {
-  gap: 6px;
-  font-weight: 600;
-  border-color: #cfe4d6;
-  color: var(--text-secondary);
-}
-
-.back-button:hover {
-  color: var(--brand-color);
-  border-color: rgba(5, 150, 105, 0.35);
+  overflow: auto;
+  background: #fff;
 }
 
 .detail-layout {
-  min-height: 100%;
-  display: grid;
-  gap: 14px;
-  align-content: start;
-}
-
-.overview-card,
-.markdown-card {
-  border-radius: var(--radius-lg);
-  border-color: var(--line-color);
-}
-
-.overview-card :deep(.el-card__body) {
-  background: linear-gradient(180deg, #ffffff, #f8fdf9);
-}
-
-.overview-head {
   display: flex;
-  align-items: flex-start;
-  gap: 14px;
+  flex-direction: column;
+  gap: 18px;
 }
 
-.app-icon {
-  width: 72px;
-  height: 72px;
-  border-radius: var(--radius-md);
-  object-fit: cover;
-  background: var(--surface-3);
-  border: 1px solid #dbeee2;
+.clean-card {
+  border: 1px solid #e5ece8;
+  border-radius: 16px;
+  background: #fff;
 }
 
-.overview-meta {
+.hero-section {
+  padding: 22px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 24px;
+}
+
+.hero-main {
+  display: flex;
+  gap: 18px;
   min-width: 0;
 }
 
-.overview-meta h2 {
+.hero-icon {
+  width: 96px;
+  height: 96px;
+  border-radius: 18px;
+  object-fit: cover;
+  border: 1px solid #e4ece8;
+  background: #f3f8f5;
+}
+
+.hero-meta {
+  min-width: 0;
+}
+
+.hero-meta h1 {
   margin: 0;
-  font-size: 26px;
-  line-height: 1.2;
+  font-size: 44px;
+  line-height: 1.05;
+  letter-spacing: 0.2px;
 }
 
-.app-summary {
-  margin: 6px 0 0;
+.hero-owner {
+  margin: 8px 0 0;
   color: var(--text-secondary);
+  font-size: 16px;
 }
 
-.meta-inline {
-  margin-top: 10px;
+.hero-tags {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: rgba(18, 199, 123, 0.12);
+  color: var(--brand-color);
+}
+
+.tag.muted {
+  background: #f2f4f7;
+  color: #64748b;
+}
+
+.hero-summary {
+  margin: 14px 0 0;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.hero-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.focus-release-btn,
+.source-btn {
+  height: 44px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+.focus-release-btn .el-icon {
+  margin-right: 6px;
+}
+
+.source-btn {
+  border: 1px solid #dfe8e2;
+  text-decoration: none;
+  color: #334155;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.source-btn:hover {
+  color: var(--brand-color);
+  border-color: rgba(18, 199, 123, 0.35);
+}
+
+.cdn-badge {
+  align-self: flex-start;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: #64748b;
+  background: #f2f4f7;
+  font-weight: 700;
+}
+
+.cdn-badge.enabled {
+  color: var(--brand-color);
+  background: rgba(18, 199, 123, 0.12);
+}
+
+.metrics-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.metric-item {
+  padding: 14px;
   display: flex;
   align-items: center;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-
-.meta-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  color: var(--text-secondary);
-}
-
-.repo-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  color: var(--brand-color);
-  text-decoration: none;
-}
-
-.repo-link:hover {
-  text-decoration: underline;
-}
-
-.release-title {
-  margin: 10px 0 0;
-  font-size: 13px;
-  color: var(--text-tertiary);
-}
-
-.download-actions {
-  margin-top: 16px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   gap: 10px;
 }
 
-.download-item {
-  border: 1px solid var(--line-color);
-  border-radius: var(--radius-md);
-  background: rgba(236, 253, 245, 0.55);
-  padding: 10px;
+.metric-item .el-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(18, 199, 123, 0.12);
+  color: var(--brand-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.metric-label {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  font-weight: 700;
+}
+
+.metric-value {
+  margin: 4px 0 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.metric-value.ellipsis {
+  max-width: 210px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 16px;
+}
+
+.left-column,
+.right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.panel,
+.side-panel {
+  padding: 18px;
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #edf2ef;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+}
+
+.panel-head h2 {
+  margin: 0;
+  font-size: 30px;
+  line-height: 1.15;
+}
+
+.panel-link {
+  color: var(--brand-color);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.panel-link:hover {
+  text-decoration: underline;
+}
+
+.version-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.version-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.version-head strong {
+  font-size: 20px;
+}
+
+.latest-pill {
+  border-radius: 999px;
+  background: var(--brand-color);
+  color: #fff;
+  padding: 3px 8px;
+  font-size: 10px;
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.version-date {
+  margin: 0;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.side-panel h3 {
+  margin: 0 0 12px;
+  font-size: 20px;
+}
+
+.contributors-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.contributor-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.contributor-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #dfe9e2;
+}
+
+.contributor-meta {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.contributor-meta strong {
+  color: #0f172a;
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contributor-meta span {
+  color: #64748b;
+  font-size: 12px;
+}
+
+.asset-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.download-item :deep(.el-button) {
-  justify-content: flex-start;
-  font-weight: 600;
-  border-radius: 12px;
+.asset-item {
+  width: 100%;
+  border: 1px solid #e4ece8;
+  border-radius: 10px;
+  background: #fff;
+  padding: 10px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.download-hint {
-  min-height: 34px;
-  font-size: 12px;
-  color: var(--text-secondary);
-  word-break: break-all;
+.asset-item:hover {
+  border-color: rgba(18, 199, 123, 0.4);
 }
 
-.markdown-card :deep(.el-card__header) {
+.asset-item.active {
+  border-color: rgba(18, 199, 123, 0.55);
+  background: rgba(18, 199, 123, 0.06);
+}
+
+.asset-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.asset-name {
+  color: #0f172a;
+  font-size: 13px;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.asset-cdn {
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #64748b;
+  padding: 2px 8px;
+  font-size: 10px;
   font-weight: 700;
-  color: var(--text-primary);
+}
+
+.asset-cdn.enabled {
+  background: rgba(18, 199, 123, 0.15);
+  color: var(--brand-color);
+}
+
+.asset-meta {
+  margin-top: 7px;
+  display: flex;
+  gap: 12px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.asset-download-status {
+  border: 1px dashed #dce9e1;
+  border-radius: 10px;
+  background: #f9fcfa;
+  padding: 10px 12px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.asset-download-status p {
+  margin: 0;
+}
+
+.asset-download-status p + p {
+  margin-top: 6px;
+}
+
+.download-error {
+  margin: 0;
+  color: #dc2626;
+  font-size: 12px;
+  line-height: 1.4;
 }
 
 .markdown-body {
   color: var(--text-primary);
-  line-height: 1.7;
+  line-height: 1.75;
   word-break: break-word;
 }
 
@@ -554,8 +993,8 @@ onUnmounted(() => {
 
 .markdown-body :deep(pre) {
   overflow-x: auto;
-  padding: 10px;
-  border-radius: var(--radius-md);
+  padding: 12px;
+  border-radius: 10px;
   background: #0f172a;
   color: #e2e8f0;
 }
@@ -568,17 +1007,39 @@ onUnmounted(() => {
   color: var(--brand-color);
 }
 
-@media (max-width: 960px) {
-  .detail-page {
-    padding: 14px;
+@media (max-width: 1280px) {
+  .hero-section {
+    grid-template-columns: 1fr;
   }
 
-  .overview-head {
+  .metrics-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .detail-page {
+    padding: 12px;
+  }
+
+  .hero-main {
     flex-direction: column;
   }
 
-  .overview-meta h2 {
-    font-size: 22px;
+  .hero-meta h1 {
+    font-size: 32px;
+  }
+
+  .panel-head h2 {
+    font-size: 24px;
+  }
+
+  .metrics-row {
+    grid-template-columns: 1fr;
   }
 }
 </style>

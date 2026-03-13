@@ -226,6 +226,29 @@ type PlatformDownload struct {
 	Arch        string `json:"arch"`
 }
 
+type AppContributor struct {
+	Login         string `json:"login"`
+	DisplayName   string `json:"display_name"`
+	AvatarURL     string `json:"avatar_url"`
+	ProfileURL    string `json:"profile_url"`
+	Contributions int    `json:"contributions"`
+}
+
+type ReleaseAssetInfo struct {
+	Name          string `json:"name"`
+	DownloadURL   string `json:"download_url"`
+	Size          int64  `json:"size"`
+	DownloadCount int    `json:"download_count"`
+	UpdatedAt     string `json:"updated_at"`
+	Platform      string `json:"platform"`
+}
+
+type ReleaseCDNMeta struct {
+	Enabled        bool   `json:"enabled"`
+	SelectedSource string `json:"selected_source"`
+	Label          string `json:"label"`
+}
+
 type AppReleaseDetail struct {
 	Repo               string                      `json:"repo"`
 	Match              string                      `json:"match"`
@@ -238,6 +261,9 @@ type AppReleaseDetail struct {
 	ReadmeBranch       string                      `json:"readme_branch"`
 	ReadmeFilePath     string                      `json:"readme_file_path"`
 	Downloads          map[string]PlatformDownload `json:"downloads"`
+	Contributors       []AppContributor            `json:"contributors"`
+	ReleaseAssets      []ReleaseAssetInfo          `json:"release_assets"`
+	CDNMeta            ReleaseCDNMeta              `json:"cdn_meta"`
 }
 
 type StartDownloadRequest struct {
@@ -283,8 +309,19 @@ type githubRelease struct {
 }
 
 type githubAsset struct {
-	Name               string `json:"name"`
-	BrowserDownloadURL string `json:"browser_download_url"`
+	Name               string    `json:"name"`
+	BrowserDownloadURL string    `json:"browser_download_url"`
+	Size               int64     `json:"size"`
+	DownloadCount      int       `json:"download_count"`
+	UpdatedAt          time.Time `json:"updated_at"`
+}
+
+type githubContributor struct {
+	Login         string `json:"login"`
+	Name          string `json:"name"`
+	AvatarURL     string `json:"avatar_url"`
+	HTMLURL       string `json:"html_url"`
+	Contributions int    `json:"contributions"`
 }
 
 type githubRepo struct {
@@ -831,6 +868,18 @@ func (a *App) GetAppReleaseDetail(repo, match string) (*AppReleaseDetail, error)
 		readmeResult = readmeFetchResult{}
 	}
 
+	contributors, contributorsErr := a.fetchRepoContributors(repo, 4)
+	if contributorsErr != nil {
+		contributors = []AppContributor{}
+	}
+
+	sourceZipURL := resolveSourceCodeZipURL(repo, release)
+
+	currentCDNSettings := globalCDNSettings.getSnapshot()
+	if a.cdnSettings != nil {
+		currentCDNSettings = a.cdnSettings.getSnapshot()
+	}
+
 	detail := &AppReleaseDetail{
 		Repo:            repo,
 		Match:           match,
@@ -841,7 +890,10 @@ func (a *App) GetAppReleaseDetail(repo, match string) (*AppReleaseDetail, error)
 		ReadmeSourceURL: readmeResult.SourceURL,
 		ReadmeBranch:    readmeResult.Branch,
 		ReadmeFilePath:  readmeResult.FilePath,
-		Downloads:       buildPlatformDownloads(release.Assets, resolveSourceCodeZipURL(repo, release), pattern, normalizeArch(goruntime.GOARCH), platformKeywords),
+		Downloads:       buildPlatformDownloads(release.Assets, sourceZipURL, pattern, normalizeArch(goruntime.GOARCH), platformKeywords),
+		Contributors:    contributors,
+		ReleaseAssets:   buildReleaseAssets(release.Assets, sourceZipURL, platformKeywords),
+		CDNMeta:         buildReleaseCDNMeta(currentCDNSettings),
 	}
 
 	if !release.PublishedAt.IsZero() {
@@ -1131,6 +1183,73 @@ func (a *App) fetchRepoStars(repo string) (int, error) {
 	return repoInfo.StargazersCount, nil
 }
 
+func (a *App) fetchRepoContributors(repo string, limit int) ([]AppContributor, error) {
+	if limit <= 0 {
+		return []AppContributor{}, nil
+	}
+
+	endpoint := fmt.Sprintf(
+		"%s/repos/%s/contributors?per_page=%d",
+		strings.TrimRight(a.githubAPIBaseURL, "/"),
+		buildRepoPath(repo),
+		limit,
+	)
+	endpoint = applyGitHubProxy(endpoint)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	defer cancel()
+
+	req, err := a.newGitHubRequest(ctx, http.MethodGet, endpoint)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := a.apiClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= http.StatusBadRequest {
+		body, readErr := io.ReadAll(resp.Body)
+		if readErr != nil {
+			return nil, fmt.Errorf("github contributors API error (%d)", resp.StatusCode)
+		}
+		return nil, fmt.Errorf("github contributors API error (%d): %s", resp.StatusCode, strings.TrimSpace(string(body)))
+	}
+
+	var contributors []githubContributor
+	if err := json.NewDecoder(resp.Body).Decode(&contributors); err != nil {
+		return nil, err
+	}
+
+	result := make([]AppContributor, 0, len(contributors))
+	for _, contributor := range contributors {
+		if len(result) >= limit {
+			break
+		}
+
+		login := strings.TrimSpace(contributor.Login)
+		displayName := strings.TrimSpace(contributor.Name)
+		if displayName == "" {
+			displayName = login
+		}
+		if displayName == "" {
+			displayName = "unknown"
+		}
+
+		result = append(result, AppContributor{
+			Login:         login,
+			DisplayName:   displayName,
+			AvatarURL:     strings.TrimSpace(contributor.AvatarURL),
+			ProfileURL:    strings.TrimSpace(contributor.HTMLURL),
+			Contributions: contributor.Contributions,
+		})
+	}
+
+	return result, nil
+}
+
 func (a *App) newGitHubRequest(parent context.Context, method, endpoint string) (*http.Request, error) {
 	req, err := http.NewRequestWithContext(parent, method, endpoint, nil)
 	if err != nil {
@@ -1261,6 +1380,52 @@ func selectLatestRelease(releases []githubRelease) (githubRelease, error) {
 	}
 
 	return githubRelease{}, errors.New("no usable release found for this repository")
+}
+
+func buildReleaseAssets(assets []githubAsset, sourceZipURL string, platformKeywords map[string][]string) []ReleaseAssetInfo {
+	result := make([]ReleaseAssetInfo, 0, len(assets))
+
+	for _, asset := range assets {
+		downloadURL := strings.TrimSpace(asset.BrowserDownloadURL)
+		if downloadURL == "" {
+			continue
+		}
+
+		item := ReleaseAssetInfo{
+			Name:          strings.TrimSpace(asset.Name),
+			DownloadURL:   downloadURL,
+			Size:          asset.Size,
+			DownloadCount: asset.DownloadCount,
+			Platform:      detectAssetPlatform(asset.Name, platformKeywords),
+		}
+		if item.Name == "" {
+			item.Name = "release-asset"
+		}
+		if !asset.UpdatedAt.IsZero() {
+			item.UpdatedAt = asset.UpdatedAt.UTC().Format(time.RFC3339)
+		}
+		result = append(result, item)
+	}
+
+	sourceZipURL = strings.TrimSpace(sourceZipURL)
+	if len(result) == 0 && sourceZipURL != "" {
+		result = append(result, ReleaseAssetInfo{
+			Name:        "source-code.zip",
+			DownloadURL: sourceZipURL,
+			Platform:    "source",
+		})
+	}
+
+	return result
+}
+
+func detectAssetPlatform(name string, platformKeywords map[string][]string) string {
+	for _, platform := range supportedPlatforms {
+		if matchesPlatform(name, platform, platformKeywords) {
+			return platform
+		}
+	}
+	return "unknown"
 }
 
 func buildPlatformDownloads(assets []githubAsset, sourceZipURL string, basePattern *regexp.Regexp, localArch string, platformKeywords map[string][]string) map[string]PlatformDownload {
@@ -1515,6 +1680,33 @@ func resolveSourceCodeZipURL(repo string, release githubRelease) string {
 	}
 
 	return strings.TrimSpace(release.ZipballURL)
+}
+
+func buildReleaseCDNMeta(settings CDNSettings) ReleaseCDNMeta {
+	meta := ReleaseCDNMeta{
+		Enabled:        settings.Enabled,
+		SelectedSource: resolveSelectedCDNSource(settings),
+		Label:          "直连",
+	}
+
+	if !meta.Enabled {
+		return meta
+	}
+
+	source := strings.TrimSpace(meta.SelectedSource)
+	if source == "" {
+		meta.Label = "CDN"
+		return meta
+	}
+
+	parsed, err := url.Parse(source)
+	if err != nil || strings.TrimSpace(parsed.Host) == "" {
+		meta.Label = source
+		return meta
+	}
+
+	meta.Label = parsed.Host
+	return meta
 }
 
 func applyGitHubProxy(rawURL string) string {
