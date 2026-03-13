@@ -41,7 +41,7 @@ type App struct {
 func NewApp() *App {
 	return &App{
 		apiClient: &http.Client{
-			Timeout: 20 * time.Second,
+			Timeout: releaseRequestTimeout,
 		},
 		downloadClient:    &http.Client{},
 		githubAPIBaseURL:  "https://api.github.com",
@@ -341,6 +341,7 @@ const (
 	defaultAppPlaceholder = "https://github.githubassets.com/favicons/favicon.png"
 	defaultCDNSource      = "https://ghproxy.net/"
 	alternateCDNSource    = "https://ghfast.top/"
+	releaseRequestTimeout = 45 * time.Second
 
 	platformWindows = "windows"
 	platformLinux   = "linux"
@@ -970,38 +971,76 @@ func (a *App) fetchReleases(repo string) ([]githubRelease, error) {
 		return nil, errors.New("invalid repo format: expected owner/repo")
 	}
 
-	endpoint := fmt.Sprintf(
+	proxyEndpoint := fmt.Sprintf(
 		"%s/api/releases/%s?per_page=30",
 		strings.TrimRight(a.releaseAPIBaseURL, "/"),
 		repoPath,
 	)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), releaseRequestTimeout)
 	defer cancel()
 
-	req, err := a.newReleaseProxyRequest(ctx, endpoint)
+	req, err := a.newReleaseProxyRequest(ctx, proxyEndpoint)
 	if err != nil {
 		return nil, err
 	}
 
 	resp, err := a.apiClient.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("failed to fetch releases from proxy: %w", err)
+		return a.fetchReleasesFromGitHubWithFallback(repoPath, fmt.Errorf("failed to fetch releases from proxy: %w", err))
 	}
 	defer resp.Body.Close()
 
+	releases, err := decodeReleaseResponse(resp, "release proxy")
+	if err != nil {
+		return a.fetchReleasesFromGitHubWithFallback(repoPath, err)
+	}
+
+	return releases, nil
+}
+
+func (a *App) fetchReleasesFromGitHubWithFallback(repoPath string, proxyErr error) ([]githubRelease, error) {
+	githubEndpoint := fmt.Sprintf(
+		"%s/repos/%s/releases?per_page=30",
+		strings.TrimRight(a.githubAPIBaseURL, "/"),
+		repoPath,
+	)
+
+	ctx, cancel := context.WithTimeout(context.Background(), releaseRequestTimeout)
+	defer cancel()
+
+	req, err := a.newGitHubRequest(ctx, http.MethodGet, githubEndpoint)
+	if err != nil {
+		return nil, fmt.Errorf("%v; failed to build GitHub fallback request: %w", proxyErr, err)
+	}
+
+	resp, err := a.apiClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("%v; GitHub fallback request failed: %w", proxyErr, err)
+	}
+	defer resp.Body.Close()
+
+	releases, decodeErr := decodeReleaseResponse(resp, "GitHub fallback")
+	if decodeErr != nil {
+		return nil, fmt.Errorf("%v; %w", proxyErr, decodeErr)
+	}
+
+	return releases, nil
+}
+
+func decodeReleaseResponse(resp *http.Response, source string) ([]githubRelease, error) {
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read release proxy response: %w", err)
+		return nil, fmt.Errorf("failed to read %s response: %w", source, err)
 	}
 
 	if resp.StatusCode >= http.StatusBadRequest {
-		return nil, fmt.Errorf("release proxy API error (%d): %s", resp.StatusCode, strings.TrimSpace(string(body)))
+		return nil, fmt.Errorf("%s API error (%d): %s", source, resp.StatusCode, strings.TrimSpace(string(body)))
 	}
 
 	var releases []githubRelease
 	if err := json.Unmarshal(body, &releases); err != nil {
-		return nil, fmt.Errorf("failed to parse release proxy response: %w", err)
+		return nil, fmt.Errorf("failed to parse %s response: %w", source, err)
 	}
 
 	return releases, nil

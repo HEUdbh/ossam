@@ -1,11 +1,14 @@
 package main
 
 import (
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
 	"testing"
+	"time"
 )
 
 func writeFixtureFile(t *testing.T, filePath, content string) {
@@ -257,6 +260,52 @@ func TestResolveGitHubURLKeepsReleaseProxyUntouched(t *testing.T) {
 	releaseProxyURL := "https://ossam.hqs.qzz.io/api/releases/owner/repo?per_page=30"
 	if got := resolveGitHubURL(releaseProxyURL, settings); got != releaseProxyURL {
 		t.Fatalf("release proxy URL should not be changed, got %q", got)
+	}
+}
+
+func TestFetchReleasesFallsBackToGitHubWhenProxyResponseTimeout(t *testing.T) {
+	var proxyCalls int
+	var fallbackCalls int
+
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.HasPrefix(r.URL.Path, "/api/releases/"):
+			proxyCalls++
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			_, _ = w.Write([]byte("["))
+			if flusher, ok := w.(http.Flusher); ok {
+				flusher.Flush()
+			}
+			time.Sleep(250 * time.Millisecond)
+			_, _ = w.Write([]byte("]"))
+		case strings.HasPrefix(r.URL.Path, "/repos/"):
+			fallbackCalls++
+			w.Header().Set("Content-Type", "application/json")
+			_, _ = w.Write([]byte(`[{"tag_name":"v1.0.0","name":"v1.0.0"}]`))
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer server.Close()
+
+	app := NewApp()
+	app.apiClient = &http.Client{Timeout: 100 * time.Millisecond}
+	app.releaseAPIBaseURL = server.URL
+	app.githubAPIBaseURL = server.URL
+
+	releases, err := app.fetchReleases("owner/repo")
+	if err != nil {
+		t.Fatalf("expected fallback to succeed, got error: %v", err)
+	}
+	if len(releases) != 1 {
+		t.Fatalf("expected 1 release from fallback, got %d", len(releases))
+	}
+	if proxyCalls == 0 {
+		t.Fatal("expected release proxy to be attempted first")
+	}
+	if fallbackCalls == 0 {
+		t.Fatal("expected GitHub fallback request to be called")
 	}
 }
 

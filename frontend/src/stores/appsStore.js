@@ -1,4 +1,5 @@
 import { computed, reactive } from "vue";
+import { sortCategories } from "../utils/marketMeta";
 import {
   GetAppReleaseDetail,
   GetAppsConfig,
@@ -175,7 +176,7 @@ export function useAppsStore() {
       return [];
     }
 
-    return Object.keys(apps).sort((left, right) => left.localeCompare(right));
+    return sortCategories(Object.keys(apps));
   });
 
   const appsByCategory = (category) => {

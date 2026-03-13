@@ -1,76 +1,132 @@
-<script setup>
+﻿<script setup>
 import { computed, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { Search } from "@element-plus/icons-vue";
 import StatusState from "../components/StatusState.vue";
 import { loadAppsConfig, loadRepoStars, useAppsStore } from "../stores/appsStore";
+import { getCategoryDisplayName } from "../utils/marketMeta";
+
+const HERO_LIMIT = 4;
 
 const route = useRoute();
 const router = useRouter();
 const { state, categories, appsByCategory, getRepoStarCount } = useAppsStore();
 
 const selectedCategory = ref("");
-const searchQuery = ref("");
-const categoryLabels = {
-  Security: "安全工具",
-  DevTools: "开发利器",
-  System: "系统增强",
-  Network: "网络插件",
-  Database: "数据管理",
-  Terminal: "终端效率",
-  Utility: "效率办公",
-};
 
-const normalizedSearch = computed(() => String(searchQuery.value || "").trim().toLowerCase());
+const normalizedSearch = computed(() => String(route.query.q || "").trim().toLowerCase());
 const isSearchMode = computed(() => normalizedSearch.value.length > 0);
 
-const currentCategoryApps = computed(() => {
-  const apps = appsByCategory(selectedCategory.value);
-  return apps.map((app) => ({ app, category: selectedCategory.value }));
+const categoryItems = computed(() => {
+  if (!selectedCategory.value) {
+    return [];
+  }
+
+  return appsByCategory(selectedCategory.value).map((app, index) => ({
+    app,
+    category: selectedCategory.value,
+    index,
+    star: getStarValue(app.repo),
+  }));
 });
 
-const allApps = computed(() => {
+const sortedCategoryItems = computed(() =>
+  [...categoryItems.value].sort((left, right) => {
+    const leftStar = typeof left.star === "number" ? left.star : -1;
+    const rightStar = typeof right.star === "number" ? right.star : -1;
+    if (leftStar !== rightStar) {
+      return rightStar - leftStar;
+    }
+    return left.index - right.index;
+  })
+);
+
+const heroItems = computed(() => {
+  if (isSearchMode.value) {
+    return [];
+  }
+  return sortedCategoryItems.value.slice(0, HERO_LIMIT);
+});
+
+const compactItems = computed(() => {
+  if (isSearchMode.value) {
+    return searchItems.value;
+  }
+
+  const remaining = sortedCategoryItems.value.slice(HERO_LIMIT);
+  if (remaining.length) {
+    return remaining;
+  }
+
+  return sortedCategoryItems.value;
+});
+
+const allItems = computed(() => {
   const result = [];
   categories.value.forEach((category) => {
-    appsByCategory(category).forEach((app) => {
-      result.push({ app, category });
+    appsByCategory(category).forEach((app, index) => {
+      result.push({
+        app,
+        category,
+        index,
+        star: getStarValue(app.repo),
+      });
     });
   });
   return result;
 });
 
-const filteredApps = computed(() => {
-  if (!isSearchMode.value) {
-    return currentCategoryApps.value;
+const searchItems = computed(() => {
+  const keyword = normalizedSearch.value;
+  if (!keyword) {
+    return [];
   }
 
-  const keyword = normalizedSearch.value;
-  return allApps.value.filter(({ app, category }) => {
-    const haystack = [
-      app.name,
-      app.summary,
-      app.repo,
-      category,
-      getCategoryDisplayName(category),
-    ]
-      .map((item) => String(item || "").toLowerCase())
-      .join(" ");
-    return haystack.includes(keyword);
-  });
+  return allItems.value
+    .filter(({ app, category }) => {
+      const haystack = [
+        app.name,
+        app.summary,
+        app.repo,
+        category,
+        getCategoryDisplayName(category),
+      ]
+        .map((item) => String(item || "").toLowerCase())
+        .join(" ");
+      return haystack.includes(keyword);
+    })
+    .sort((left, right) => {
+      const leftStar = typeof left.star === "number" ? left.star : -1;
+      const rightStar = typeof right.star === "number" ? right.star : -1;
+      if (leftStar !== rightStar) {
+        return rightStar - leftStar;
+      }
+      return String(left.app.name || "").localeCompare(String(right.app.name || ""));
+    });
 });
 
 const emptyTitle = computed(() =>
   isSearchMode.value ? "没有找到匹配的应用" : "当前分类暂无应用"
 );
+
 const emptyDescription = computed(() =>
   isSearchMode.value
-    ? "请尝试更换关键词，支持按名称、简介、仓库地址进行搜索。"
-    : "可在 config/rules.json 和 config/categories/*.json 中补充该分类的应用条目。"
+    ? "请尝试更换关键词（支持名称、简介、仓库搜索）。"
+    : "可以在 config/rules.json 与 config/categories/*.json 中补充应用。"
 );
 
-function getCategoryDisplayName(category) {
-  const normalized = String(category || "").trim();
-  return categoryLabels[normalized] || normalized;
+const marketTitle = computed(() =>
+  isSearchMode.value ? `搜索结果 · ${searchItems.value.length}` : "应用市场"
+);
+
+const marketSubtitle = computed(() =>
+  isSearchMode.value
+    ? `关键词：${String(route.query.q || "").trim()}`
+    : `${getCategoryDisplayName(selectedCategory.value)} · 发现优质开源工具`
+);
+
+function getStarValue(repo) {
+  const value = getRepoStarCount(repo);
+  return typeof value === "number" && !Number.isNaN(value) ? value : null;
 }
 
 function syncSelectedCategory() {
@@ -89,15 +145,11 @@ function syncSelectedCategory() {
   selectedCategory.value = categories.value[0];
   router.replace({
     name: "market",
-    query: { category: selectedCategory.value },
+    query: {
+      ...route.query,
+      category: selectedCategory.value,
+    },
   });
-}
-
-function chooseCategory(category) {
-  if (!category || category === selectedCategory.value) {
-    return;
-  }
-  router.push({ name: "market", query: { category } });
 }
 
 function formatStarCount(value) {
@@ -118,6 +170,17 @@ function formatStarCount(value) {
 
 function starLabel(repo) {
   return formatStarCount(getRepoStarCount(repo));
+}
+
+function heroStyle(item) {
+  const photo = String(item?.app?.photo || "").trim();
+  if (!photo) {
+    return {};
+  }
+
+  return {
+    backgroundImage: `linear-gradient(102deg, rgba(15,23,42,.85), rgba(15,23,42,.35)), url("${photo}")`,
+  };
 }
 
 async function initializeMarket() {
@@ -143,288 +206,268 @@ watch(categories, () => {
 </script>
 
 <template>
-  <div class="market-layout">
-    <section class="apps-panel">
-      <header class="apps-header">
-        <el-scrollbar class="category-top-nav">
-          <div class="category-nav-list">
-            <button
-              v-for="category in categories"
-              :key="category"
-              class="category-button"
-              :class="{ active: category === selectedCategory }"
-              @click="chooseCategory(category)"
-            >
-              <span class="category-dot" />
-              <span class="category-text">{{ getCategoryDisplayName(category) }}</span>
-            </button>
-          </div>
-        </el-scrollbar>
-
-        <div class="apps-actions">
-          <el-input
-            v-model="searchQuery"
-            clearable
-            class="search-input"
-            placeholder="搜索名称、简介或仓库"
-          >
-            <template #prefix>
-              <el-icon><Search /></el-icon>
-            </template>
-          </el-input>
-          <el-tag effect="plain" type="success">
-            更新：{{ state.config?.last_updated || "-" }}
-          </el-tag>
-        </div>
-      </header>
-
-      <el-alert
-        v-if="state.repoStarsError"
-        class="stars-alert"
-        type="warning"
-        :closable="false"
-        title="Star 数据更新失败，已自动回退缓存值。"
-      />
-
-      <StatusState
-        v-if="state.loading"
-        type="loading"
-        title="正在加载应用清单"
-        description="正在读取本地配置文件，请稍候。"
-      />
-      <StatusState
-        v-else-if="state.error"
-        type="error"
-        title="配置加载失败"
-        :description="state.error"
-      />
-      <StatusState
-        v-else-if="!filteredApps.length"
-        type="empty"
-        :title="emptyTitle"
-        :description="emptyDescription"
-      />
-
-      <div v-else class="app-grid">
-        <router-link
-          v-for="item in filteredApps"
-          :key="`${item.category}-${item.app.name}`"
-          class="app-card"
-          :to="{
-            name: 'app-detail',
-            params: { category: item.category, name: item.app.name },
-          }"
-        >
-          <img class="app-icon" :src="item.app.photo" :alt="item.app.name" />
-          <div class="app-body">
-            <div class="app-header">
-              <h3 class="app-name">{{ item.app.name }}</h3>
-              <el-tag
-                v-if="isSearchMode"
-                size="small"
-                effect="plain"
-                type="success"
-                class="category-badge"
-              >
-                {{ getCategoryDisplayName(item.category) }}
-              </el-tag>
-            </div>
-            <p class="app-summary">{{ item.app.summary }}</p>
-            <div class="app-meta">
-              <span class="app-star">★ {{ starLabel(item.app.repo) }}</span>
-            </div>
-          </div>
-        </router-link>
+  <div class="market-view">
+    <header class="market-header">
+      <div>
+        <h1>{{ marketTitle }}</h1>
+        <p>{{ marketSubtitle }}</p>
       </div>
-    </section>
+      <el-tag effect="plain" type="success">更新：{{ state.config?.last_updated || "-" }}</el-tag>
+    </header>
+
+    <el-alert
+      v-if="state.repoStarsError"
+      class="stars-alert"
+      type="warning"
+      :closable="false"
+      title="Star 数据更新失败，已自动回退缓存值。"
+    />
+
+    <StatusState
+      v-if="state.loading"
+      type="loading"
+      title="正在加载应用列表"
+      description="正在读取本地配置文件，请稍候。"
+    />
+    <StatusState
+      v-else-if="state.error"
+      type="error"
+      title="配置加载失败"
+      :description="state.error"
+    />
+    <StatusState
+      v-else-if="!compactItems.length"
+      type="empty"
+      :title="emptyTitle"
+      :description="emptyDescription"
+    />
+
+    <template v-else>
+      <section v-if="!isSearchMode && heroItems.length" class="hero-section">
+        <el-carousel height="220px" trigger="click" indicator-position="outside" :interval="4200" arrow="always">
+          <el-carousel-item v-for="item in heroItems" :key="`hero-${item.category}-${item.app.name}`">
+            <router-link
+              class="hero-card"
+              :to="{
+                name: 'app-detail',
+                params: { category: item.category, name: item.app.name },
+              }"
+              :style="heroStyle(item)"
+            >
+              <div class="hero-content">
+                <el-tag type="success" effect="light" class="hero-tag">
+                  {{ getCategoryDisplayName(item.category) }}
+                </el-tag>
+                <h2>{{ item.app.name }}</h2>
+                <p>{{ item.app.summary || '查看项目详情、发布版本与多平台下载。' }}</p>
+                <span class="hero-meta">★ {{ starLabel(item.app.repo) }}</span>
+              </div>
+            </router-link>
+          </el-carousel-item>
+        </el-carousel>
+      </section>
+
+      <section class="apps-section">
+        <div class="apps-section-title">
+          {{ isSearchMode ? "匹配应用" : "更多应用" }}
+        </div>
+
+        <div class="compact-grid" :class="{ searching: isSearchMode }">
+          <router-link
+            v-for="item in compactItems"
+            :key="`${item.category}-${item.app.name}`"
+            class="compact-card"
+            :to="{
+              name: 'app-detail',
+              params: { category: item.category, name: item.app.name },
+            }"
+          >
+            <img class="compact-icon" :src="item.app.photo" :alt="item.app.name" />
+            <div class="compact-body">
+              <div class="compact-header">
+                <h3>{{ item.app.name }}</h3>
+                <el-tag v-if="isSearchMode" size="small" effect="plain" type="success">
+                  {{ getCategoryDisplayName(item.category) }}
+                </el-tag>
+              </div>
+              <p>{{ item.app.summary }}</p>
+              <span class="compact-star">★ {{ starLabel(item.app.repo) }}</span>
+            </div>
+          </router-link>
+        </div>
+      </section>
+    </template>
   </div>
 </template>
 
 <style scoped>
-.market-layout {
+.market-view {
   height: 100%;
   min-height: 0;
-  background: var(--surface-1);
-}
-
-.apps-panel {
-  height: 100%;
-  min-height: 0;
-  padding: 20px;
+  padding: 18px 18px 14px;
   display: flex;
   flex-direction: column;
   gap: 14px;
+  overflow-y: auto;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfefc 100%);
 }
 
-.apps-header {
+.market-header {
   display: flex;
-  flex-direction: column;
-  align-items: stretch;
+  align-items: flex-start;
+  justify-content: space-between;
   gap: 12px;
 }
 
-.category-top-nav {
-  width: 100%;
+.market-header h1 {
+  margin: 0;
+  font-size: 34px;
+  line-height: 1.1;
+  letter-spacing: 0.2px;
 }
 
-.category-top-nav :deep(.el-scrollbar__wrap) {
-  overflow-y: hidden;
-}
-
-.category-top-nav :deep(.el-scrollbar__view) {
-  display: flex;
-  padding-bottom: 2px;
-}
-
-.category-nav-list {
-  display: flex;
-  gap: 8px;
-  min-width: max-content;
-}
-
-.category-button {
-  flex: 0 0 auto;
-  border: 1px solid transparent;
-  border-radius: var(--radius-md);
-  background: transparent;
+.market-header p {
+  margin: 8px 0 0;
   color: var(--text-secondary);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  text-align: left;
-  cursor: pointer;
-  transition:
-    color var(--duration-fast) ease,
-    background-color var(--duration-fast) ease,
-    border-color var(--duration-fast) ease;
-}
-
-.category-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: transparent;
-  transition: background-color var(--duration-fast) ease;
-}
-
-.category-button:hover {
-  color: var(--brand-color);
-  background: var(--brand-color-soft);
-  border-color: rgba(5, 150, 105, 0.18);
-}
-
-.category-button:hover .category-dot {
-  background: rgba(5, 150, 105, 0.4);
-}
-
-.category-button.active {
-  color: var(--brand-color);
-  background: var(--brand-color-weak);
-  border-color: rgba(5, 150, 105, 0.3);
-  font-weight: 600;
-}
-
-.category-button.active .category-dot {
-  background: var(--brand-color);
-}
-
-.category-text {
-  min-width: 0;
-}
-
-.apps-actions {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.search-input {
-  width: 320px;
-}
-
-.search-input :deep(.el-input__wrapper) {
-  border-radius: var(--radius-md);
-  box-shadow: 0 0 0 1px #d5e8da inset;
 }
 
 .stars-alert {
-  margin-bottom: -2px;
+  margin-bottom: 2px;
 }
 
-.app-grid {
-  min-height: 0;
-  flex: 1;
-  overflow-y: auto;
+.hero-section :deep(.el-carousel__container) {
+  border-radius: var(--radius-lg);
+}
+
+.hero-section :deep(.el-carousel__button) {
+  background: rgba(15, 23, 42, 0.4);
+}
+
+.hero-card {
+  height: 100%;
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  color: #e2e8f0;
+  background:
+    linear-gradient(102deg, rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.35)),
+    linear-gradient(120deg, #1f2937, #334155);
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-end;
+  padding: 22px;
+}
+
+.hero-content {
+  max-width: min(640px, 100%);
+}
+
+.hero-tag {
+  margin-bottom: 10px;
+}
+
+.hero-content h2 {
+  margin: 0;
+  font-size: 30px;
+  line-height: 1.1;
+  color: #f8fafc;
+}
+
+.hero-content p {
+  margin: 10px 0 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: rgba(226, 232, 240, 0.94);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.hero-meta {
+  margin-top: 14px;
+  display: inline-block;
+  color: #facc15;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.apps-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.apps-section-title {
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.compact-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 14px;
-  align-content: start;
-  padding-right: 4px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
 }
 
-.app-card {
+.compact-grid.searching {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.compact-card {
   border: 1px solid var(--line-color);
   border-radius: var(--radius-lg);
-  background: linear-gradient(180deg, #ffffff 0%, #fbfefb 100%);
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.05);
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
   text-decoration: none;
   color: var(--text-primary);
-  padding: 16px;
   display: grid;
-  grid-template-columns: 58px minmax(0, 1fr);
+  grid-template-columns: 56px minmax(0, 1fr);
   gap: 12px;
-  transition:
-    transform var(--duration-fast) ease,
-    box-shadow var(--duration-fast) ease,
-    border-color var(--duration-fast) ease;
+  padding: 14px;
+  transition: all 0.2s ease;
 }
 
-.app-card:hover {
+.compact-card:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-card);
-  border-color: rgba(5, 150, 105, 0.3);
+  border-color: rgba(18, 199, 123, 0.36);
+  box-shadow: 0 12px 24px rgba(18, 199, 123, 0.16);
 }
 
-.app-icon {
-  width: 58px;
-  height: 58px;
-  border-radius: var(--radius-md);
+.compact-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  border: 1px solid #e8f1ed;
   object-fit: cover;
   background: var(--surface-3);
-  border: 1px solid #e2efe6;
 }
 
-.app-body {
+.compact-body {
   min-width: 0;
 }
 
-.app-header {
+.compact-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
 }
 
-.app-name {
+.compact-header h3 {
   margin: 0;
-  font-size: 17px;
-  font-weight: 700;
-  line-height: 1.2;
   min-width: 0;
+  font-size: 16px;
+  line-height: 1.25;
   overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
-.category-badge {
-  flex-shrink: 0;
-}
-
-.app-summary {
-  margin: 8px 0 0;
+.compact-body p {
+  margin: 7px 0 0;
   color: var(--text-secondary);
   font-size: 13px;
   line-height: 1.55;
@@ -434,37 +477,30 @@ watch(categories, () => {
   overflow: hidden;
 }
 
-.app-meta {
+.compact-star {
   margin-top: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-}
-
-.app-star {
+  display: inline-block;
   color: var(--warning-color);
   font-size: 13px;
   font-weight: 700;
 }
 
-@media (max-width: 1279px) {
-  .search-input {
-    width: 260px;
-  }
-}
-
 @media (max-width: 960px) {
-  .apps-panel {
+  .market-view {
     padding: 14px;
+    gap: 12px;
   }
 
-  .apps-actions {
-    width: 100%;
-    justify-content: flex-start;
+  .market-header h1 {
+    font-size: 28px;
   }
 
-  .search-input {
-    width: 100%;
+  .hero-section :deep(.el-carousel__container) {
+    height: 200px !important;
+  }
+
+  .hero-content h2 {
+    font-size: 24px;
   }
 }
 </style>
