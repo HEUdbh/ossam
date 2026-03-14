@@ -1,218 +1,389 @@
-# 一、项目概述
+# OSSAM - Open Source Software Application Market
 
-一款针对 GitHub 的开源软件应用市场（Open source software application market），对开源软件进行综合管理。支持一键下载最新版本，集中浏览，方便快捷。多线程下载，避免长久等待。
+[![Go](https://img.shields.io/badge/Go-1.23-00ADD8?style=flat&logo=go)](https://go.dev/)
+[![Wails](https://img.shields.io/badge/Wails-v2.11.0-00C7B7?style=flat)](https://wails.io/)
+[![Vue](https://img.shields.io/badge/Vue-3.5-4FC08D?style=flat&logo=vue.js)](https://vuejs.org/)
+[![License](https://img.shields.io/badge/License-MIT-blue?style=flat)](LICENSE)
 
-# 二、解决痛点
+**OSSAM** 是一款面向 GitHub 开源软件的桌面应用市场，提供一键下载、集中浏览、多线程加速等能力，让工程师快速装机、高效投产。
 
-传统工程师换新电脑，或者去到新公司，需要快速装机，投入生产。去 GitHub 手动下载存在需要一个一个搜索并下载，程序繁琐，容易疏漏等问题；使用应用市场统一管理，方便高效，同时可以避免疏漏的情况。
-面对新电脑，通常还存在需要 VPN 才能稳定访问 GitHub 和开源 VPN 在 GitHub 上下载的尴尬问题，软件提供统一下载体验，并且新人友好。
+---
 
-# 三、功能分析
+## 📖 目录
 
-## 1.多线程下载
+- [项目概述](#-项目概述)
+- [解决痛点](#-解决痛点)
+- [核心功能](#-核心功能)
+- [技术栈](#-技术栈)
+- [快速开始](#-快速开始)
+- [项目结构](#-项目结构)
+- [配置说明](#-配置说明)
+- [开发指南](#-开发指南)
+- [构建与发布](#-构建与发布)
+- [贡献指南](#-贡献指南)
+- [License](#-license)
 
-使用golang实现多线程同时下载
+---
 
-## 2.稳定下载能力
+## 📋 项目概述
 
-提供 GitHub 资源的统一下载流程
+OSSAM (Open Source Software Application Market) 是一个基于 **Go + Wails + Vue 3** 构建的跨平台桌面应用，旨在为开发者提供统一的 GitHub 开源软件管理体验。
 
-## 3.可以修改文件下载位置
+### 设计理念
 
-允许用户修改默认存储位置并保存
+- **一键下载**：自动识别 GitHub Release，智能匹配平台架构
+- **集中管理**：分类浏览、模糊搜索、批量下载
+- **加速体验**：内置 CDN 加速，多线程并发下载
+- **开源可扩展**：软件源配置开源，社区共同维护
 
-## 4.自动更新
+---
 
-检测 GitHub 仓库 release 版本实现远程自动更新
+## 🎯 解决痛点
 
-## 5.读取管理GitHub相关开源项目
+| 场景 | 传统方式 | OSSAM 方案 |
+|------|----------|------------|
+| 新电脑装机 | 手动搜索、逐个下载 | 分类浏览、一键批量下载 |
+| GitHub 访问 | 需要 VPN、下载慢 | 内置 CDN 加速、稳定下载 |
+| 版本管理 | 手动检查更新 | 自动检测、一键升级 |
+| 软件发现 | 信息分散、难以筛选 | 分类管理、快速搜索 |
 
-通过配置文件读取目标仓库地址，自动拼接release版本，正则匹配相关文件名称进行版本管理和下载。
-（下载中断处理？）
+---
 
-## 6.创建软件分类
+## ✨ 核心功能
 
-对软件进行分类处理，方便用户寻找；加入搜索框允许进行模糊搜索
-🛡️ 安全工具 (Security),扫描器 (Scanner)、爆破 (Brute Force)、内网渗透、取证
-🛠️ 开发利器 (DevTools),IDE、编译器、代码格式化、Git 增强工具
-💻 系统增强 (System),包管理器、文件搜索、快速启动、虚拟机、容器
-🌐 网络插件 (Network),代理/VPN、抓包工具、API 调试 (Postman 类)、下载增强
-📊 数据管理 (Database),SQL 客户端、Redis 管理器、数据可视化、日志分析
-终端艺术 (Terminal),Shell、终端模拟器、常用 CLI 工具、Zsh 插件
-🎨 效率办公 (Utility),截图工具、录屏、Markdown 编辑器、笔记软件
+### 1. 多线程高速下载
+- 基于 Go `net/http` 实现并发下载
+- 支持断点续传（预留扩展点）
+- 下载进度实时显示
 
-## 7.创建用户管理（待议）
+### 2. 智能平台匹配
+- 自动识别 Windows / macOS / Linux
+- 识别 AMD64 / ARM64 / 386 架构
+- 智能匹配 Release 资产
 
-允许登录（非强制），登录可以保存自己的个人软件配置包实现个人偏好一键下载，无需再去寻找等；相关用户信息通过 Cloudflare 保存；
+### 3. CDN 加速
+- 内置 `ghproxy.net` / `ghfast.top` 加速源
+- 支持自定义 CDN 源
+- 可配置开关与优先级
 
-## 8.安全校验
-
-对下载文件的 Hash 进行校验保证下载的完整性；
-
-## 9.跨平台架构识别
-
-识别本地计算机架构，实现精准匹配（Windows、macOS）
-
-## 10.开源的软件源清单
-
-对软件源配置文件实行开源，欢迎补充丰富
-
-## 11.依赖环境检测
-
-检测系统环境，检测必要依赖是否安装等
-
-# 四、前端设计
-
-1. 默认主界面即为应用市场，一级侧边栏：“应用市场”、“我的”，一级侧边栏底部设置窗口
-2. 应用市场：二级侧边栏为软件分类；主界面为具体的软件展示界面，具体的软件内容读取软件配置文件；展示方式采用图标+名称的方式展示，图标来自于远程连接或者读取 GitHub 的作者头像；点击任意软件图标，跳转新页面显示软件详细：名称、介绍、版本、开发者、原仓库连接，以及不同平台的不同下载按钮；
-3. 我的：需要登录才可以使用，用于管理个人偏好配置（待议）
-4. 登录界面
-5. 设置界面：两个子页面，采用弹出新窗口的模式显示，分为“下载地址设置”和“关于作者”两个界面；
-
-# 五、存储数据设计
-
-## 1.用户信息存储
-
-使用 Cloudflare 的 KV 数据库存储即可
-
-## 2.用户偏好存储
-
-使用 Cloudflare 的 KV 数据库存储
-
-## 3.软件配置表
-
-采用json格式存储
-
+### 4. 应用分类管理
 ```
-{
-  "market_name": "ossam",
-  "last_updated": "20260309",
-  "apps": {
-    "Security": [
-      {
-        "name": "oneforall",
-        "repo": "shmilylty/OneForAll",
-        "photo": "https://github.com/<用户名>.png", 
-        "match": ".*\\.zip"
-      },
-      {
-        "name": "dirsearch",
-        "repo": "maurosoria/dirsearch",
-        "photo": "https://cas.hrbeu.edu.cn/favicon.ico",
-        "match": "dirsearch-.*\\.tar.gz"
-      }
-    ],
-    "DevTools": [
-      {
-        "name": "fzf",
-        "repo": "junegunn/fzf",
-        "photo": "",
-        "match": "fzf-.*-windows_amd64.zip"
-      }
-    ],
-    "System": []
-  }
-}
+🛡️ 安全工具 (Security)
+🛠️ 开发利器 (DevTools)
+💻 系统增强 (System)
+🌐 网络插件 (Network)
+📊 数据管理 (Database)
+📟 终端艺术 (Terminal)
+🎨 效率办公 (Utility)
 ```
 
-# 六、开发阶段设计
+### 5. 自动更新
+- 检测 GitHub Release 版本
+- 对比本地版本号
+- 提示并执行更新
 
-## 阶段 1：项目骨架与配置读取
+### 6. 安全校验
+- 下载文件 Hash 校验（预留）
+- 完整性验证
+- 异常处理与重试
 
-- 阶段目标：搭建可运行的桌面应用最小闭环，完成配置驱动能力。
-- 功能清单：初始化并稳定现有 Go + Wails + Vue 工程；读取 `config/rules.json` 与 `config/categories/*.json`；建立配置解析与异常提示（文件缺失、JSON 格式错误）。
-- 阶段产出：应用可启动；可从本地配置加载并展示基础应用数据。
+---
 
-## 阶段 2：GitHub Release 拉取与下载核心
+## 🛠️ 技术栈
 
-- 阶段目标：打通“仓库版本发现 -> 资源匹配 -> 下载执行”的核心链路。
-- 功能清单：接入 GitHub Release 信息拉取；按 `match` 正则匹配目标资源；实现并发下载；预留断点续传扩展点（任务元数据结构与接口）。
-- 阶段产出：可稳定下载目标版本文件；可追踪下载任务状态（开始、进行中、失败、完成）。
+### 后端
+| 技术 | 版本 | 说明 |
+|------|------|------|
+| Go | 1.23 | 核心后端逻辑 |
+| Wails | v2.11.0 | 桌面应用框架 |
 
-## 阶段 3：应用市场 UI
+### 前端
+| 技术 | 版本 | 说明 |
+|------|------|------|
+| Vue | 3.5.30 | 响应式框架 |
+| Vite | 8.0.0 | 构建工具 |
+| Element Plus | 2.13.5 | UI 组件库 |
+| Vue Router | 5.0.3 | 路由管理 |
+| Marked | 17.0.4 | Markdown 渲染 |
+| DOMPurify | 3.3.3 | XSS 防护 |
 
-- 阶段目标：完成面向用户的应用浏览与操作入口。
-- 功能清单：实现分类导航与应用列表；支持关键字模糊搜索；实现应用详情页（名称、介绍、版本、开发者、仓库链接）；按平台显示下载按钮。
-- 阶段产出：形成可用的应用市场主流程（浏览、检索、查看、下载）。
+### 开发环境要求
+```bash
+Node.js: 24.14.x (锁定范围：>=24.14.0 <24.15.0)
+npm:     11.x    (锁定范围：>=11.0.0 <12.0.0)
+Registry: https://registry.npmmirror.com
+```
 
-## 阶段 4：可用性增强
+---
 
-- 阶段目标：提升日常使用效率与维护便捷性。
-- 功能清单：支持下载目录设置并持久化；实现应用自更新检查；增加依赖环境检测（必要命令/运行环境检查）。
-- 阶段产出：用户可配置下载行为；系统可在启动或设置页触发环境自检与更新提示。
+## 🚀 快速开始
 
-## 阶段 5：安全与发布
-
-- 阶段目标：提升交付质量与安全可靠性，支持正式分发。
-- 功能清单：增加下载文件 Hash 校验；完善下载异常与网络异常处理；完成 Windows/macOS 打包流程与发布产物整理。
-- 阶段产出：具备可发布桌面安装包；关键下载链路具备完整性校验与错误反馈。
-
-## 阶段 6：增强能力（后置）
-
-- 阶段目标：补充账号体系与跨设备偏好同步能力。
-- 功能清单：实现可选登录；支持个人偏好配置保存与读取；接入 Cloudflare KV 存储用户信息与偏好数据。
-- 阶段产出：用户可在多设备同步个人偏好配置；核心下载能力仍可在未登录状态独立使用。
-
-# 七、相关技术栈与选型说明
-
-## 1. 当前技术栈（已落地）
-
-- 后端：Go 1.23（见 `go.mod`）
-- 桌面框架：Wails v2
-- 前端：Vue 3 + Vite 3（见 `frontend/package.json`）
-- 数据驱动：本地 JSON 配置文件（`config/rules.json` + `config/categories/*.json`）
-
-## 2. 可选升级方向
-
-- 前端构建链与状态管理增强：Vite 升级、引入 TypeScript 与状态管理（如 Pinia）提升可维护性。
-- 下载任务持久化：将下载任务状态持久化到本地存储，支持重启恢复与断点续传落地。
-- 日志与监控补充：增加结构化日志、关键链路埋点与错误聚合，提升问题定位效率。
-
-## 3. config 配置契约说明（文档约定）
-
-本小节用于明确当前配置字段语义：规则位于 `config/rules.json`，分类应用位于 `config/categories/*.json`。
-
-- `name`：应用名称（展示名），建议在同一分类内保持唯一。
-- `repo`：GitHub 仓库标识，格式为 `owner/repo`。
-- `photo`：应用图标地址，可为空；为空时可回退到默认图标或仓库作者头像策略。
-- `match`??????????? `config/rules.json` ? `default_match`??????????????????
-- `default_match`??????????????????? `match` ????
-- `platform_match`?????????windows/linux/macos??????????????
-
-## GitHub Request Mapping
-
-| Request Purpose | Trigger Location | URL Template | Proxy Prefix Applied | Notes |
-| --- | --- | --- | --- | --- |
-| Release list query | `fetchReleases -> newReleaseProxyRequest` | `https://ossam.hqs.qzz.io/api/releases/{owner}/{repo}?per_page=30` | N/A | Routed via the release proxy worker endpoint. |
-| Repository stars query | `fetchRepoStars -> newGitHubRequest` | `https://api.github.com/repos/{owner}/{repo}` | Yes | URL is processed by proxy helper before request. |
-| README fetch (ghproxy + raw) | `fetchReadme -> buildReadmeRawCandidates` | `https://ghproxy.net/https://raw.githubusercontent.com/{owner}/{repo}/main/readme.md`<br>`https://ghproxy.net/https://raw.githubusercontent.com/{owner}/{repo}/main/README.md`<br>`https://ghproxy.net/https://raw.githubusercontent.com/{owner}/{repo}/master/readme.md`<br>`https://ghproxy.net/https://raw.githubusercontent.com/{owner}/{repo}/master/README.md` | Yes | Candidates are requested in order until first success. |
-| Release asset download URL (`browser_download_url`) | `selectAssetForPlatform` | `https://github.com/{owner}/{repo}/releases/download/{tag}/{asset}` (typical shape) | Yes | GitHub download URLs are rewritten through proxy helper. |
-| `StartDownload` input URL | `StartDownload` | Frontend-provided `download_url` | Yes (GitHub only) | GitHub URLs are rewritten through proxy helper; non-GitHub URLs keep direct access. |
-| Default app avatar | `resolveAppPhoto -> buildGitHubAvatarURL` | `https://avatars.githubusercontent.com/{owner}` | No | Default avatar uses direct URL. |
-| Default placeholder icon | `resolveAppPhoto` | `https://github.githubassets.com/favicons/favicon.png` | No | Placeholder icon uses direct URL. |
-| Custom `photo` field | `resolveAppPhoto` | Original value from `config/categories/*.json` | No | Returned as-is, no URL rewrite. |
-
-- Runtime GitHub requests are proxied by default; release list API is routed via `ossam.hqs.qzz.io`, and avatar-related URLs remain direct.
-- Non-GitHub URLs are passed through as-is.
-- When platform-specific release assets are missing, the missing platform download falls back to `Source code(zip)` and still uses `ghproxy` acceleration.
-
-## Node & npm Baseline (2026-03)
-
-- Node.js: `24.14.x` (locked as `>=24.14.0 <24.15.0`)
-- npm: `11.x` (locked as `>=11.0.0 <12.0.0`)
-- Registry: `https://registry.npmmirror.com`
-
-Repository-level version files are provided:
-
-- `.nvmrc`
-- `.node-version`
-
-Install and build frontend:
+### 环境准备
 
 ```bash
+# 安装 Go 1.23+
+go version
+
+# 安装 Node.js 24.14.x (推荐使用 nvm)
+nvm install 24.14
+nvm use 24.14
+
+# 安装 Wails CLI
+go install github.com/wailsapp/wails/v2/cmd/wails@latest
+```
+
+### 克隆项目
+
+```bash
+git clone https://github.com/HEUdbh/ossam.git
+cd ossam
+```
+
+### 安装依赖
+
+```bash
+# 前端依赖
 cd frontend
 npm ci
 npm run build
+cd ..
 ```
 
-If your Node.js version is not in `24.14.x`, installation will fail by design (`engine-strict` + `preinstall` check).
+### 开发模式
+
+```bash
+# 启动开发服务器（热重载）
+wails dev
+```
+
+### 生产构建
+
+```bash
+# 构建桌面应用
+wails build
+```
+
+构建产物位于 `build/bin/` 目录。
+
+---
+
+## 📁 项目结构
+
+```
+ossam/
+├── main.go                 # Wails 应用入口
+├── app.go                  # 核心业务逻辑
+├── go.mod                  # Go 模块定义
+├── go.sum                  # Go 依赖锁定
+├── wails.json              # Wails 配置
+│
+├── config/                 # 配置文件目录
+│   ├── rules.json          # 全局规则与分类定义
+│   └── categories/         # 分类应用配置
+│       ├── security.json
+│       ├── devtools.json
+│       ├── system.json
+│       ├── network.json
+│       ├── database.json
+│       ├── terminal.json
+│       └── utility.json
+│
+├── frontend/               # 前端源码
+│   ├── src/
+│   │   ├── App.vue         # 根组件
+│   │   ├── main.js         # 入口文件
+│   │   ├── router/         # 路由配置
+│   │   ├── stores/         # 状态管理
+│   │   ├── views/          # 页面组件
+│   │   │   ├── MarketView.vue
+│   │   │   ├── AppDetailView.vue
+│   │   │   ├── MineView.vue
+│   │   │   └── Settings*.vue
+│   │   ├── components/     # 通用组件
+│   │   ├── utils/          # 工具函数
+│   │   └── assets/         # 静态资源
+│   ├── index.html
+│   ├── package.json
+│   ├── vite.config.js
+│   └── scripts/
+│       └── check-node-version.cjs
+│
+├── build/                  # 构建输出
+│   ├── appicon.png         # 应用图标
+│   └── README.md
+│
+└── .github/
+    └── workflows/
+        └── build.yml       # CI/CD 配置
+```
+
+---
+
+## ⚙️ 配置说明
+
+### rules.json - 全局配置
+
+```json
+{
+  "market_name": "ossam",
+  "last_updated": "20260311",
+  "default_match": ".*\\.(zip|tar\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$",
+  "platform_keywords": {
+    "windows": ["windows", "win", "win32", "win64"],
+    "linux": ["linux", "gnu", "musl"],
+    "macos": ["mac", "macos", "darwin", "osx"]
+  },
+  "platform_match": {
+    "windows": "(windows|win)",
+    "linux": "linux",
+    "macos": "(mac|macos)"
+  },
+  "categories": [
+    { "name": "Security", "file": "config/categories/security.json" },
+    { "name": "DevTools", "file": "config/categories/devtools.json" },
+    ...
+  ]
+}
+```
+
+### 分类配置示例 (security.json)
+
+```json
+{
+  "apps": [
+    {
+      "name": "OneForAll",
+      "repo": "shmilylty/OneForAll",
+      "photo": "",
+      "summary": "OneForAll：子域名发现工具。"
+    },
+    {
+      "name": "dirsearch",
+      "repo": "maurosoria/dirsearch",
+      "photo": "",
+      "summary": "dirsearch：安全测试与资产发现工具。",
+      "match": "dirsearch-.*\\.tar.gz"
+    }
+  ]
+}
+```
+
+### 配置字段说明
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `name` | string | ✅ | 应用展示名称 |
+| `repo` | string | ✅ | GitHub 仓库标识 (`owner/repo`) |
+| `photo` | string | ❌ | 应用图标 URL（空则使用默认头像） |
+| `summary` | string | ✅ | 应用简介 |
+| `match` | string | ❌ | 文件名匹配正则（空则使用 `default_match`） |
+
+---
+
+## 📖 开发指南
+
+### 前端开发
+
+```bash
+cd frontend
+
+# 开发模式（热重载）
+npm run dev
+
+# 生产构建
+npm run build
+
+# 预览构建产物
+npm run preview
+```
+
+### 后端开发
+
+```bash
+# 运行测试
+go test ./...
+
+# 格式化代码
+go fmt ./...
+
+# 代码检查
+go vet ./...
+```
+
+### 推荐 IDE 配置
+
+- **VS Code** + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (Vue 3 支持)
+- **Go** + [Go 插件](https://marketplace.visualstudio.com/items?itemName=golang.Go)
+
+---
+
+## 📦 构建与发布
+
+### 跨平台构建
+
+```bash
+# Windows
+wails build -platform windows/amd64
+
+# macOS
+wails build -platform darwin/universal
+
+# Linux
+wails build -platform linux/amd64
+```
+
+### CI/CD
+
+项目使用 GitHub Actions 自动化构建，配置位于 `.github/workflows/build.yml`。
+
+---
+
+## 🤝 贡献指南
+
+### 添加新软件
+
+1. 在 `config/categories/` 对应分类文件中添加应用配置
+2. 确保 `repo` 字段格式正确 (`owner/repo`)
+3. 提交 PR 并说明软件用途
+
+### 报告问题
+
+- 使用 GitHub Issues 报告 Bug
+- 提供复现步骤、环境信息、日志截图
+
+### 功能建议
+
+- 在 Issues 中描述使用场景
+- 说明期望的行为与价值
+
+---
+
+## 📄 License
+
+MIT License - 详见 [LICENSE](LICENSE) 文件
+
+---
+
+## 👤 作者
+
+- **HEUdbh**
+- Email: 15399211657@163.com
+
+---
+
+## 🙏 致谢
+
+感谢以下开源项目：
+
+- [Wails](https://wails.io/) - Go 桌面应用框架
+- [Vue.js](https://vuejs.org/) - 渐进式前端框架
+- [Element Plus](https://element-plus.org/) - Vue 3 UI 组件库
+- [ghproxy](https://ghproxy.net/) - GitHub 加速服务
+
+---
+
+<div align="center">
+
+**如果这个项目对你有帮助，请给一个 ⭐️ Star！**
+
+</div>
