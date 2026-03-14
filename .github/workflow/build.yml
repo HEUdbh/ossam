@@ -1,0 +1,29 @@
+name: ossam
+
+on:
+  # push:
+  # pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        build: [
+          {name: ossam, platform: linux/amd64, os: ubuntu-latest},
+          {name: ossam, platform: windows/amd64, os: windows-latest},
+          {name: ossam, platform: darwin/universal, os: macos-latest},
+        ]
+    runs-on: ${{ matrix.build.os }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - uses: dAppServer/wails-build-action@main
+        with:
+          build: true
+          build-name: ${{ matrix.build.name }}
+          build-platform: ${{ matrix.build.platform }}
+          build-obfuscate: true
+          go-version: 1.25
