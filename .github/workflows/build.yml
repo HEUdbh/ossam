@@ -17,7 +17,7 @@ jobs:
         ]
     runs-on: ${{ matrix.build.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v5
         with:
           submodules: recursive
       - uses: dAppServer/wails-build-action@main
