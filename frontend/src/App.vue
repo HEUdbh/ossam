@@ -297,7 +297,7 @@ watch(
         </button>
 
         <div class="brand-wrap">
-          <img class="brand-logo" src="./assets/images/logo-universal.png" alt="ossam" />
+          <img class="brand-logo" src="./assets/images/appicon.png" alt="ossam" />
           <span class="brand-name">ossam</span>
         </div>
       </div>

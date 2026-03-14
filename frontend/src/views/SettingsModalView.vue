@@ -46,6 +46,7 @@ function switchTab(tab) {
     width="780px"
     top="7vh"
     class="settings-dialog"
+    modal-class="settings-overlay"
     :show-close="false"
     :close-on-click-modal="false"
     @close="closeModal"
@@ -76,8 +77,9 @@ function switchTab(tab) {
 :deep(.settings-dialog .el-dialog) {
   border-radius: 0;
   border: 1px solid var(--line-color);
-  background: #fff;
+  background: var(--surface-dialog);
   box-shadow: none;
+  backdrop-filter: blur(8px);
 }
 
 :deep(.settings-dialog .el-dialog__header) {
@@ -115,8 +117,12 @@ function switchTab(tab) {
 
 .dialog-content {
   border-top: 1px solid var(--line-color);
-  background: #fff;
+  background: var(--surface-dialog);
   padding: 14px 0 0;
+}
+
+:deep(.settings-overlay) {
+  background: rgba(255, 255, 255, 0.38);
 }
 
 @media (max-width: 960px) {

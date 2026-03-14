@@ -20,7 +20,7 @@
   height: 100%;
   padding: 18px;
   overflow: auto;
-  background: #fff;
+  background: var(--surface-page);
 }
 
 .mine-header {
@@ -58,6 +58,6 @@
   padding: 14px;
   color: var(--text-secondary);
   font-size: 14px;
-  background: #fff;
+  background: var(--surface-container);
 }
 </style>

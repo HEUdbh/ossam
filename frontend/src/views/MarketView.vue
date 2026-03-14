@@ -252,7 +252,7 @@ watch(categories, () => {
       <section class="apps-section">
         <div class="apps-section-title">{{ isSearchMode ? "匹配应用" : "更多应用" }}</div>
 
-        <div class="compact-grid" :class="{ searching: isSearchMode }">
+        <div class="compact-grid">
           <router-link
             v-for="item in compactItems"
             :key="`${item.category}-${item.app.name}`"
@@ -289,7 +289,7 @@ watch(categories, () => {
   flex-direction: column;
   gap: 14px;
   overflow-y: auto;
-  background: #fff;
+  background: var(--surface-page);
 }
 
 .stars-alert {
@@ -360,6 +360,8 @@ watch(categories, () => {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(71, 85, 105, 0.14);
 }
 
 .apps-section-title {
@@ -372,13 +374,8 @@ watch(categories, () => {
 
 .compact-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  border-top: 1px solid var(--line-color);
-  border-left: 1px solid var(--line-color);
-}
-
-.compact-grid.searching {
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
 }
 
 .compact-card {
@@ -388,21 +385,24 @@ watch(categories, () => {
   grid-template-columns: 52px minmax(0, 1fr);
   gap: 12px;
   padding: 12px;
-  border-right: 1px solid var(--line-color);
-  border-bottom: 1px solid var(--line-color);
-  background: #fff;
-  transition: background-color 0.2s ease;
+  border: 1px solid rgba(71, 85, 105, 0.22);
+  border-radius: 10px;
+  background: var(--surface-container);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .compact-card:hover {
-  background: #f5fbf7;
+  background: var(--surface-control);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+  transform: translateY(-2px);
 }
 
 .compact-icon {
   width: 52px;
   height: 52px;
   border-radius: 6px;
-  border: 1px solid #e8f1ed;
+  border: 1px solid var(--line-color);
   object-fit: cover;
   background: var(--surface-3);
 }
@@ -445,6 +445,29 @@ watch(categories, () => {
   color: var(--warning-color);
   font-size: 13px;
   font-weight: 700;
+}
+
+@media (max-width: 1400px) {
+  .compact-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1200px) {
+  .compact-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .market-view {
+    padding: 12px;
+  }
+
+  .compact-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
 }
 
 @media (max-width: 960px) {

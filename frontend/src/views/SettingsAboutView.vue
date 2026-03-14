@@ -47,7 +47,7 @@
 }
 
 .about-table :deep(.el-descriptions__body) {
-  background: #ffffff;
+  background: var(--surface-settings-clear);
 }
 
 .about-link {

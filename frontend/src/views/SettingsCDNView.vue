@@ -220,7 +220,7 @@ onMounted(() => {
   margin-top: 14px;
   border: 1px solid var(--line-color);
   border-radius: var(--radius-md);
-  background: #ffffff;
+  background: var(--surface-settings-clear);
   padding: 12px;
   display: flex;
   flex-direction: column;
@@ -257,7 +257,7 @@ onMounted(() => {
 .source-line {
   border: 1px solid var(--line-color);
   border-radius: var(--radius-sm);
-  background: var(--surface-2);
+  background: var(--surface-settings-clear);
   padding: 8px 10px;
   display: flex;
   align-items: center;
