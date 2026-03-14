@@ -683,20 +683,36 @@ onUnmounted(() => {
 
 .focus-release-btn,
 .source-btn {
-  height: 44px;
-  border-radius: 2px;
-  font-weight: 700;
+  height: 36px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0 12px;
+  border: 1px solid rgba(71, 85, 105, 0.24);
+  box-shadow: none;
 }
 
 .focus-release-btn .el-icon {
-  margin-right: 6px;
+  margin-right: 4px;
+}
+
+.focus-release-btn {
+  --el-button-bg-color: rgba(255, 255, 255, 0.56);
+  --el-button-border-color: rgba(71, 85, 105, 0.24);
+  --el-button-text-color: var(--text-secondary);
+  --el-button-hover-bg-color: rgba(255, 255, 255, 0.72);
+  --el-button-hover-border-color: rgba(71, 85, 105, 0.34);
+  --el-button-hover-text-color: var(--text-primary);
+  --el-button-active-bg-color: rgba(255, 255, 255, 0.78);
+  --el-button-active-border-color: rgba(71, 85, 105, 0.4);
+  --el-button-active-text-color: var(--text-primary);
+  --el-button-outline-color: rgba(71, 85, 105, 0.18);
 }
 
 .source-btn {
-  border: none;
   text-decoration: none;
-  color: #334155;
-  background: var(--surface-control);
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.54);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -704,8 +720,9 @@ onUnmounted(() => {
 }
 
 .source-btn:hover {
-  color: var(--brand-color);
-  background: var(--brand-color-soft);
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(71, 85, 105, 0.34);
 }
 
 .cdn-badge {
