@@ -124,6 +124,10 @@ function ensureDetailEntry(detailKey) {
   return state.detailCache[detailKey];
 }
 
+export function invalidateAppDetailCache() {
+  state.detailCache = {};
+}
+
 export function getAppDetailState(appInfo) {
   const detailKey = buildDetailKey(appInfo);
   if (!detailKey) {

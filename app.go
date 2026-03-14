@@ -1151,32 +1151,21 @@ func (a *App) fetchRepoStars(repo string) (int, error) {
 		strings.TrimRight(a.githubAPIBaseURL, "/"),
 		buildRepoPath(repo),
 	)
-	endpoint = applyGitHubProxy(endpoint)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 
-	req, err := a.newGitHubRequest(ctx, http.MethodGet, endpoint)
-	if err != nil {
-		return 0, err
-	}
-
-	resp, err := a.apiClient.Do(req)
-	if err != nil {
-		return 0, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode >= http.StatusBadRequest {
-		body, readErr := io.ReadAll(resp.Body)
-		if readErr != nil {
-			return 0, fmt.Errorf("github repo API error (%d)", resp.StatusCode)
-		}
-		return 0, fmt.Errorf("github repo API error (%d): %s", resp.StatusCode, strings.TrimSpace(string(body)))
-	}
-
 	var repoInfo githubRepo
-	if err := json.NewDecoder(resp.Body).Decode(&repoInfo); err != nil {
+	_, err := a.fetchGitHubAPIWithProxyFallback(
+		ctx,
+		endpoint,
+		"github repo API",
+		func(body []byte) error {
+			repoInfo = githubRepo{}
+			return json.Unmarshal(body, &repoInfo)
+		},
+	)
+	if err != nil {
 		return 0, err
 	}
 
@@ -1194,32 +1183,21 @@ func (a *App) fetchRepoContributors(repo string, limit int) ([]AppContributor, e
 		buildRepoPath(repo),
 		limit,
 	)
-	endpoint = applyGitHubProxy(endpoint)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 
-	req, err := a.newGitHubRequest(ctx, http.MethodGet, endpoint)
+	contributors := []githubContributor{}
+	_, err := a.fetchGitHubAPIWithProxyFallback(
+		ctx,
+		endpoint,
+		"github contributors API",
+		func(body []byte) error {
+			contributors = []githubContributor{}
+			return json.Unmarshal(body, &contributors)
+		},
+	)
 	if err != nil {
-		return nil, err
-	}
-
-	resp, err := a.apiClient.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode >= http.StatusBadRequest {
-		body, readErr := io.ReadAll(resp.Body)
-		if readErr != nil {
-			return nil, fmt.Errorf("github contributors API error (%d)", resp.StatusCode)
-		}
-		return nil, fmt.Errorf("github contributors API error (%d): %s", resp.StatusCode, strings.TrimSpace(string(body)))
-	}
-
-	var contributors []githubContributor
-	if err := json.NewDecoder(resp.Body).Decode(&contributors); err != nil {
 		return nil, err
 	}
 
@@ -1248,6 +1226,69 @@ func (a *App) fetchRepoContributors(repo string, limit int) ([]AppContributor, e
 	}
 
 	return result, nil
+}
+
+func (a *App) fetchGitHubAPIWithProxyFallback(
+	parent context.Context,
+	endpoint,
+	apiLabel string,
+	decode func([]byte) error,
+) ([]byte, error) {
+	proxyEndpoint := applyGitHubProxy(endpoint)
+
+	proxyBody, proxyErr := a.fetchGitHubAPIResponse(parent, proxyEndpoint, apiLabel)
+	if proxyErr == nil && decode != nil {
+		if decodeErr := decode(proxyBody); decodeErr != nil {
+			proxyErr = fmt.Errorf("failed to parse %s response: %w", apiLabel, decodeErr)
+		}
+	}
+	if proxyErr == nil {
+		return proxyBody, nil
+	}
+
+	if strings.TrimSpace(proxyEndpoint) == strings.TrimSpace(endpoint) {
+		return nil, proxyErr
+	}
+
+	directBody, directErr := a.fetchGitHubAPIResponse(parent, endpoint, apiLabel)
+	if directErr == nil && decode != nil {
+		if decodeErr := decode(directBody); decodeErr != nil {
+			directErr = fmt.Errorf("failed to parse %s response: %w", apiLabel, decodeErr)
+		}
+	}
+	if directErr == nil {
+		return directBody, nil
+	}
+
+	return nil, fmt.Errorf("proxy request failed: %w; direct fallback failed: %v", proxyErr, directErr)
+}
+
+func (a *App) fetchGitHubAPIResponse(parent context.Context, endpoint, apiLabel string) ([]byte, error) {
+	req, err := a.newGitHubRequest(parent, http.MethodGet, endpoint)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := a.apiClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, readErr := io.ReadAll(resp.Body)
+	if readErr != nil {
+		return nil, fmt.Errorf("failed to read %s response: %w", apiLabel, readErr)
+	}
+
+	if resp.StatusCode >= http.StatusBadRequest {
+		message := strings.TrimSpace(string(body))
+		if message == "" {
+			return nil, fmt.Errorf("%s error (%d)", apiLabel, resp.StatusCode)
+		}
+		return nil, fmt.Errorf("%s error (%d): %s", apiLabel, resp.StatusCode, message)
+	}
+
+	return body, nil
 }
 
 func (a *App) newGitHubRequest(parent context.Context, method, endpoint string) (*http.Request, error) {

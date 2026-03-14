@@ -592,12 +592,18 @@ onUnmounted(() => {
 .detail-layout {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 0;
+}
+
+.detail-layout > section + section {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid #e5ece8;
 }
 
 .clean-card {
-  border: 1px solid #e5ece8;
-  border-radius: 16px;
+  border: none;
+  border-radius: 2px;
   background: #fff;
 }
 
@@ -678,7 +684,7 @@ onUnmounted(() => {
 .focus-release-btn,
 .source-btn {
   height: 44px;
-  border-radius: 10px;
+  border-radius: 2px;
   font-weight: 700;
 }
 
@@ -687,9 +693,10 @@ onUnmounted(() => {
 }
 
 .source-btn {
-  border: 1px solid #dfe8e2;
+  border: none;
   text-decoration: none;
   color: #334155;
+  background: #f5f8f6;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -698,7 +705,7 @@ onUnmounted(() => {
 
 .source-btn:hover {
   color: var(--brand-color);
-  border-color: rgba(18, 199, 123, 0.35);
+  background: var(--brand-color-soft);
 }
 
 .cdn-badge {
@@ -766,14 +773,35 @@ onUnmounted(() => {
 .content-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 340px;
-  gap: 16px;
+  gap: 0;
 }
 
 .left-column,
 .right-column {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 0;
+}
+
+.left-column {
+  padding-right: 16px;
+}
+
+.right-column {
+  padding-left: 16px;
+  border-left: 1px solid #e5ece8;
+}
+
+.left-column > .panel + .panel {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #edf2ef;
+}
+
+.right-column > * + * {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #edf2ef;
 }
 
 .panel,
@@ -889,27 +917,34 @@ onUnmounted(() => {
 .asset-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0;
 }
 
 .asset-item {
   width: 100%;
-  border: 1px solid #e4ece8;
-  border-radius: 10px;
-  background: #fff;
-  padding: 10px;
+  border: none;
+  border-radius: 2px;
+  background: transparent;
+  padding: 10px 8px;
   text-align: left;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
+.asset-item + .asset-item {
+  border-top: 1px solid #edf2ef;
+}
+
 .asset-item:hover {
-  border-color: rgba(18, 199, 123, 0.4);
+  background: rgba(18, 199, 123, 0.04);
 }
 
 .asset-item.active {
-  border-color: rgba(18, 199, 123, 0.55);
   background: rgba(18, 199, 123, 0.06);
+}
+
+.asset-item.active .asset-name {
+  color: var(--brand-color);
 }
 
 .asset-head {
@@ -950,8 +985,8 @@ onUnmounted(() => {
 }
 
 .asset-download-status {
-  border: 1px dashed #dce9e1;
-  border-radius: 10px;
+  border: none;
+  border-radius: 2px;
   background: #f9fcfa;
   padding: 10px 12px;
   color: #64748b;
@@ -994,7 +1029,7 @@ onUnmounted(() => {
 .markdown-body :deep(pre) {
   overflow-x: auto;
   padding: 12px;
-  border-radius: 10px;
+  border-radius: 2px;
   background: #0f172a;
   color: #e2e8f0;
 }
@@ -1018,6 +1053,16 @@ onUnmounted(() => {
 
   .content-grid {
     grid-template-columns: 1fr;
+  }
+
+  .left-column,
+  .right-column {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .right-column {
+    border-left: none;
   }
 }
 

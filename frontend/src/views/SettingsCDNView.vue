@@ -3,6 +3,7 @@ import { computed, onMounted, ref } from "vue";
 import { ElMessage } from "element-plus";
 import { GetCDNSettings, SetCDNSettings } from "../../wailsjs/go/main/App";
 import { BUILTIN_CDN_SOURCES, getCDNSettings, setCDNSettings } from "../utils/settings";
+import { invalidateAppDetailCache } from "../stores/appsStore";
 
 const loading = ref(false);
 const saving = ref(false);
@@ -50,6 +51,7 @@ async function persistSettings() {
       selected_source: response.selected_source,
       custom_sources: response.custom_sources,
     });
+    invalidateAppDetailCache();
     return true;
   } catch (error) {
     ElMessage.error(error?.message || "保存 CDN 设置失败");

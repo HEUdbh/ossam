@@ -4,7 +4,7 @@
       "name": "OneForAll",
       "repo": "shmilylty/OneForAll",
       "photo": "",
-      "summary": "OneForAll：安全测试与资产发现工具。"
+      "summary": "OneForAll：子域名发现工具。"
     },
     {
       "name": "dirsearch",
@@ -60,6 +60,12 @@
       "repo": "owasp-amass/amass",
       "photo": "",
       "summary": "amass：安全测试与资产发现工具。"
+    },
+    {
+      "name": "git-dumper",
+      "repo": "arthaud/git-dumper",
+      "photo": "",
+      "summary": "git-dumper：git文件利用工具"
     }
   ]
 }

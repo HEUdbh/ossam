@@ -114,16 +114,6 @@ const emptyDescription = computed(() =>
     : "可以在 config/rules.json 与 config/categories/*.json 中补充应用。"
 );
 
-const marketTitle = computed(() =>
-  isSearchMode.value ? `搜索结果 · ${searchItems.value.length}` : "应用市场"
-);
-
-const marketSubtitle = computed(() =>
-  isSearchMode.value
-    ? `关键词：${String(route.query.q || "").trim()}`
-    : `${getCategoryDisplayName(selectedCategory.value)} · 发现优质开源工具`
-);
-
 function getStarValue(repo) {
   const value = getRepoStarCount(repo);
   return typeof value === "number" && !Number.isNaN(value) ? value : null;
@@ -207,14 +197,6 @@ watch(categories, () => {
 
 <template>
   <div class="market-view">
-    <header class="market-header">
-      <div>
-        <h1>{{ marketTitle }}</h1>
-        <p>{{ marketSubtitle }}</p>
-      </div>
-      <el-tag effect="plain" type="success">更新：{{ state.config?.last_updated || "-" }}</el-tag>
-    </header>
-
     <el-alert
       v-if="state.repoStarsError"
       class="stars-alert"
@@ -308,24 +290,6 @@ watch(categories, () => {
   gap: 14px;
   overflow-y: auto;
   background: #fff;
-}
-
-.market-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.market-header h1 {
-  margin: 0;
-  font-size: 30px;
-  line-height: 1.1;
-}
-
-.market-header p {
-  margin: 8px 0 0;
-  color: var(--text-secondary);
 }
 
 .stars-alert {
