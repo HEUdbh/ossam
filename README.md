@@ -195,3 +195,24 @@
 - Runtime GitHub requests are proxied by default; release list API is routed via `ossam.hqs.qzz.io`, and avatar-related URLs remain direct.
 - Non-GitHub URLs are passed through as-is.
 - When platform-specific release assets are missing, the missing platform download falls back to `Source code(zip)` and still uses `ghproxy` acceleration.
+
+## Node & npm Baseline (2026-03)
+
+- Node.js: `24.14.x` (locked as `>=24.14.0 <24.15.0`)
+- npm: `11.x` (locked as `>=11.0.0 <12.0.0`)
+- Registry: `https://registry.npmmirror.com`
+
+Repository-level version files are provided:
+
+- `.nvmrc`
+- `.node-version`
+
+Install and build frontend:
+
+```bash
+cd frontend
+npm ci
+npm run build
+```
+
+If your Node.js version is not in `24.14.x`, installation will fail by design (`engine-strict` + `preinstall` check).

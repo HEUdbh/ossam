@@ -180,14 +180,14 @@ body {
   width: min(620px, 100%);
 }
 
-.global-search :deep(.el-input__wrapper) {
+.global-search .el-input__wrapper {
   border-radius: 999px;
   box-shadow: none;
   border: 1px solid var(--line-color);
   background: var(--surface-control);
 }
 
-.global-search :deep(.el-input__wrapper.is-focus) {
+.global-search .el-input__wrapper.is-focus {
   border-color: var(--brand-color-focus);
   background: rgba(255, 255, 255, 0.99);
 }

@@ -1,7 +1,20 @@
-# Vue 3 + Vite
+# Frontend Development (Node 24.14.x)
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs,
-check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## Runtime Requirements
+
+- Node.js: `24.14.x` (locked range: `>=24.14.0 <24.15.0`)
+- npm: `11.x` (locked range: `>=11.0.0 <12.0.0`)
+- Registry: `https://registry.npmmirror.com`
+
+`npm install` / `npm ci` will fail automatically when Node.js is not `24.14.x`.
+
+## Commands
+
+```bash
+npm ci
+npm run dev
+npm run build
+```
 
 ## Recommended IDE Setup
 
