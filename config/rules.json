@@ -36,6 +36,10 @@
       "file": "config/categories/devtools.json"
     },
     {
+      "name": "AI",
+      "file": "config/categories/ai.json"
+    },
+    {
       "name": "System",
       "file": "config/categories/system.json"
     },

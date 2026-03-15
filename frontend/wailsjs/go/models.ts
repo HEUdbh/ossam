@@ -249,6 +249,46 @@ export namespace main {
 	    }
 	}
 	
+	export class ReadmeByLinkRequest {
+	    repo: string;
+	    href: string;
+	    current_branch: string;
+	    current_file_path: string;
+	    current_source_url: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new ReadmeByLinkRequest(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.repo = source["repo"];
+	        this.href = source["href"];
+	        this.current_branch = source["current_branch"];
+	        this.current_file_path = source["current_file_path"];
+	        this.current_source_url = source["current_source_url"];
+	    }
+	}
+	export class ReadmeByLinkResponse {
+	    is_markdown: boolean;
+	    content: string;
+	    source_url: string;
+	    branch: string;
+	    file_path: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new ReadmeByLinkResponse(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.is_markdown = source["is_markdown"];
+	        this.content = source["content"];
+	        this.source_url = source["source_url"];
+	        this.branch = source["branch"];
+	        this.file_path = source["file_path"];
+	    }
+	}
 	
 	
 	export class SetCDNSettingsRequest {

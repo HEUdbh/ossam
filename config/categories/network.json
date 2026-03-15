@@ -4,51 +4,219 @@
       "name": "caddy",
       "repo": "caddyserver/caddy",
       "photo": "",
-      "summary": "caddy：网络连接、代理与调试工具。"
+      "summary": "caddy：现代化的 HTTP/3 服务器与反向代理。"
     },
     {
       "name": "cloudflared",
       "repo": "cloudflare/cloudflared",
       "photo": "",
-      "summary": "cloudflared：网络连接、代理与调试工具。"
+      "summary": "cloudflared：Cloudflare 隧道客户端。"
     },
     {
       "name": "tailscale",
       "repo": "tailscale/tailscale",
       "photo": "",
-      "summary": "tailscale：网络连接、代理与调试工具。"
+      "summary": "tailscale：零配置的虚拟私人网络。"
     },
     {
       "name": "mitmproxy",
       "repo": "mitmproxy/mitmproxy",
       "photo": "",
-      "summary": "mitmproxy：网络连接、代理与调试工具。"
+      "summary": "mitmproxy：交互式 HTTPS 代理与调试工具。"
     },
     {
       "name": "Xray-core",
       "repo": "XTLS/Xray-core",
       "photo": "",
-      "summary": "Xray-core：网络连接、代理与调试工具。",
+      "summary": "Xray-core：高性能网络代理工具。",
       "match": "xray.*\\.(zip|tar\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$"
     },
     {
       "name": "v2ray-core",
       "repo": "v2fly/v2ray-core",
       "photo": "",
-      "summary": "v2ray-core：网络连接、代理与调试工具。",
+      "summary": "v2ray-core：开源网络代理工具。",
       "match": "v2ray.*\\.(zip|tar\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$"
     },
     {
       "name": "grpcurl",
       "repo": "fullstorydev/grpcurl",
       "photo": "",
-      "summary": "grpcurl：网络连接、代理与调试工具。"
+      "summary": "grpcurl：gRPC 服务测试工具。"
     },
     {
       "name": "mkcert",
       "repo": "FiloSottile/mkcert",
       "photo": "",
-      "summary": "mkcert：网络连接、代理与调试工具。"
+      "summary": "mkcert：简单的本地 HTTPS 证书生成工具。"
+    },
+    {
+      "name": "sing-box",
+      "repo": "SagerNet/sing-box",
+      "photo": "",
+      "summary": "sing-box：多功能网络代理工具，支持多种协议。"
+    },
+    {
+      "name": "clash",
+      "repo": "Dreamacro/clash",
+      "photo": "",
+      "summary": "clash：基于规则的跨平台代理软件。"
+    },
+    {
+      "name": "v2rayA",
+      "repo": "v2rayA/v2rayA",
+      "photo": "",
+      "summary": "v2rayA：v2ray 客户端的 Web 前端，支持多协议。"
+    },
+    {
+      "name": "frp",
+      "repo": "fatedier/frp",
+      "photo": "",
+      "summary": "frp：高性能反向代理工具，用于内网穿透。"
+    },
+    {
+      "name": "ngrok",
+      "repo": "inconshreveable/ngrok",
+      "photo": "",
+      "summary": "ngrok：安全的内网穿透工具，支持 HTTPS 和 TCP。"
+    },
+    {
+      "name": "croc",
+      "repo": "schollz/croc",
+      "photo": "",
+      "summary": "croc：简单安全的跨平台文件传输工具。"
+    },
+    {
+      "name": "aria2",
+      "repo": "aria2/aria2",
+      "photo": "",
+      "summary": "aria2：轻量级多协议命令行下载工具。"
+    },
+    {
+      "name": "wget",
+      "repo": "mirrors/gnu/wget",
+      "photo": "",
+      "summary": "wget：GNU 项目的命令行下载工具。"
+    },
+    {
+      "name": "curl",
+      "repo": "curl/curl",
+      "photo": "",
+      "summary": "curl：命令行工具和库，用于传输数据。"
+    },
+    {
+      "name": "tcpdump",
+      "repo": "the-tcpdump-group/tcpdump",
+      "photo": "",
+      "summary": "tcpdump：强大的网络数据包分析工具。"
+    },
+    {
+      "name": "iperf3",
+      "repo": "esnet/iperf",
+      "photo": "",
+      "summary": "iperf3：网络性能测试工具，用于测量TCP和UDP带宽质量。"
+    },
+    {
+      "name": "mtr",
+      "repo": "traviscross/mtr",
+      "photo": "",
+      "summary": "mtr：网络诊断工具，结合了ping和traceroute的功能。"
+    },
+    {
+      "name": "speedtest-cli",
+      "repo": "sivel/speedtest-cli",
+      "photo": "",
+      "summary": "speedtest-cli：命令行版网速测试工具，基于Speedtest.net。"
+    },
+    {
+      "name": "iftop",
+      "repo": "pavel-odintsov/iftop",
+      "photo": "",
+      "summary": "iftop：交互式带宽监控工具，显示网络连接的带宽使用情况。"
+    },
+    {
+      "name": "bmon",
+      "repo": "tgraf/bmon",
+      "photo": "",
+      "summary": "bmon：带宽监控和调试工具，支持多种输出格式。"
+    },
+    {
+      "name": "dnsmasq",
+      "repo": "thekelleys/dnsmasq",
+      "photo": "",
+      "summary": "dnsmasq：轻量级DNS和DHCP服务器，适用于小型网络。"
+    },
+    {
+      "name": "haproxy",
+      "repo": "haproxy/haproxy",
+      "photo": "",
+      "summary": "haproxy：高性能TCP/HTTP负载均衡器和代理服务器。"
+    },
+    {
+      "name": "squid",
+      "repo": "squid-cache/squid",
+      "photo": "",
+      "summary": "squid：高性能Web代理缓存服务器，支持HTTP、HTTPS和FTP。"
+    },
+    {
+      "name": "httpie",
+      "repo": "httpie/httpie",
+      "photo": "",
+      "summary": "httpie：命令行HTTP客户端，比curl更友好的用户界面。"
+    },
+    {
+      "name": "whois",
+      "repo": "rfc1036/whois",
+      "photo": "",
+      "summary": "whois：域名和IP地址查询工具，提供注册信息。"
+    },
+    {
+      "name": "dig",
+      "repo": "isc-projects/bind9",
+      "photo": "",
+      "summary": "dig：DNS查询工具，用于诊断DNS问题。"
+    },
+    {
+      "name": "ipcalc",
+      "repo": "nipcalc/ipcalc",
+      "photo": "",
+      "summary": "ipcalc：IP地址计算器，支持子网掩码、CIDR和路由计算。"
+    },
+    {
+      "name": "ethtool",
+      "repo": "torvalds/linux",
+      "photo": "",
+      "summary": "ethtool：以太网设备配置工具，用于查询和设置网卡参数。"
+    },
+    {
+      "name": "iproute2",
+      "repo": "torvalds/linux",
+      "photo": "",
+      "summary": "iproute2：Linux网络配置工具集，替代传统的ifconfig和route命令。"
+    },
+    {
+      "name": "tshark",
+      "repo": "wireshark/wireshark",
+      "photo": "",
+      "summary": "tshark：Wireshark的命令行版本，用于捕获和分析网络数据包。"
+    },
+    {
+      "name": "rsync",
+      "repo": "WayneD/rsync",
+      "photo": "",
+      "summary": "rsync：快速、通用的文件同步工具，支持增量传输。"
+    },
+    {
+      "name": "w3m",
+      "repo": "tats/w3m",
+      "photo": "",
+      "summary": "w3m：基于文本的Web浏览器，支持HTML和图片显示。"
+    },
+    {
+      "name": "lynx",
+      "repo": "lynx-dev/lynx",
+      "photo": "",
+      "summary": "lynx：命令行Web浏览器，支持HTML和导航。"
     }
   ]
 }

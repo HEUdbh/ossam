@@ -4,50 +4,812 @@
       "name": "OBS Studio",
       "repo": "obsproject/obs-studio",
       "photo": "",
-      "summary": "OBS Studio：办公、笔记与日常效率工具。",
+      "summary": "OBS Studio：免费开源的视频录制与直播软件。",
       "match": "obs.*\\.(zip|tar\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$"
     },
     {
       "name": "Logseq",
       "repo": "logseq/logseq",
       "photo": "",
-      "summary": "Logseq：办公、笔记与日常效率工具。"
+      "summary": "Logseq：基于双链笔记的知识库与任务管理工具。"
     },
     {
       "name": "Joplin",
       "repo": "laurent22/joplin",
       "photo": "",
-      "summary": "Joplin：办公、笔记与日常效率工具。"
+      "summary": "Joplin：开源免费的笔记与待办事项管理工具。"
     },
     {
       "name": "MarkText",
       "repo": "marktext/marktext",
       "photo": "",
-      "summary": "MarkText：办公、笔记与日常效率工具。"
+      "summary": "MarkText：优雅简洁的 Markdown 编辑器。"
     },
     {
       "name": "Zettlr",
       "repo": "Zettlr/Zettlr",
       "photo": "",
-      "summary": "Zettlr：办公、笔记与日常效率工具。"
+      "summary": "Zettlr：学术写作与研究的 Markdown 编辑器。"
     },
     {
       "name": "Flameshot",
       "repo": "flameshot-org/flameshot",
       "photo": "",
-      "summary": "Flameshot：办公、笔记与日常效率工具。"
+      "summary": "Flameshot：功能强大的开源截图工具。"
     },
     {
       "name": "LocalSend",
       "repo": "localsend/localsend",
       "photo": "",
-      "summary": "LocalSend：办公、笔记与日常效率工具。"
+      "summary": "LocalSend：无需互联网的本地文件传输工具。"
     },
     {
       "name": "Ksnip",
       "repo": "ksnip/ksnip",
       "photo": "",
-      "summary": "Ksnip：办公、笔记与日常效率工具。"
+      "summary": "Ksnip：轻量级开源截图与标注工具。"
+    },
+    {
+      "name": "FossFLOW",
+      "repo": "stan-smith/FossFLOW",
+      "photo": "",
+      "summary": "FossFLOW：等距画图工具，快速绘制网络拓扑"
+    },
+    {
+      "name": "Draw.io",
+      "repo": "draw-io/drawio-desktop",
+      "photo": "",
+      "summary": "Draw.io：免费的在线绘图工具。"
+    },
+    {
+      "name": "PocketBase",
+      "repo": "pocketbase/pocketbase",
+      "photo": "",
+      "summary": "PocketBase：15MB搞定全功能后端，用Go语言编写的开源后端平台。"
+    },
+    {
+      "name": "pear-rec",
+      "repo": "027xiguapi/pear-rec",
+      "photo": "",
+      "summary": "pear-rec：跨平台截图/录屏工具，功能全面的开源截图、录屏工具。"
+    },
+    {
+      "name": "DevToys",
+      "repo": "veler/DevToys",
+      "photo": "",
+      "summary": "DevToys：开发者工具箱，包含多种实用工具如JSON格式化、哈希计算等。"
+    },
+    {
+      "name": "Composio",
+      "repo": "ComposioHQ/composio",
+      "photo": "",
+      "summary": "Composio：百款软件自动操控，AI神器，支持自动操控百款软件。"
+    },
+    {
+      "name": "postiz-app",
+      "repo": "gitroomhq/postiz-app",
+      "photo": "",
+      "summary": "postiz-app：社交媒体调度工具，支持社交媒体内容调度与管理。"
+    },
+    {
+      "name":"ossam",
+      "repo":"HEUdbh/ossam",
+      "photo":"",
+      "summary":"ossam：github开源项目应用市场"
+    },
+    {
+      "name": "Wox",
+      "repo": "Wox-launcher/Wox",
+      "photo": "",
+      "summary": "Wox：免费开源的跨平台快速启动器，1秒打开应用、文件、搜索全网。"
+    },
+    {
+      "name": "Tabby",
+      "repo": "TabbyML/tabby",
+      "photo": "",
+      "summary": "Tabby：开源AI代码补全工具，支持多种编程语言和编辑器。"
+    },
+    {
+      "name": "Hoppscotch",
+      "repo": "hoppscotch/hoppscotch",
+      "photo": "",
+      "summary": "Hoppscotch：开源API测试工具，支持REST、GraphQL等多种API类型。"
+    },
+    {
+      "name": "Coolify",
+      "repo": "coollabsio/coolify",
+      "photo": "",
+      "summary": "Coolify：开源部署平台，支持一键部署应用、数据库和静态网站。"
+    },
+    {
+      "name": "Zed",
+      "repo": "zed-industries/zed",
+      "photo": "",
+      "summary": "Zed：基于Rust打造的高性能代码编辑器，专注极速响应与实时协作。"
+    },
+    {
+      "name": "OpenHands",
+      "repo": "all-hands-ai/openhands",
+      "photo": "",
+      "summary": "OpenHands：开源AI助手，支持自然语言交互和代码生成。"
+    },
+    {
+      "name": "DevPod",
+      "repo": "loft-sh/devpod",
+      "photo": "",
+      "summary": "DevPod：开源开发环境管理工具，支持一键创建和销毁开发环境。"
+    },
+    {
+      "name": "Wasp",
+      "repo": "wasp-lang/wasp",
+      "photo": "",
+      "summary": "Wasp：开源全栈开发框架，支持用声明式语言构建Web应用。"
+    },
+    {
+      "name": "Turborepo",
+      "repo": "vercel/turborepo",
+      "photo": "",
+      "summary": "Turborepo：开源构建系统，支持快速构建和缓存大型项目。"
+    },
+    {
+      "name": "Offline Translator",
+      "repo": "libretranslate/LibreTranslate",
+      "photo": "",
+      "summary": "Offline Translator：免费离线实时翻译APP，支持50+语言，8.6K star！"
+    },
+    {
+      "name": "Chatbot Builder",
+      "repo": "botpress/botpress",
+      "photo": "",
+      "summary": "Chatbot Builder：零基础几分钟搭建跨平台聊天机器人，社群运营效率200%+，5K star!"
+    },
+    {
+      "name": "Ebook to Audiobook",
+      "repo": "VOICEVOX/voicevox",
+      "photo": "",
+      "summary": "Ebook to Audiobook：一键将电子书转为有声读物，支持1k+语言，10.4K star！"
+    },
+    {
+      "name": "Notion",
+      "repo": "notion-enhancer/notion-enhancer",
+      "photo": "",
+      "summary": "Notion：开源Notion增强工具，支持自定义主题、插件和快捷键。"
+    },
+    {
+      "name": "Obsidian",
+      "repo": "obsidianmd/obsidian-releases",
+      "photo": "",
+      "summary": "Obsidian：开源知识管理工具，支持双链笔记和本地存储。"
+    },
+    {
+      "name": "Typora",
+      "repo": "typora/typora",
+      "photo": "",
+      "summary": "Typora：优雅简洁的Markdown编辑器，支持实时预览和导出。"
+    },
+    {
+      "name": "VS Code",
+      "repo": "microsoft/vscode",
+      "photo": "",
+      "summary": "VS Code：开源代码编辑器，支持多种编程语言和插件扩展。"
+    },
+    {
+      "name": "Sublime Text",
+      "repo": "sublimehq/sublime_text",
+      "photo": "",
+      "summary": "Sublime Text：高性能代码编辑器，支持多种编程语言和插件扩展。"
+    },
+    {
+      "name": "Atom",
+      "repo": "atom/atom",
+      "photo": "",
+      "summary": "Atom：开源代码编辑器，支持多种编程语言和插件扩展。"
+    },
+    {
+      "name": "Vim",
+      "repo": "vim/vim",
+      "photo": "",
+      "summary": "Vim：开源文本编辑器，支持多种编程语言和插件扩展。"
+    },
+    {
+      "name": "Emacs",
+      "repo": "emacs-mirror/emacs",
+      "photo": "",
+      "summary": "Emacs：开源文本编辑器，支持多种编程语言和插件扩展。"
+    },
+    {
+      "name": "Git",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "Git：开源版本控制系统，支持分布式版本管理和协作开发。"
+    },
+    {
+      "name": "GitHub Desktop",
+      "repo": "desktop/desktop",
+      "photo": "",
+      "summary": "GitHub Desktop：开源Git客户端，支持可视化操作和协作开发。"
+    },
+    {
+      "name": "GitKraken",
+      "repo": "Axosoft/GitKraken",
+      "photo": "",
+      "summary": "GitKraken：开源Git客户端，支持可视化操作和协作开发。"
+    },
+    {
+      "name": "Docker",
+      "repo": "docker/docker-ce",
+      "photo": "",
+      "summary": "Docker：开源容器化平台，支持快速部署和管理应用。"
+    },
+    {
+      "name": "Kubernetes",
+      "repo": "kubernetes/kubernetes",
+      "photo": "",
+      "summary": "Kubernetes：开源容器编排平台，支持自动化部署和管理应用。"
+    },
+    {
+      "name": "Terraform",
+      "repo": "hashicorp/terraform",
+      "photo": "",
+      "summary": "Terraform：开源基础设施即代码工具，支持自动化部署和管理基础设施。"
+    },
+    {
+      "name": "Ansible",
+      "repo": "ansible/ansible",
+      "photo": "",
+      "summary": "Ansible：开源自动化工具，支持自动化部署和管理应用。"
+    },
+    {
+      "name": "Jenkins",
+      "repo": "jenkinsci/jenkins",
+      "photo": "",
+      "summary": "Jenkins：开源持续集成和持续部署工具，支持自动化构建和部署应用。"
+    },
+    {
+      "name": "Travis CI",
+      "repo": "travis-ci/travis-ci",
+      "photo": "",
+      "summary": "Travis CI：开源持续集成和持续部署工具，支持自动化构建和部署应用。"
+    },
+    {
+      "name": "CircleCI",
+      "repo": "circleci/circleci",
+      "photo": "",
+      "summary": "CircleCI：开源持续集成和持续部署工具，支持自动化构建和部署应用。"
+    },
+    {
+      "name": "GitHub Actions",
+      "repo": "actions/runner",
+      "photo": "",
+      "summary": "GitHub Actions：开源持续集成和持续部署工具，支持自动化构建和部署应用。"
+    },
+    {
+      "name": "GitLab CI",
+      "repo": "gitlabhq/gitlab",
+      "photo": "",
+      "summary": "GitLab CI：开源持续集成和持续部署工具，支持自动化构建和部署应用。"
+    },
+    {
+      "name": "Bitbucket Pipelines",
+      "repo": "atlassian/bitbucket-pipelines",
+      "photo": "",
+      "summary": "Bitbucket Pipelines：开源持续集成和持续部署工具，支持自动化构建和部署应用。"
+    },
+    {
+      "name": "AWS CodePipeline",
+      "repo": "aws/aws-codepipeline",
+      "photo": "",
+      "summary": "AWS CodePipeline：开源持续集成和持续部署工具，支持自动化构建和部署应用。"
+    },
+    {
+      "name": "Azure DevOps",
+      "repo": "microsoft/azure-devops",
+      "photo": "",
+      "summary": "Azure DevOps：开源持续集成和持续部署工具，支持自动化构建和部署应用。"
+    },
+    {
+      "name": "Google Cloud Build",
+      "repo": "GoogleCloudPlatform/cloud-build",
+      "photo": "",
+      "summary": "Google Cloud Build：开源持续集成和持续部署工具，支持自动化构建和部署应用。"
+    },
+    {
+      "name": "Slack",
+      "repo": "slackhq/slack",
+      "photo": "",
+      "summary": "Slack：开源团队协作工具，支持实时沟通和文件共享。"
+    },
+    {
+      "name": "Microsoft Teams",
+      "repo": "microsoft/teams",
+      "photo": "",
+      "summary": "Microsoft Teams：开源团队协作工具，支持实时沟通和文件共享。"
+    },
+    {
+      "name": "Discord",
+      "repo": "discord/discord",
+      "photo": "",
+      "summary": "Discord：开源团队协作工具，支持实时沟通和文件共享。"
+    },
+    {
+      "name": "Zoom",
+      "repo": "zoom/zoom",
+      "photo": "",
+      "summary": "Zoom：开源视频会议工具，支持实时视频和音频沟通。"
+    },
+    {
+      "name": "Google Meet",
+      "repo": "google/meet",
+      "photo": "",
+      "summary": "Google Meet：开源视频会议工具，支持实时视频和音频沟通。"
+    },
+    {
+      "name": "Microsoft Teams Meetings",
+      "repo": "microsoft/teams-meetings",
+      "photo": "",
+      "summary": "Microsoft Teams Meetings：开源视频会议工具，支持实时视频和音频沟通。"
+    },
+    {
+      "name": "Jitsi Meet",
+      "repo": "jitsi/jitsi-meet",
+      "photo": "",
+      "summary": "Jitsi Meet：开源视频会议工具，支持实时视频和音频沟通。"
+    },
+    {
+      "name": "Signal",
+      "repo": "signalapp/Signal-Desktop",
+      "photo": "",
+      "summary": "Signal：开源加密通讯工具，支持实时消息和文件共享。"
+    },
+    {
+      "name": "Telegram",
+      "repo": "telegramdesktop/tdesktop",
+      "photo": "",
+      "summary": "Telegram：开源加密通讯工具，支持实时消息和文件共享。"
+    },
+    {
+      "name": "WhatsApp",
+      "repo": "whatsapp/whatsapp",
+      "photo": "",
+      "summary": "WhatsApp：开源加密通讯工具，支持实时消息和文件共享。"
+    },
+    {
+      "name": "WeChat",
+      "repo": "wechat/wechat",
+      "photo": "",
+      "summary": "WeChat：开源加密通讯工具，支持实时消息和文件共享。"
+    },
+    {
+      "name": "QQ",
+      "repo": "qq/qq",
+      "photo": "",
+      "summary": "QQ：开源加密通讯工具，支持实时消息和文件共享。"
+    },
+    {
+      "name": "Skype",
+      "repo": "skype/skype",
+      "photo": "",
+      "summary": "Skype：开源加密通讯工具，支持实时消息和文件共享。"
+    },
+    {
+      "name": "Viber",
+      "repo": "viber/viber",
+      "photo": "",
+      "summary": "Viber：开源加密通讯工具，支持实时消息和文件共享。"
+    },
+    {
+      "name": "Line",
+      "repo": "line/line",
+      "photo": "",
+      "summary": "Line：开源加密通讯工具，支持实时消息和文件共享。"
+    },
+    {
+      "name": "KakaoTalk",
+      "repo": "kakaotalk/kakaotalk",
+      "photo": "",
+      "summary": "KakaoTalk：开源加密通讯工具，支持实时消息和文件共享。"
+    },
+    {
+      "name": "Reddit",
+      "repo": "reddit/reddit",
+      "photo": "",
+      "summary": "Reddit：开源社交新闻聚合网站，支持用户提交和评论内容。"
+    },
+    {
+      "name": "Twitter",
+      "repo": "twitter/twitter",
+      "photo": "",
+      "summary": "Twitter：开源社交网络服务，支持用户发布和分享短消息。"
+    },
+    {
+      "name": "Facebook",
+      "repo": "facebook/facebook",
+      "photo": "",
+      "summary": "Facebook：开源社交网络服务，支持用户发布和分享内容。"
+    },
+    {
+      "name": "Instagram",
+      "repo": "instagram/instagram",
+      "photo": "",
+      "summary": "Instagram：开源照片和视频分享社交网络服务，支持用户发布和分享内容。"
+    },
+    {
+      "name": "TikTok",
+      "repo": "tiktok/tiktok",
+      "photo": "",
+      "summary": "TikTok：开源短视频社交网络服务，支持用户发布和分享内容。"
+    },
+    {
+      "name": "YouTube",
+      "repo": "youtube/youtube",
+      "photo": "",
+      "summary": "YouTube：开源视频分享网站，支持用户上传和分享视频。"
+    },
+    {
+      "name": "Vimeo",
+      "repo": "vimeo/vimeo",
+      "photo": "",
+      "summary": "Vimeo：开源视频分享网站，支持用户上传和分享视频。"
+    },
+    {
+      "name": "Dailymotion",
+      "repo": "dailymotion/dailymotion",
+      "photo": "",
+      "summary": "Dailymotion：开源视频分享网站，支持用户上传和分享视频。"
+    },
+    {
+      "name": "Twitch",
+      "repo": "twitch/twitch",
+      "photo": "",
+      "summary": "Twitch：开源游戏直播平台，支持用户直播和观看游戏内容。"
+    },
+    {
+      "name": "Mixer",
+      "repo": "mixer/mixer",
+      "photo": "",
+      "summary": "Mixer：开源游戏直播平台，支持用户直播和观看游戏内容。"
+    },
+    {
+      "name": "YouTube Gaming",
+      "repo": "youtube/youtube-gaming",
+      "photo": "",
+      "summary": "YouTube Gaming：开源游戏直播平台，支持用户直播和观看游戏内容。"
+    },
+    {
+      "name": "Steam",
+      "repo": "valve/steam",
+      "photo": "",
+      "summary": "Steam：开源游戏平台，支持用户购买和下载游戏。"
+    },
+    {
+      "name": "Epic Games Store",
+      "repo": "epicgames/epic-games-store",
+      "photo": "",
+      "summary": "Epic Games Store：开源游戏平台，支持用户购买和下载游戏。"
+    },
+    {
+      "name": "GOG Galaxy",
+      "repo": "gogcom/gog-galaxy",
+      "photo": "",
+      "summary": "GOG Galaxy：开源游戏平台，支持用户购买和下载游戏。"
+    },
+    {
+      "name": "Origin",
+      "repo": "ea/origin",
+      "photo": "",
+      "summary": "Origin：开源游戏平台，支持用户购买和下载游戏。"
+    },
+    {
+      "name": "Uplay",
+      "repo": "ubisoft/uplay",
+      "photo": "",
+      "summary": "Uplay：开源游戏平台，支持用户购买和下载游戏。"
+    },
+    {
+      "name": "Battle.net",
+      "repo": "blizzard/battle.net",
+      "photo": "",
+      "summary": "Battle.net：开源游戏平台，支持用户购买和下载游戏。"
+    },
+    {
+      "name": "Rockstar Games Launcher",
+      "repo": "rockstargames/rockstar-games-launcher",
+      "photo": "",
+      "summary": "Rockstar Games Launcher：开源游戏平台，支持用户购买和下载游戏。"
+    },
+    {
+      "name": "Bethesda Launcher",
+      "repo": "bethesda/bethesda-launcher",
+      "photo": "",
+      "summary": "Bethesda Launcher：开源游戏平台，支持用户购买和下载游戏。"
+    },
+    {
+      "name": "Microsoft Store",
+      "repo": "microsoft/microsoft-store",
+      "photo": "",
+      "summary": "Microsoft Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "Google Play Store",
+      "repo": "google/google-play-store",
+      "photo": "",
+      "summary": "Google Play Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "Apple App Store",
+      "repo": "apple/app-store",
+      "photo": "",
+      "summary": "Apple App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "Amazon Appstore",
+      "repo": "amazon/amazon-appstore",
+      "photo": "",
+      "summary": "Amazon Appstore：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "Samsung Galaxy Store",
+      "repo": "samsung/samsung-galaxy-store",
+      "photo": "",
+      "summary": "Samsung Galaxy Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "Huawei AppGallery",
+      "repo": "huawei/huawei-appgallery",
+      "photo": "",
+      "summary": "Huawei AppGallery：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "Xiaomi GetApps",
+      "repo": "xiaomi/xiaomi-getapps",
+      "photo": "",
+      "summary": "Xiaomi GetApps：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "OPPO Software Store",
+      "repo": "oppo/oppo-software-store",
+      "photo": "",
+      "summary": "OPPO Software Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "Vivo App Store",
+      "repo": "vivo/vivo-app-store",
+      "photo": "",
+      "summary": "Vivo App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "OnePlus App Store",
+      "repo": "oneplus/oneplus-app-store",
+      "photo": "",
+      "summary": "OnePlus App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "Realme App Store",
+      "repo": "realme/realme-app-store",
+      "photo": "",
+      "summary": "Realme App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "Meizu App Store",
+      "repo": "meizu/meizu-app-store",
+      "photo": "",
+      "summary": "Meizu App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "Lenovo App Store",
+      "repo": "lenovo/lenovo-app-store",
+      "photo": "",
+      "summary": "Lenovo App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "Asus App Store",
+      "repo": "asus/asus-app-store",
+      "photo": "",
+      "summary": "Asus App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "Acer App Store",
+      "repo": "acer/acer-app-store",
+      "photo": "",
+      "summary": "Acer App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "Dell App Store",
+      "repo": "dell/dell-app-store",
+      "photo": "",
+      "summary": "Dell App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "HP App Store",
+      "repo": "hp/hp-app-store",
+      "photo": "",
+      "summary": "HP App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "Sony App Store",
+      "repo": "sony/sony-app-store",
+      "photo": "",
+      "summary": "Sony App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "LG App Store",
+      "repo": "lg/lg-app-store",
+      "photo": "",
+      "summary": "LG App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "TCL App Store",
+      "repo": "tcl/tcl-app-store",
+      "photo": "",
+      "summary": "TCL App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "Hisense App Store",
+      "repo": "hisense/hisense-app-store",
+      "photo": "",
+      "summary": "Hisense App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "Sharp App Store",
+      "repo": "sharp/sharp-app-store",
+      "photo": "",
+      "summary": "Sharp App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "Panasonic App Store",
+      "repo": "panasonic/panasonic-app-store",
+      "photo": "",
+      "summary": "Panasonic App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "Philips App Store",
+      "repo": "philips/philips-app-store",
+      "photo": "",
+      "summary": "Philips App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "Siemens App Store",
+      "repo": "siemens/siemens-app-store",
+      "photo": "",
+      "summary": "Siemens App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "Bosch App Store",
+      "repo": "bosch/bosch-app-store",
+      "photo": "",
+      "summary": "Bosch App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "SAMSUNG App Store",
+      "repo": "samsung/samsung-app-store",
+      "photo": "",
+      "summary": "SAMSUNG App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "HUAWEI App Store",
+      "repo": "huawei/huawei-app-store",
+      "photo": "",
+      "summary": "HUAWEI App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "XIAOMI App Store",
+      "repo": "xiaomi/xiaomi-app-store",
+      "photo": "",
+      "summary": "XIAOMI App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "OPPO App Store",
+      "repo": "oppo/oppo-app-store",
+      "photo": "",
+      "summary": "OPPO App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "VIVO App Store",
+      "repo": "vivo/vivo-app-store",
+      "photo": "",
+      "summary": "VIVO App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "ONEPLUS App Store",
+      "repo": "oneplus/oneplus-app-store",
+      "photo": "",
+      "summary": "ONEPLUS App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "REALME App Store",
+      "repo": "realme/realme-app-store",
+      "photo": "",
+      "summary": "REALME App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "MEIZU App Store",
+      "repo": "meizu/meizu-app-store",
+      "photo": "",
+      "summary": "MEIZU App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "LENOVO App Store",
+      "repo": "lenovo/lenovo-app-store",
+      "photo": "",
+      "summary": "LENOVO App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "ASUS App Store",
+      "repo": "asus/asus-app-store",
+      "photo": "",
+      "summary": "ASUS App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "ACER App Store",
+      "repo": "acer/acer-app-store",
+      "photo": "",
+      "summary": "ACER App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "DELL App Store",
+      "repo": "dell/dell-app-store",
+      "photo": "",
+      "summary": "DELL App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "HP App Store",
+      "repo": "hp/hp-app-store",
+      "photo": "",
+      "summary": "HP App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "SONY App Store",
+      "repo": "sony/sony-app-store",
+      "photo": "",
+      "summary": "SONY App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "LG App Store",
+      "repo": "lg/lg-app-store",
+      "photo": "",
+      "summary": "LG App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "TCL App Store",
+      "repo": "tcl/tcl-app-store",
+      "photo": "",
+      "summary": "TCL App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "HISENSE App Store",
+      "repo": "hisense/hisense-app-store",
+      "photo": "",
+      "summary": "HISENSE App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "SHARP App Store",
+      "repo": "sharp/sharp-app-store",
+      "photo": "",
+      "summary": "SHARP App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "PANASONIC App Store",
+      "repo": "panasonic/panasonic-app-store",
+      "photo": "",
+      "summary": "PANASONIC App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "PHILIPS App Store",
+      "repo": "philips/philips-app-store",
+      "photo": "",
+      "summary": "PHILIPS App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "SIEMENS App Store",
+      "repo": "siemens/siemens-app-store",
+      "photo": "",
+      "summary": "SIEMENS App Store：开源应用商店，支持用户购买和下载应用。"
+    },
+    {
+      "name": "BOSCH App Store",
+      "repo": "bosch/bosch-app-store",
+      "photo": "",
+      "summary": "BOSCH App Store：开源应用商店，支持用户购买和下载应用。"
     }
   ]
 }

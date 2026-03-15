@@ -1,10 +1,11 @@
 ﻿<script setup>
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { ElMessage, ElMessageBox } from "element-plus";
+import { ElMessageBox } from "element-plus";
 import {
   ArrowLeft,
   ArrowRight,
+  Cpu,
   Connection,
   DataAnalysis,
   Grid,
@@ -13,7 +14,6 @@ import {
   Search,
   Setting,
   Tools,
-  User,
   Promotion,
 } from "@element-plus/icons-vue";
 import { SetCDNSettings } from "../wailsjs/go/main/App";
@@ -38,12 +38,12 @@ const { categories } = useAppsStore();
 const globalSearch = ref("");
 const sidebarCollapsed = ref(readSidebarCollapsed());
 
-const isMineActive = computed(() => route.path.startsWith("/mine"));
 const isSettingsActive = computed(() => route.path.startsWith("/settings"));
 
 const CATEGORY_ICON_MAP = {
   Security: Lock,
   DevTools: Tools,
+  AI: Cpu,
   System: Monitor,
   Network: Connection,
   Database: DataAnalysis,
@@ -176,10 +176,6 @@ function selectCategory(category) {
   });
 }
 
-function openMine() {
-  router.push({ name: "mine" });
-}
-
 function getSettingsFromRoute() {
   return isSettingsActive.value ? "/market" : route.fullPath;
 }
@@ -190,10 +186,6 @@ function goToDownloadSettings(from) {
 
 function openSettings() {
   goToDownloadSettings(getSettingsFromRoute());
-}
-
-function notifyAuthPending(action) {
-  ElMessage.info(`${action} 功能建设中`);
 }
 
 async function checkDownloadDirectoryOnStartup() {
@@ -314,11 +306,6 @@ watch(
           </template>
         </el-input>
       </div>
-
-      <div class="topbar-right">
-        <el-button text @click="notifyAuthPending('登录')">登录</el-button>
-        <el-button text class="register-btn" @click="notifyAuthPending('注册')">注册</el-button>
-      </div>
     </header>
 
     <div class="app-shell">
@@ -355,16 +342,6 @@ watch(
           </nav>
 
           <div class="sidebar-divider" />
-
-          <button
-            class="sidebar-link"
-            :class="{ active: isMineActive }"
-            title="我的"
-            @click="openMine"
-          >
-            <el-icon><User /></el-icon>
-            <span class="nav-label">我的</span>
-          </button>
         </div>
 
         <el-button

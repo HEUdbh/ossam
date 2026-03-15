@@ -70,6 +70,7 @@ OSSAM (Open Source Software Application Market) 是一个基于 **Go + Wails + V
 ```
 🛡️ 安全工具 (Security)
 🛠️ 开发利器 (DevTools)
+🤖 AI工具 (AI)
 💻 系统增强 (System)
 🌐 网络插件 (Network)
 📊 数据管理 (Database)
@@ -182,6 +183,7 @@ ossam/
 │   └── categories/         # 分类应用配置
 │       ├── security.json
 │       ├── devtools.json
+│       ├── ai.json
 │       ├── system.json
 │       ├── network.json
 │       ├── database.json
@@ -241,6 +243,7 @@ ossam/
   "categories": [
     { "name": "Security", "file": "config/categories/security.json" },
     { "name": "DevTools", "file": "config/categories/devtools.json" },
+    { "name": "AI", "file": "config/categories/ai.json" },
     ...
   ]
 }

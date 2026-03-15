@@ -1,6 +1,7 @@
 ﻿export const CATEGORY_ORDER = [
   "Security",
   "DevTools",
+  "AI",
   "System",
   "Network",
   "Database",
@@ -11,6 +12,7 @@
 export const CATEGORY_LABELS = {
   Security: "安全工具",
   DevTools: "开发工具",
+  AI: "AI工具",
   System: "系统增强",
   Network: "网络插件",
   Database: "数据管理",

@@ -10,9 +10,13 @@ export function GetCDNSettings():Promise<main.CDNSettings>;
 
 export function GetDownloadTask(arg1:string):Promise<main.DownloadTaskSnapshot>;
 
+export function GetReadmeByLink(arg1:main.ReadmeByLinkRequest):Promise<main.ReadmeByLinkResponse>;
+
 export function GetRepoStars(arg1:Array<string>):Promise<Record<string, number>>;
 
 export function Greet(arg1:string):Promise<string>;
+
+export function OpenSystemTerminal():Promise<void>;
 
 export function SelectDownloadDirectory(arg1:string):Promise<string>;
 

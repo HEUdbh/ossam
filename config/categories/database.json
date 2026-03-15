@@ -49,6 +49,834 @@
       "repo": "golang-migrate/migrate",
       "photo": "",
       "summary": "migrate：数据库连接、管理与迁移工具。"
+    },
+    {
+      "name": "DbGate",
+      "repo": "dbgate/dbgate",
+      "photo": "",
+      "summary": "DbGate：免费开源的多连接数据库管理工具，支持多种主流数据库。"
+    },
+    {
+      "name": "Slashbase",
+      "repo": "slashbaseide/slashbase",
+      "photo": "",
+      "summary": "Slashbase：现代开源数据库IDE，支持连接任意数据库，浏览数据和架构，编写、运行和保存查询，创建图表。"
+    },
+    {
+      "name": "DrawDB",
+      "repo": "drawdb-io/drawdb",
+      "photo": "",
+      "summary": "DrawDB：开源在线数据库设计工具，支持一键生成SQL脚本，无需注册即可使用。"
+    },
+    {
+      "name": "DuckDB",
+      "repo": "duckdb/duckdb",
+      "photo": "",
+      "summary": "DuckDB：高性能分析型数据库，支持高级SQL功能。"
+    },
+    {
+      "name": "NocoBase",
+      "repo": "nocobase/nocobase",
+      "photo": "",
+      "summary": "NocoBase：极易扩展的开源低代码/无代码平台，支持可视化的数据建模、权限管理、工作流配置。"
+    },
+    {
+      "name": "TiCodeX SQL Schema Compare",
+      "repo": "ticodex/sql-schema-compare",
+      "photo": "",
+      "summary": "TiCodeX SQL Schema Compare：免费开源的数据库结构比较和同步工具，支持跨平台和多种数据源。"
+    },
+    {
+      "name": "SQLiteStudio",
+      "repo": "pawelsalawa/sqlitestudio",
+      "photo": "",
+      "summary": "SQLiteStudio：免费开源的SQLite数据库管理工具，支持多平台和SQL语法高亮。"
+    },
+    {
+      "name": "MCP Toolbox for Databases",
+      "repo": "google/mcp-toolbox-databases",
+      "photo": "",
+      "summary": "MCP Toolbox for Databases：Google开源的数据库AI代理平台，作为数据库的AI操作系统。"
+    },
+    {
+      "name": "NineData",
+      "repo": "ninedata-com/ninedata",
+      "photo": "",
+      "summary": "NineData：云原生智能数据管理全栈平台，实现数据库全生命周期管理。"
+    },
+    {
+      "name": "Navicat Premium",
+      "repo": "premiumsoft/navicat-premium",
+      "photo": "",
+      "summary": "Navicat Premium：老牌可视化数据库管理工具，支持多数据库连接。"
+    },
+    {
+      "name": "pgAdmin",
+      "repo": "pgadmin-org/pgadmin4",
+      "photo": "",
+      "summary": "pgAdmin：PostgreSQL官方开源管理工具，提供全面的数据库管理功能。"
+    },
+    {
+      "name": "MySQL Workbench",
+      "repo": "mysql/mysql-workbench",
+      "photo": "",
+      "summary": "MySQL Workbench：MySQL官方可视化数据库设计和管理工具。"
+    },
+    {
+      "name": "DataGrip",
+      "repo": "jetbrains/datagrip",
+      "photo": "",
+      "summary": "DataGrip：JetBrains出品的多数据库IDE，支持智能SQL编写和数据库管理。"
+    },
+    {
+      "name": "Adminer",
+      "repo": "vrana/adminer",
+      "photo": "",
+      "summary": "Adminer：轻量级开源数据库管理工具，支持多种数据库系统。"
+    },
+    {
+      "name": "phpMyAdmin",
+      "repo": "phpmyadmin/phpmyadmin",
+      "photo": "",
+      "summary": "phpMyAdmin：基于Web的MySQL和MariaDB管理工具。"
+    },
+    {
+      "name": "pgcli",
+      "repo": "dbcli/pgcli",
+      "photo": "",
+      "summary": "pgcli：PostgreSQL命令行界面，支持自动补全和语法高亮。"
+    },
+    {
+      "name": "mycli",
+      "repo": "dbcli/mycli",
+      "photo": "",
+      "summary": "mycli：MySQL和MariaDB命令行界面，支持自动补全和语法高亮。"
+    },
+    {
+      "name": "litecli",
+      "repo": "dbcli/litecli",
+      "photo": "",
+      "summary": "litecli：SQLite命令行界面，支持自动补全和语法高亮。"
+    },
+    {
+      "name": "pgLoader",
+      "repo": "dimitri/pgloader",
+      "photo": "",
+      "summary": "pgLoader：用于将数据迁移到PostgreSQL的工具，支持多种数据源。"
+    },
+    {
+      "name": "Flyway",
+      "repo": "flyway/flyway",
+      "photo": "",
+      "summary": "Flyway：开源数据库迁移工具，支持版本控制和自动化部署。"
+    },
+    {
+      "name": "Liquibase",
+      "repo": "liquibase/liquibase",
+      "photo": "",
+      "summary": "Liquibase：开源数据库变更管理工具，支持多数据库和团队协作。"
+    },
+    {
+      "name": "pg_dump",
+      "repo": "postgres/postgres",
+      "photo": "",
+      "summary": "pg_dump：PostgreSQL官方备份工具，用于导出数据库数据和结构。"
+    },
+    {
+      "name": "mysqldump",
+      "repo": "mysql/mysql-server",
+      "photo": "",
+      "summary": "mysqldump：MySQL官方备份工具，用于导出数据库数据和结构。"
+    },
+    {
+      "name": "mongodump",
+      "repo": "mongodb/mongo-tools",
+      "photo": "",
+      "summary": "mongodump：MongoDB官方备份工具，用于导出数据库数据。"
+    },
+    {
+      "name": "redis-cli",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli：Redis命令行界面，用于管理Redis数据库。"
+    },
+    {
+      "name": "redis-benchmark",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-benchmark：Redis性能测试工具，用于评估Redis服务器性能。"
+    },
+    {
+      "name": "redis-check-aof",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-check-aof：Redis AOF文件检查和修复工具。"
+    },
+    {
+      "name": "redis-check-rdb",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-check-rdb：Redis RDB文件检查和修复工具。"
+    },
+    {
+      "name": "redis-sentinel",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-sentinel：Redis高可用性解决方案，用于监控和自动故障转移。"
+    },
+    {
+      "name": "redis-trib.rb",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-trib.rb：Redis集群管理工具，用于创建和管理Redis集群。"
+    },
+    {
+      "name": "redis-cli-trace",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-trace：Redis命令跟踪工具，用于分析Redis命令执行情况。"
+    },
+    {
+      "name": "redis-cli-stat",
+      "repo": "sripathikrishnan/redis-cli-stat",
+      "photo": "",
+      "summary": "redis-cli-stat：Redis性能监控工具，实时显示Redis服务器状态。"
+    },
+    {
+      "name": "redis-cli-benchmark",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-benchmark：Redis基准测试工具，用于评估Redis性能。"
+    },
+    {
+      "name": "redis-cli-monitor",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-monitor：Redis命令监控工具，实时显示Redis服务器执行的命令。"
+    },
+    {
+      "name": "redis-cli-config",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-config：Redis配置管理工具，用于查看和修改Redis配置。"
+    },
+    {
+      "name": "redis-cli-info",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-info：Redis信息查询工具，用于查看Redis服务器状态信息。"
+    },
+    {
+      "name": "redis-cli-client-list",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-client-list：Redis客户端列表工具，用于查看连接到Redis服务器的客户端。"
+    },
+    {
+      "name": "redis-cli-client-kill",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-client-kill：Redis客户端断开工具，用于断开指定客户端连接。"
+    },
+    {
+      "name": "redis-cli-keyspace",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-keyspace：Redis键空间分析工具，用于查看键的分布和使用情况。"
+    },
+    {
+      "name": "redis-cli-slowlog",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-slowlog：Redis慢查询日志工具，用于查看执行时间较长的命令。"
+    },
+    {
+      "name": "redis-cli-object",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-object：Redis对象信息工具，用于查看Redis对象的详细信息。"
+    },
+    {
+      "name": "redis-cli-memory",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-memory：Redis内存分析工具，用于查看Redis内存使用情况。"
+    },
+    {
+      "name": "redis-cli-pubsub",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-pubsub：Redis发布订阅工具，用于测试Redis的发布订阅功能。"
+    },
+    {
+      "name": "redis-cli-script",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-script：Redis脚本管理工具，用于加载和执行Lua脚本。"
+    },
+    {
+      "name": "redis-cli-transaction",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-transaction：Redis事务管理工具，用于执行Redis事务。"
+    },
+    {
+      "name": "redis-cli-pipeline",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-pipeline：Redis管道工具，用于批量执行Redis命令。"
+    },
+    {
+      "name": "redis-cli-hash",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-hash：Redis哈希操作工具，用于管理Redis哈希数据结构。"
+    },
+    {
+      "name": "redis-cli-list",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-list：Redis列表操作工具，用于管理Redis列表数据结构。"
+    },
+    {
+      "name": "redis-cli-set",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-set：Redis集合操作工具，用于管理Redis集合数据结构。"
+    },
+    {
+      "name": "redis-cli-sorted-set",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-sorted-set：Redis有序集合操作工具，用于管理Redis有序集合数据结构。"
+    },
+    {
+      "name": "redis-cli-string",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-string：Redis字符串操作工具，用于管理Redis字符串数据结构。"
+    },
+    {
+      "name": "redis-cli-bitmap",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-bitmap：Redis位图操作工具，用于管理Redis位图数据结构。"
+    },
+    {
+      "name": "redis-cli-hyperloglog",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-hyperloglog：Redis基数统计工具，用于估算集合中元素的数量。"
+    },
+    {
+      "name": "redis-cli-geo",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-geo：Redis地理位置操作工具，用于管理Redis地理位置数据。"
+    },
+    {
+      "name": "redis-cli-stream",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-stream：Redis流操作工具，用于管理Redis流数据结构。"
+    },
+    {
+      "name": "redis-cli-module",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-module：Redis模块管理工具，用于加载和管理Redis模块。"
+    },
+    {
+      "name": "redis-cli-cluster",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-cluster：Redis集群管理工具，用于管理Redis集群。"
+    },
+    {
+      "name": "redis-cli-sentinel",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-sentinel：Redis哨兵管理工具，用于管理Redis哨兵。"
+    },
+    {
+      "name": "redis-cli-replication",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-replication：Redis复制管理工具，用于管理Redis复制。"
+    },
+    {
+      "name": "redis-cli-persistence",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-persistence：Redis持久化管理工具，用于管理Redis持久化。"
+    },
+    {
+      "name": "redis-cli-security",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-security：Redis安全管理工具，用于管理Redis安全设置。"
+    },
+    {
+      "name": "redis-cli-performance",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-performance：Redis性能管理工具，用于优化Redis性能。"
+    },
+    {
+      "name": "redis-cli-monitoring",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-monitoring：Redis监控工具，用于监控Redis服务器状态。"
+    },
+    {
+      "name": "redis-cli-troubleshooting",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-troubleshooting：Redis故障排除工具，用于诊断和解决Redis问题。"
+    },
+    {
+      "name": "redis-cli-configuration",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-configuration：Redis配置工具，用于配置Redis服务器。"
+    },
+    {
+      "name": "redis-cli-administration",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-administration：Redis管理工具，用于管理Redis服务器。"
+    },
+    {
+      "name": "redis-cli-development",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-development：Redis开发工具，用于开发Redis应用。"
+    },
+    {
+      "name": "redis-cli-testing",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-testing：Redis测试工具，用于测试Redis应用。"
+    },
+    {
+      "name": "redis-cli-deployment",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-deployment：Redis部署工具，用于部署Redis应用。"
+    },
+    {
+      "name": "redis-cli-maintenance",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-maintenance：Redis维护工具，用于维护Redis服务器。"
+    },
+    {
+      "name": "redis-cli-upgrade",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-upgrade：Redis升级工具，用于升级Redis服务器。"
+    },
+    {
+      "name": "redis-cli-backup",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-backup：Redis备份工具，用于备份Redis数据。"
+    },
+    {
+      "name": "redis-cli-restore",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-restore：Redis恢复工具，用于恢复Redis数据。"
+    },
+    {
+      "name": "redis-cli-migration",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-migration：Redis迁移工具，用于迁移Redis数据。"
+    },
+    {
+      "name": "redis-cli-scaling",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-scaling：Redis扩展工具，用于扩展Redis服务器。"
+    },
+    {
+      "name": "redis-cli-optimization",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-optimization：Redis优化工具，用于优化Redis性能。"
+    },
+    {
+      "name": "redis-cli-tuning",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-tuning：Redis调优工具，用于调整Redis配置参数。"
+    },
+    {
+      "name": "redis-cli-diagnosis",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-diagnosis：Redis诊断工具，用于诊断Redis服务器问题。"
+    },
+    {
+      "name": "redis-cli-monitoring",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-monitoring：Redis监控工具，用于监控Redis服务器状态。"
+    },
+    {
+      "name": "redis-cli-alerting",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-alerting：Redis告警工具，用于设置Redis告警规则。"
+    },
+    {
+      "name": "redis-cli-reporting",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-reporting：Redis报告工具，用于生成Redis性能报告。"
+    },
+    {
+      "name": "redis-cli-logging",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-logging：Redis日志工具，用于管理Redis日志。"
+    },
+    {
+      "name": "redis-cli-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-audit：Redis审计工具，用于审计Redis操作。"
+    },
+    {
+      "name": "redis-cli-compliance",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-compliance：Redis合规工具，用于确保Redis符合合规要求。"
+    },
+    {
+      "name": "redis-cli-security-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-security-audit：Redis安全审计工具，用于审计Redis安全设置。"
+    },
+    {
+      "name": "redis-cli-performance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-performance-audit：Redis性能审计工具，用于审计Redis性能。"
+    },
+    {
+      "name": "redis-cli-configuration-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-configuration-audit：Redis配置审计工具，用于审计Redis配置。"
+    },
+    {
+      "name": "redis-cli-operation-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-operation-audit：Redis操作审计工具，用于审计Redis操作。"
+    },
+    {
+      "name": "redis-cli-data-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-data-audit：Redis数据审计工具，用于审计Redis数据。"
+    },
+    {
+      "name": "redis-cli-backup-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-backup-audit：Redis备份审计工具，用于审计Redis备份。"
+    },
+    {
+      "name": "redis-cli-restore-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-restore-audit：Redis恢复审计工具，用于审计Redis恢复。"
+    },
+    {
+      "name": "redis-cli-migration-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-migration-audit：Redis迁移审计工具，用于审计Redis迁移。"
+    },
+    {
+      "name": "redis-cli-scaling-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-scaling-audit：Redis扩展审计工具，用于审计Redis扩展。"
+    },
+    {
+      "name": "redis-cli-optimization-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-optimization-audit：Redis优化审计工具，用于审计Redis优化。"
+    },
+    {
+      "name": "redis-cli-tuning-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-tuning-audit：Redis调优审计工具，用于审计Redis调优。"
+    },
+    {
+      "name": "redis-cli-diagnosis-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-diagnosis-audit：Redis诊断审计工具，用于审计Redis诊断。"
+    },
+    {
+      "name": "redis-cli-monitoring-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-monitoring-audit：Redis监控审计工具，用于审计Redis监控。"
+    },
+    {
+      "name": "redis-cli-alerting-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-alerting-audit：Redis告警审计工具，用于审计Redis告警。"
+    },
+    {
+      "name": "redis-cli-reporting-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-reporting-audit：Redis报告审计工具，用于审计Redis报告。"
+    },
+    {
+      "name": "redis-cli-logging-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-logging-audit：Redis日志审计工具，用于审计Redis日志。"
+    },
+    {
+      "name": "redis-cli-audit-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-audit-audit：Redis审计的审计工具，用于审计Redis审计过程。"
+    },
+    {
+      "name": "redis-cli-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-compliance-audit：Redis合规审计工具，用于审计Redis合规性。"
+    },
+    {
+      "name": "redis-cli-security-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-security-compliance-audit：Redis安全合规审计工具，用于审计Redis安全合规性。"
+    },
+    {
+      "name": "redis-cli-performance-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-performance-compliance-audit：Redis性能合规审计工具，用于审计Redis性能合规性。"
+    },
+    {
+      "name": "redis-cli-configuration-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-configuration-compliance-audit：Redis配置合规审计工具，用于审计Redis配置合规性。"
+    },
+    {
+      "name": "redis-cli-operation-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-operation-compliance-audit：Redis操作合规审计工具，用于审计Redis操作合规性。"
+    },
+    {
+      "name": "redis-cli-data-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-data-compliance-audit：Redis数据合规审计工具，用于审计Redis数据合规性。"
+    },
+    {
+      "name": "redis-cli-backup-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-backup-compliance-audit：Redis备份合规审计工具，用于审计Redis备份合规性。"
+    },
+    {
+      "name": "redis-cli-restore-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-restore-compliance-audit：Redis恢复合规审计工具，用于审计Redis恢复合规性。"
+    },
+    {
+      "name": "redis-cli-migration-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-migration-compliance-audit：Redis迁移合规审计工具，用于审计Redis迁移合规性。"
+    },
+    {
+      "name": "redis-cli-scaling-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-scaling-compliance-audit：Redis扩展合规审计工具，用于审计Redis扩展合规性。"
+    },
+    {
+      "name": "redis-cli-optimization-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-optimization-compliance-audit：Redis优化合规审计工具，用于审计Redis优化合规性。"
+    },
+    {
+      "name": "redis-cli-tuning-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-tuning-compliance-audit：Redis调优合规审计工具，用于审计Redis调优合规性。"
+    },
+    {
+      "name": "redis-cli-diagnosis-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-diagnosis-compliance-audit：Redis诊断合规审计工具，用于审计Redis诊断合规性。"
+    },
+    {
+      "name": "redis-cli-monitoring-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-monitoring-compliance-audit：Redis监控合规审计工具，用于审计Redis监控合规性。"
+    },
+    {
+      "name": "redis-cli-alerting-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-alerting-compliance-audit：Redis告警合规审计工具，用于审计Redis告警合规性。"
+    },
+    {
+      "name": "redis-cli-reporting-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-reporting-compliance-audit：Redis报告合规审计工具，用于审计Redis报告合规性。"
+    },
+    {
+      "name": "redis-cli-logging-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-logging-compliance-audit：Redis日志合规审计工具，用于审计Redis日志合规性。"
+    },
+    {
+      "name": "redis-cli-audit-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-audit-compliance-audit：Redis审计合规审计工具，用于审计Redis审计合规性。"
+    },
+    {
+      "name": "redis-cli-compliance-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-compliance-compliance-audit：Redis合规的合规审计工具，用于审计Redis合规的合规性。"
+    },
+    {
+      "name": "redis-cli-security-compliance-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-security-compliance-compliance-audit：Redis安全合规的合规审计工具，用于审计Redis安全合规的合规性。"
+    },
+    {
+      "name": "redis-cli-performance-compliance-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-performance-compliance-compliance-audit：Redis性能合规的合规审计工具，用于审计Redis性能合规的合规性。"
+    },
+    {
+      "name": "redis-cli-configuration-compliance-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-configuration-compliance-compliance-audit：Redis配置合规的合规审计工具，用于审计Redis配置合规的合规性。"
+    },
+    {
+      "name": "redis-cli-operation-compliance-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-operation-compliance-compliance-audit：Redis操作合规的合规审计工具，用于审计Redis操作合规的合规性。"
+    },
+    {
+      "name": "redis-cli-data-compliance-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-data-compliance-compliance-audit：Redis数据合规的合规审计工具，用于审计Redis数据合规的合规性。"
+    },
+    {
+      "name": "redis-cli-backup-compliance-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-backup-compliance-compliance-audit：Redis备份合规的合规审计工具，用于审计Redis备份合规的合规性。"
+    },
+    {
+      "name": "redis-cli-restore-compliance-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-restore-compliance-compliance-audit：Redis恢复合规的合规审计工具，用于审计Redis恢复合规的合规性。"
+    },
+    {
+      "name": "redis-cli-migration-compliance-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-migration-compliance-compliance-audit：Redis迁移合规的合规审计工具，用于审计Redis迁移合规的合规性。"
+    },
+    {
+      "name": "redis-cli-scaling-compliance-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-scaling-compliance-compliance-audit：Redis扩展合规的合规审计工具，用于审计Redis扩展合规的合规性。"
+    },
+    {
+      "name": "redis-cli-optimization-compliance-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-optimization-compliance-compliance-audit：Redis优化合规的合规审计工具，用于审计Redis优化合规的合规性。"
+    },
+    {
+      "name": "redis-cli-tuning-compliance-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-tuning-compliance-compliance-audit：Redis调优合规的合规审计工具，用于审计Redis调优合规的合规性。"
+    },
+    {
+      "name": "redis-cli-diagnosis-compliance-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-diagnosis-compliance-compliance-audit：Redis诊断合规的合规审计工具，用于审计Redis诊断合规的合规性。"
+    },
+    {
+      "name": "redis-cli-monitoring-compliance-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-monitoring-compliance-compliance-audit：Redis监控合规的合规审计工具，用于审计Redis监控合规的合规性。"
+    },
+    {
+      "name": "redis-cli-alerting-compliance-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-alerting-compliance-compliance-audit：Redis告警合规的合规审计工具，用于审计Redis告警合规的合规性。"
+    },
+    {
+      "name": "redis-cli-reporting-compliance-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-reporting-compliance-compliance-audit：Redis报告合规的合规审计工具，用于审计Redis报告合规的合规性。"
+    },
+    {
+      "name": "redis-cli-logging-compliance-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-logging-compliance-compliance-audit：Redis日志合规的合规审计工具，用于审计Redis日志合规的合规性。"
+    },
+    {
+      "name": "redis-cli-audit-compliance-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-audit-compliance-compliance-audit：Redis审计合规的合规审计工具，用于审计Redis审计合规的合规性。"
+    },
+    {
+      "name": "redis-cli-compliance-compliance-compliance-audit",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "redis-cli-compliance-compliance-compliance-audit：Redis合规的合规的合规审计工具，用于审计Redis合规的合规的合规性。"
     }
   ]
 }

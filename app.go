@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"os/exec"
 	"path"
 	"path/filepath"
 	"regexp"
@@ -353,6 +354,22 @@ type readmeFetchResult struct {
 	SourceURL string
 	Branch    string
 	FilePath  string
+}
+
+type ReadmeByLinkRequest struct {
+	Repo             string `json:"repo"`
+	Href             string `json:"href"`
+	CurrentBranch    string `json:"current_branch"`
+	CurrentFilePath  string `json:"current_file_path"`
+	CurrentSourceURL string `json:"current_source_url"`
+}
+
+type ReadmeByLinkResponse struct {
+	IsMarkdown bool   `json:"is_markdown"`
+	Content    string `json:"content"`
+	SourceURL  string `json:"source_url"`
+	Branch     string `json:"branch"`
+	FilePath   string `json:"file_path"`
 }
 
 type CDNSettings struct {
@@ -854,13 +871,11 @@ func (a *App) GetAppReleaseDetail(repo, match string) (*AppReleaseDetail, error)
 
 	releases, err := a.fetchReleases(repo)
 	if err != nil {
-		return nil, err
+		log.Printf("release fetch failed repo=%s err=%v, fallback to readme-only", repo, err)
+		releases = nil
 	}
 
-	release, err := selectLatestRelease(releases)
-	if err != nil {
-		return nil, err
-	}
+	release, hasRelease := selectLatestRelease(releases)
 
 	readmeResult, readmeErr := a.fetchReadme(repo)
 	if readmeErr != nil {
@@ -873,8 +888,6 @@ func (a *App) GetAppReleaseDetail(repo, match string) (*AppReleaseDetail, error)
 		contributors = []AppContributor{}
 	}
 
-	sourceZipURL := resolveSourceCodeZipURL(repo, release)
-
 	currentCDNSettings := globalCDNSettings.getSnapshot()
 	if a.cdnSettings != nil {
 		currentCDNSettings = a.cdnSettings.getSnapshot()
@@ -883,24 +896,56 @@ func (a *App) GetAppReleaseDetail(repo, match string) (*AppReleaseDetail, error)
 	detail := &AppReleaseDetail{
 		Repo:            repo,
 		Match:           match,
-		ReleaseTag:      release.TagName,
-		ReleaseName:     release.Name,
-		ReleaseBody:     release.Body,
 		Readme:          readmeResult.Content,
 		ReadmeSourceURL: readmeResult.SourceURL,
 		ReadmeBranch:    readmeResult.Branch,
 		ReadmeFilePath:  readmeResult.FilePath,
-		Downloads:       buildPlatformDownloads(release.Assets, sourceZipURL, pattern, normalizeArch(goruntime.GOARCH), platformKeywords),
+		Downloads:       map[string]PlatformDownload{},
 		Contributors:    contributors,
-		ReleaseAssets:   buildReleaseAssets(release.Assets, sourceZipURL, platformKeywords),
+		ReleaseAssets:   []ReleaseAssetInfo{},
 		CDNMeta:         buildReleaseCDNMeta(currentCDNSettings),
 	}
 
-	if !release.PublishedAt.IsZero() {
-		detail.ReleasePublishedAt = release.PublishedAt.UTC().Format(time.RFC3339)
+	if hasRelease {
+		sourceZipURL := resolveSourceCodeZipURL(repo, release)
+		detail.ReleaseTag = release.TagName
+		detail.ReleaseName = release.Name
+		detail.ReleaseBody = release.Body
+		detail.Downloads = buildPlatformDownloads(release.Assets, sourceZipURL, pattern, normalizeArch(goruntime.GOARCH), platformKeywords)
+		detail.ReleaseAssets = buildReleaseAssets(release.Assets, sourceZipURL, platformKeywords)
+
+		if !release.PublishedAt.IsZero() {
+			detail.ReleasePublishedAt = release.PublishedAt.UTC().Format(time.RFC3339)
+		}
 	}
 
 	return detail, nil
+}
+
+// GetReadmeByLink resolves and fetches markdown content by README link.
+func (a *App) GetReadmeByLink(request ReadmeByLinkRequest) (*ReadmeByLinkResponse, error) {
+	target, err := resolveReadmeLinkTarget(request)
+	if err != nil {
+		return nil, err
+	}
+	if !target.IsMarkdown {
+		return &ReadmeByLinkResponse{
+			IsMarkdown: false,
+		}, nil
+	}
+
+	content, sourceURL, err := a.fetchMarkdownByURL(target.FetchURL)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ReadmeByLinkResponse{
+		IsMarkdown: true,
+		Content:    content,
+		SourceURL:  sourceURL,
+		Branch:     target.Branch,
+		FilePath:   target.FilePath,
+	}, nil
 }
 
 // StartDownload starts a download task asynchronously and returns the task snapshot immediately.
@@ -1017,6 +1062,152 @@ func (a *App) Greet(name string) string {
 	return fmt.Sprintf("Hello %s, It's show time!", name)
 }
 
+// OpenSystemTerminal opens a local terminal window for the current platform.
+func (a *App) OpenSystemTerminal() error {
+	candidates, err := terminalLaunchCandidates(goruntime.GOOS)
+	if err != nil {
+		return err
+	}
+	if len(candidates) == 0 {
+		return fmt.Errorf("no terminal launch candidates for platform: %s", goruntime.GOOS)
+	}
+
+	attempts := make([]string, 0, len(candidates))
+	for _, candidate := range candidates {
+		commandText := formatLaunchCommand(candidate.command, candidate.args)
+
+		if _, err := exec.LookPath(candidate.command); err != nil {
+			attempts = append(attempts, fmt.Sprintf("%s (not found)", commandText))
+			continue
+		}
+
+		if err := executeTerminalLaunchCandidate(candidate); err != nil {
+			attempts = append(attempts, fmt.Sprintf("%s (start failed: %v)", commandText, err))
+			continue
+		}
+		return nil
+	}
+
+	return fmt.Errorf("failed to open terminal on %s; attempts: %s", goruntime.GOOS, strings.Join(attempts, "; "))
+}
+
+type terminalLaunchCandidate struct {
+	command string
+	args    []string
+	mode    terminalLaunchMode
+}
+
+type terminalLaunchMode uint8
+
+const (
+	terminalLaunchModeRun terminalLaunchMode = iota
+	terminalLaunchModeStartDetached
+)
+
+func terminalLaunchCandidates(goos string) ([]terminalLaunchCandidate, error) {
+	switch goos {
+	case "windows":
+		return []terminalLaunchCandidate{
+			{
+				command: "cmd.exe",
+				args:    []string{"/d", "/c", "start", "", "powershell.exe", "-NoExit"},
+				mode:    terminalLaunchModeRun,
+			},
+			{
+				command: "cmd.exe",
+				args:    []string{"/d", "/c", "start", "", "cmd.exe", "/k"},
+				mode:    terminalLaunchModeRun,
+			},
+			{
+				command: "powershell.exe",
+				args:    []string{"-NoExit"},
+				mode:    terminalLaunchModeStartDetached,
+			},
+		}, nil
+	case "darwin":
+		return []terminalLaunchCandidate{
+			{
+				command: "open",
+				args:    []string{"-a", "Terminal"},
+				mode:    terminalLaunchModeRun,
+			},
+			{
+				command: "osascript",
+				args: []string{
+					"-e", `tell application "Terminal" to do script ""`,
+					"-e", `tell application "Terminal" to activate`,
+				},
+				mode: terminalLaunchModeRun,
+			},
+		}, nil
+	case "linux":
+		display := strings.TrimSpace(os.Getenv("DISPLAY"))
+		waylandDisplay := strings.TrimSpace(os.Getenv("WAYLAND_DISPLAY"))
+		if display == "" && waylandDisplay == "" {
+			return nil, errors.New("no graphical session detected (DISPLAY and WAYLAND_DISPLAY are empty)")
+		}
+
+		return []terminalLaunchCandidate{
+			{command: "xdg-terminal-exec", mode: terminalLaunchModeStartDetached},
+			{command: "x-terminal-emulator", mode: terminalLaunchModeStartDetached},
+			{command: "gnome-terminal", mode: terminalLaunchModeStartDetached},
+			{command: "konsole", mode: terminalLaunchModeStartDetached},
+			{command: "xfce4-terminal", mode: terminalLaunchModeStartDetached},
+			{command: "xterm", mode: terminalLaunchModeStartDetached},
+		}, nil
+	default:
+		return nil, fmt.Errorf("unsupported platform: %s", goos)
+	}
+}
+
+func formatLaunchCommand(command string, args []string) string {
+	parts := make([]string, 0, len(args)+1)
+	parts = append(parts, quoteShellArgument(command))
+	for _, arg := range args {
+		parts = append(parts, quoteShellArgument(arg))
+	}
+	return strings.TrimSpace(strings.Join(parts, " "))
+}
+
+func quoteShellArgument(value string) string {
+	if value == "" {
+		return `""`
+	}
+
+	if strings.ContainsAny(value, " \t\"") {
+		return strconv.Quote(value)
+	}
+
+	return value
+}
+
+func executeTerminalLaunchCandidate(candidate terminalLaunchCandidate) error {
+	cmd := exec.Command(candidate.command, candidate.args...)
+
+	switch candidate.mode {
+	case terminalLaunchModeRun:
+		output, err := cmd.CombinedOutput()
+		if err != nil {
+			trimmed := strings.TrimSpace(string(output))
+			if trimmed != "" {
+				return fmt.Errorf("%w: %s", err, trimmed)
+			}
+			return err
+		}
+		return nil
+	case terminalLaunchModeStartDetached:
+		if err := cmd.Start(); err != nil {
+			return err
+		}
+		if cmd.Process != nil {
+			_ = cmd.Process.Release()
+		}
+		return nil
+	default:
+		return errors.New("unknown launch mode")
+	}
+}
+
 func (a *App) fetchReleases(repo string) ([]githubRelease, error) {
 	repoPath := buildRepoPath(repo)
 	if repoPath == "" {
@@ -1098,6 +1289,168 @@ func decodeReleaseResponse(resp *http.Response, source string) ([]githubRelease,
 	return releases, nil
 }
 
+type resolvedReadmeLinkTarget struct {
+	FetchURL   string
+	Branch     string
+	FilePath   string
+	IsMarkdown bool
+}
+
+func resolveReadmeLinkTarget(request ReadmeByLinkRequest) (resolvedReadmeLinkTarget, error) {
+	href := strings.TrimSpace(request.Href)
+	if href == "" {
+		return resolvedReadmeLinkTarget{}, errors.New("href is required")
+	}
+	if strings.HasPrefix(href, "#") {
+		return resolvedReadmeLinkTarget{}, nil
+	}
+
+	resolvedURL, branch, filePath, isMarkdown, err := resolveReadmeLinkURL(
+		strings.TrimSpace(request.Repo),
+		href,
+		strings.TrimSpace(request.CurrentBranch),
+		strings.TrimSpace(request.CurrentFilePath),
+		strings.TrimSpace(request.CurrentSourceURL),
+	)
+	if err != nil {
+		return resolvedReadmeLinkTarget{}, err
+	}
+	if !isMarkdown {
+		return resolvedReadmeLinkTarget{}, nil
+	}
+
+	return resolvedReadmeLinkTarget{
+		FetchURL:   resolvedURL,
+		Branch:     branch,
+		FilePath:   filePath,
+		IsMarkdown: true,
+	}, nil
+}
+
+func resolveReadmeLinkURL(repo, href, currentBranch, currentFilePath, currentSourceURL string) (string, string, string, bool, error) {
+	parsedHref, err := url.Parse(href)
+	if err != nil {
+		return "", "", "", false, fmt.Errorf("invalid href: %w", err)
+	}
+
+	if parsedHref.IsAbs() || strings.HasPrefix(href, "//") {
+		absoluteHref := href
+		if strings.HasPrefix(href, "//") {
+			absoluteHref = "https:" + href
+		}
+		return resolveAbsoluteReadmeURL(absoluteHref)
+	}
+
+	currentSourceURL = unwrapKnownCDNPrefixes(currentSourceURL, globalCDNSettings.getSnapshot())
+	if strings.TrimSpace(currentSourceURL) != "" {
+		base, baseErr := url.Parse(currentSourceURL)
+		if baseErr == nil && base.IsAbs() {
+			absolute := base.ResolveReference(parsedHref).String()
+			return resolveAbsoluteReadmeURL(absolute)
+		}
+	}
+
+	if !isValidRepo(repo) {
+		return "", "", "", false, errors.New("invalid repo format: expected owner/repo")
+	}
+
+	branch := normalizeReadmeBranch(currentBranch)
+	filePath := resolveRelativeReadmeFilePath(currentFilePath, href)
+	if !isMarkdownPath(filePath) {
+		return "", "", "", false, nil
+	}
+
+	return buildRawReadmeURLFromRepo(repo, branch, filePath), branch, filePath, true, nil
+}
+
+func resolveAbsoluteReadmeURL(rawURL string) (string, string, string, bool, error) {
+	rawURL = strings.TrimSpace(rawURL)
+	if rawURL == "" {
+		return "", "", "", false, errors.New("href is required")
+	}
+
+	normalized := unwrapKnownCDNPrefixes(rawURL, globalCDNSettings.getSnapshot())
+	parsed, err := url.Parse(normalized)
+	if err != nil {
+		return "", "", "", false, fmt.Errorf("invalid href: %w", err)
+	}
+	if parsed.Scheme != "http" && parsed.Scheme != "https" {
+		return "", "", "", false, nil
+	}
+
+	host := strings.ToLower(strings.TrimSpace(parsed.Hostname()))
+	pathSegments := splitPathSegments(parsed.EscapedPath())
+
+	if host == "github.com" && len(pathSegments) >= 5 {
+		action := strings.ToLower(pathSegments[2])
+		if action == "blob" || action == "raw" {
+			owner := decodePathSegment(pathSegments[0])
+			repoName := decodePathSegment(pathSegments[1])
+			branch := decodePathSegment(pathSegments[3])
+			filePath := decodePathSegments(pathSegments[4:])
+			if !isMarkdownPath(filePath) {
+				return "", "", "", false, nil
+			}
+			repo := owner + "/" + repoName
+			return buildRawReadmeURLFromRepo(repo, branch, filePath), branch, filePath, true, nil
+		}
+	}
+
+	if host == "raw.githubusercontent.com" && len(pathSegments) >= 4 {
+		owner := decodePathSegment(pathSegments[0])
+		repoName := decodePathSegment(pathSegments[1])
+		branch := decodePathSegment(pathSegments[2])
+		filePath := decodePathSegments(pathSegments[3:])
+		if !isMarkdownPath(filePath) {
+			return "", "", "", false, nil
+		}
+		repo := owner + "/" + repoName
+		return buildRawReadmeURLFromRepo(repo, branch, filePath), branch, filePath, true, nil
+	}
+
+	if !isMarkdownPath(parsed.Path) {
+		return "", "", "", false, nil
+	}
+
+	parsed.Fragment = ""
+	return parsed.String(), "", "", true, nil
+}
+
+func (a *App) fetchMarkdownByURL(rawURL string) (string, string, error) {
+	rawURL = trimURLFragment(rawURL)
+	if rawURL == "" {
+		return "", "", errors.New("readme url is required")
+	}
+
+	requestURL := applyGitHubProxy(rawURL)
+	req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, requestURL, nil)
+	if err != nil {
+		return "", "", err
+	}
+
+	ctx, cancel := context.WithTimeout(req.Context(), 20*time.Second)
+	defer cancel()
+	req = req.WithContext(ctx)
+	req.Header.Set("User-Agent", "ossam-app")
+
+	resp, err := a.apiClient.Do(req)
+	if err != nil {
+		return "", "", fmt.Errorf("failed to fetch readme markdown: %w", err)
+	}
+	defer resp.Body.Close()
+
+	body, readErr := io.ReadAll(resp.Body)
+	if readErr != nil {
+		return "", "", fmt.Errorf("failed to read readme markdown response: %w", readErr)
+	}
+
+	if resp.StatusCode >= http.StatusBadRequest {
+		return "", "", fmt.Errorf("readme markdown error (%d): %s", resp.StatusCode, strings.TrimSpace(string(body)))
+	}
+
+	return string(body), rawURL, nil
+}
+
 func (a *App) fetchReadme(repo string) (readmeFetchResult, error) {
 	candidates := buildReadmeRawCandidates(repo)
 	if len(candidates) == 0 {
@@ -1136,7 +1489,7 @@ func (a *App) fetchReadme(repo string) (readmeFetchResult, error) {
 
 		return readmeFetchResult{
 			Content:   string(body),
-			SourceURL: requestURL,
+			SourceURL: candidate.URL,
 			Branch:    candidate.Branch,
 			FilePath:  candidate.FilePath,
 		}, nil
@@ -1400,9 +1753,9 @@ func writeRepoStarsCache(path string, cache repoStarsCache) error {
 	return os.WriteFile(path, content, 0o600)
 }
 
-func selectLatestRelease(releases []githubRelease) (githubRelease, error) {
+func selectLatestRelease(releases []githubRelease) (githubRelease, bool) {
 	if len(releases) == 0 {
-		return githubRelease{}, errors.New("no release found for this repository")
+		return githubRelease{}, false
 	}
 
 	for _, release := range releases {
@@ -1410,17 +1763,17 @@ func selectLatestRelease(releases []githubRelease) (githubRelease, error) {
 			continue
 		}
 		if !release.Prerelease {
-			return release, nil
+			return release, true
 		}
 	}
 
 	for _, release := range releases {
 		if !release.Draft {
-			return release, nil
+			return release, true
 		}
 	}
 
-	return githubRelease{}, errors.New("no usable release found for this repository")
+	return githubRelease{}, false
 }
 
 func buildReleaseAssets(assets []githubAsset, sourceZipURL string, platformKeywords map[string][]string) []ReleaseAssetInfo {
@@ -1856,6 +2209,118 @@ func isGitHubHost(host string) bool {
 	}
 
 	return strings.HasSuffix(host, ".github.com") || strings.HasSuffix(host, ".githubusercontent.com")
+}
+
+func normalizeReadmeBranch(branch string) string {
+	branch = strings.TrimSpace(branch)
+	if branch == "" {
+		return "main"
+	}
+	return branch
+}
+
+func resolveRelativeReadmeFilePath(currentFilePath, href string) string {
+	ref, err := url.Parse(href)
+	if err != nil {
+		return ""
+	}
+
+	refPath := strings.TrimSpace(ref.Path)
+	if refPath == "" {
+		return ""
+	}
+
+	baseDir := "/"
+	currentFilePath = strings.TrimSpace(currentFilePath)
+	if currentFilePath != "" {
+		baseDir = path.Dir("/" + strings.TrimPrefix(currentFilePath, "/"))
+	}
+
+	resolved := path.Clean(path.Join(baseDir, refPath))
+	return strings.TrimPrefix(resolved, "/")
+}
+
+func isMarkdownPath(rawPath string) bool {
+	rawPath = strings.TrimSpace(rawPath)
+	if rawPath == "" {
+		return false
+	}
+
+	parsed, err := url.Parse(rawPath)
+	pathValue := rawPath
+	if err == nil && strings.TrimSpace(parsed.Path) != "" {
+		pathValue = parsed.Path
+	}
+
+	ext := strings.ToLower(path.Ext(pathValue))
+	return ext == ".md" || ext == ".mdx"
+}
+
+func buildRawReadmeURLFromRepo(repo, branch, filePath string) string {
+	branch = normalizeReadmeBranch(branch)
+	filePath = strings.TrimPrefix(path.Clean("/"+strings.TrimSpace(filePath)), "/")
+	if filePath == "" {
+		return ""
+	}
+
+	escapedRepoPath := buildRepoPath(repo)
+	if escapedRepoPath == "" {
+		return ""
+	}
+
+	return fmt.Sprintf(
+		"https://raw.githubusercontent.com/%s/%s/%s",
+		escapedRepoPath,
+		url.PathEscape(branch),
+		escapePathKeepingSlash(filePath),
+	)
+}
+
+func trimURLFragment(rawURL string) string {
+	parsed, err := url.Parse(strings.TrimSpace(rawURL))
+	if err != nil {
+		return strings.TrimSpace(rawURL)
+	}
+
+	parsed.Fragment = ""
+	return parsed.String()
+}
+
+func splitPathSegments(escapedPath string) []string {
+	trimmed := strings.Trim(strings.TrimSpace(escapedPath), "/")
+	if trimmed == "" {
+		return nil
+	}
+	return strings.Split(trimmed, "/")
+}
+
+func decodePathSegment(value string) string {
+	decoded, err := url.PathUnescape(value)
+	if err != nil {
+		return value
+	}
+	return decoded
+}
+
+func decodePathSegments(values []string) string {
+	if len(values) == 0 {
+		return ""
+	}
+
+	result := make([]string, 0, len(values))
+	for _, value := range values {
+		result = append(result, decodePathSegment(value))
+	}
+
+	return strings.Join(result, "/")
+}
+
+func escapePathKeepingSlash(value string) string {
+	parts := strings.Split(strings.TrimSpace(value), "/")
+	for idx := range parts {
+		parts[idx] = url.PathEscape(parts[idx])
+	}
+	return strings.Join(parts, "/")
 }
 
 func buildReadmeRawCandidates(repo string) []readmeCandidate {

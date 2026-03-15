@@ -5,7 +5,13 @@ import { Download, Link, Star, User } from "@element-plus/icons-vue";
 import DOMPurify from "dompurify";
 import { marked } from "marked";
 import { useRoute } from "vue-router";
-import { GetDownloadTask, StartDownload } from "../../wailsjs/go/main/App";
+import {
+  GetDownloadTask,
+  GetReadmeByLink,
+  OpenSystemTerminal,
+  StartDownload,
+} from "../../wailsjs/go/main/App";
+import { BrowserOpenURL } from "../../wailsjs/runtime/runtime";
 import StatusState from "../components/StatusState.vue";
 import {
   getAppDetailState,
@@ -21,7 +27,10 @@ const route = useRoute();
 const { state, findApp, getRepoStarCount } = useAppsStore();
 
 const releaseAssetsPanelRef = ref(null);
+const readmePanelRef = ref(null);
 const selectedAssetKey = ref("");
+const readmeLinkLoading = ref(false);
+const openingTerminal = ref(false);
 let taskPoller = null;
 
 const downloadTask = reactive({
@@ -40,6 +49,12 @@ const app = computed(() => findApp(category.value, appName.value));
 const detailState = computed(() => getAppDetailState(app.value));
 const detail = computed(() => detailState.value.data);
 const downloads = computed(() => detail.value?.downloads || {});
+const readmeState = reactive({
+  content: "",
+  source_url: "",
+  branch: "",
+  file_path: "",
+});
 
 const developer = computed(() => {
   const repo = String(app.value?.repo || "");
@@ -80,7 +95,7 @@ const availablePlatformCount = computed(() =>
   Object.values(downloads.value || {}).filter((item) => item?.available).length
 );
 
-const readmeHtml = computed(() => renderMarkdown(detail.value?.readme));
+const readmeHtml = computed(() => renderMarkdown(readmeState.content));
 const releaseNotesHtml = computed(() => renderMarkdown(detail.value?.release_body));
 
 const contributors = computed(() => {
@@ -99,6 +114,9 @@ const releaseAssets = computed(() => {
     key: `${asset.name || "asset"}-${index}`,
   }));
 });
+
+const hasReleaseAssets = computed(() => releaseAssets.value.length > 0);
+const primaryActionLabel = computed(() => (hasReleaseAssets.value ? "选择 Release 包" : "打开终端"));
 
 const selectedAsset = computed(() =>
   releaseAssets.value.find((item) => item.key === selectedAssetKey.value) || null
@@ -219,6 +237,29 @@ async function scrollToReleaseAssets() {
   }
 }
 
+async function handlePrimaryAction() {
+  if (hasReleaseAssets.value) {
+    await scrollToReleaseAssets();
+    return;
+  }
+
+  if (openingTerminal.value) {
+    return;
+  }
+
+  openingTerminal.value = true;
+  try {
+    await OpenSystemTerminal();
+  } catch (error) {
+    const message = String(
+      error?.message || error?.cause?.message || error?.data || error || ""
+    ).trim();
+    ElMessage.error(message ? `打开终端失败：${message}` : "打开终端失败");
+  } finally {
+    openingTerminal.value = false;
+  }
+}
+
 function buildLocalTargetPath(downloadDir, fileName) {
   const dir = String(downloadDir || "").trim();
   const name = String(fileName || "release-asset").trim() || "release-asset";
@@ -278,6 +319,65 @@ async function selectAsset(asset) {
     await startDownloadForAsset(asset, downloadDir);
   } catch {
     // User cancelled.
+  }
+}
+
+function syncReadmeStateFromDetail() {
+  readmeState.content = String(detail.value?.readme || "");
+  readmeState.source_url = String(detail.value?.readme_source_url || "");
+  readmeState.branch = String(detail.value?.readme_branch || "");
+  readmeState.file_path = String(detail.value?.readme_file_path || "");
+}
+
+function findReadmeAnchorFromEvent(event) {
+  const target = event?.target;
+  if (!(target instanceof Element)) {
+    return null;
+  }
+  return target.closest("a[href]");
+}
+
+async function handleReadmeLinkClick(event) {
+  const anchor = findReadmeAnchorFromEvent(event);
+  if (!anchor) {
+    return;
+  }
+
+  const rawHref = String(anchor.getAttribute("href") || "").trim();
+  if (!rawHref || rawHref.startsWith("#")) {
+    return;
+  }
+
+  event.preventDefault();
+  if (readmeLinkLoading.value) {
+    return;
+  }
+
+  readmeLinkLoading.value = true;
+
+  try {
+    const nextReadme = await GetReadmeByLink({
+      repo: String(app.value?.repo || ""),
+      href: rawHref,
+      current_branch: String(readmeState.branch || ""),
+      current_file_path: String(readmeState.file_path || ""),
+      current_source_url: String(readmeState.source_url || ""),
+    });
+
+    if (!nextReadme?.is_markdown) {
+      BrowserOpenURL(String(anchor.href || rawHref));
+      return;
+    }
+
+    readmeState.content = String(nextReadme.content || "");
+    readmeState.source_url = String(nextReadme.source_url || "");
+    readmeState.branch = String(nextReadme.branch || "");
+    readmeState.file_path = String(nextReadme.file_path || "");
+  } catch (error) {
+    const message = error?.message || String(error);
+    ElMessage.error(message || "README 加载失败");
+  } finally {
+    readmeLinkLoading.value = false;
   }
 }
 
@@ -385,6 +485,14 @@ watch(
   { immediate: true }
 );
 
+watch(
+  detail,
+  () => {
+    syncReadmeStateFromDetail();
+  },
+  { immediate: true }
+);
+
 onUnmounted(() => {
   resetDownloadTask();
 });
@@ -440,9 +548,15 @@ onUnmounted(() => {
         </div>
 
         <div class="hero-actions">
-          <el-button class="focus-release-btn" type="primary" @click="scrollToReleaseAssets">
+          <el-button
+            class="focus-release-btn"
+            type="primary"
+            :loading="!hasReleaseAssets && openingTerminal"
+            :disabled="!hasReleaseAssets && openingTerminal"
+            @click="handlePrimaryAction"
+          >
             <el-icon><Download /></el-icon>
-            <span>选择 Release 包</span>
+            <span>{{ primaryActionLabel }}</span>
           </el-button>
 
           <a class="source-btn" :href="repoUrl" target="_blank" rel="noreferrer">
@@ -495,7 +609,13 @@ onUnmounted(() => {
               <a class="panel-link" :href="repoUrl" target="_blank" rel="noreferrer">GitHub</a>
             </header>
 
-            <div v-if="readmeHtml" class="markdown-body" v-html="readmeHtml" />
+            <div
+              v-if="readmeHtml"
+              ref="readmePanelRef"
+              class="markdown-body"
+              v-html="readmeHtml"
+              @click="handleReadmeLinkClick"
+            />
             <el-empty v-else description="暂无 README 内容" :image-size="80" />
           </article>
 

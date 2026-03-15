@@ -1,0 +1,136 @@
+{
+  "apps": [
+    {
+      "name": "ChatGPT",
+      "repo": "openai/chatgpt",
+      "photo": "",
+      "summary": "ChatGPT：由OpenAI开发的基于Transformer架构的自然语言处理模型，用于生成人类类似的文本。"
+    },
+    {
+      "name": "DALL-E",
+      "repo": "openai/dall-e",
+      "photo": "",
+      "summary": "DALL-E：由OpenAI开发的基于Transformer架构的图像生成模型，用于根据文本描述生成逼真的图像。"
+    },
+    {
+      "name": "AutoGPT",
+      "repo": "Significant-Gravitas/AutoGPT",
+      "photo": "",
+      "summary": "AutoGPT：开源自主AI Agent，接收自然语言目标→拆解子任务→自主执行；支持低代码工作流、持续运行与外部触发。"
+    },
+    {
+      "name": "Stable Diffusion Web UI",
+      "repo": "AUTOMATIC1111/stable-diffusion-webui",
+      "photo": "",
+      "summary": "Stable Diffusion Web UI：功能强大的AI绘画工具，提供丰富的参数调节和插件支持。"
+    },
+    {
+      "name": "n8n",
+      "repo": "n8n-io/n8n",
+      "photo": "",
+      "summary": "n8n：开源工作流自动化工具，支持AI集成和低代码开发。"
+    },
+    {
+      "name": "LangChain",
+      "repo": "langchain-ai/langchain",
+      "photo": "",
+      "summary": "LangChain：开源LLM应用开发框架，支持构建复杂的AI应用和Agent。"
+    },
+    {
+      "name": "Dify",
+      "repo": "langgenius/dify",
+      "photo": "",
+      "summary": "Dify：开源LLM应用开发平台，提供可视化界面和一站式开发体验。"
+    },
+    {
+      "name": "Open WebUI",
+      "repo": "open-webui/open-webui",
+      "photo": "",
+      "summary": "Open WebUI：开源AI聊天界面，支持多种LLM模型和自定义插件。"
+    },
+    {
+      "name": "ComfyUI",
+      "repo": "comfyanonymous/ComfyUI",
+      "photo": "",
+      "summary": "ComfyUI：基于Stable Diffusion的节点式AI绘画工具，提供高度定制化的工作流。"
+    },
+    {
+      "name": "Llama.cpp",
+      "repo": "ggerganov/llama.cpp",
+      "photo": "",
+      "summary": "Llama.cpp：轻量级LLM推理框架，支持在本地设备上运行大模型。"
+    },
+    {
+      "name": "Ollama",
+      "repo": "ollama/ollama",
+      "photo": "",
+      "summary": "Ollama：开源LLM管理工具，支持一键部署和运行多种大模型。"
+    },
+    {
+      "name": "Whisper",
+      "repo": "openai/whisper",
+      "photo": "",
+      "summary": "Whisper：开源语音识别模型，支持多种语言的语音转文本。"
+    },
+    {
+      "name": "YOLOv8",
+      "repo": "ultralytics/ultralytics",
+      "photo": "",
+      "summary": "YOLOv8：开源目标检测模型，提供高精度和实时的物体检测能力。"
+    },
+    {
+      "name": "ControlNet",
+      "repo": "lllyasviel/ControlNet",
+      "photo": "",
+      "summary": "ControlNet：开源AI绘画控制工具，支持通过多种方式控制图像生成。"
+    },
+    {
+      "name": "SD.Next",
+      "repo": "vladmandic/automatic",
+      "photo": "",
+      "summary": "SD.Next：基于Stable Diffusion的Web UI，提供更丰富的功能和更好的性能。"
+    },
+    {
+      "name": "InvokeAI",
+      "repo": "invoke-ai/InvokeAI",
+      "photo": "",
+      "summary": "InvokeAI：开源AI绘画工具，提供友好的界面和强大的功能。"
+    },
+    {
+      "name": "Stable Diffusion XL",
+      "repo": "stabilityai/stable-diffusion",
+      "photo": "",
+      "summary": "Stable Diffusion XL：开源图像生成模型，提供更高分辨率和更逼真的图像质量。"
+    },
+    {
+      "name": "Mistral",
+      "repo": "mistralai/mistral",
+      "photo": "",
+      "summary": "Mistral：开源大语言模型，提供高性能和高效率的推理能力。"
+    },
+    {
+      "name": "Qwen",
+      "repo": "QwenLM/Qwen",
+      "photo": "",
+      "summary": "Qwen：开源大语言模型，支持多种语言和任务。"
+    },
+    {
+      "name": "DeepSeek",
+      "repo": "deepseek-ai/DeepSeek-LLM",
+      "photo": "",
+      "summary": "DeepSeek：开源大语言模型，提供高性能和高效率的推理能力。"
+    },
+    {
+      "name": "GPT-OSS-120B",
+      "repo": "openai/gpt-oss-120b",
+      "photo": "",
+      "summary": "GPT-OSS-120B：OpenAI 2025年发布的开源大语言模型，提供高性能和高效率的推理能力。"
+    },
+    {
+      "name": "GPT-OSS-20B",
+      "repo": "openai/gpt-oss-20b",
+      "photo": "",
+      "summary": "GPT-OSS-20B：OpenAI 2025年发布的开源大语言模型，提供高性能和高效率的推理能力。"
+    }
+  ]
+}

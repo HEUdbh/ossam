@@ -1,7 +1,6 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import AppDetailView from "../views/AppDetailView.vue";
 import MarketView from "../views/MarketView.vue";
-import MineView from "../views/MineView.vue";
 import SettingsAboutView from "../views/SettingsAboutView.vue";
 import SettingsCDNView from "../views/SettingsCDNView.vue";
 import SettingsDownloadView from "../views/SettingsDownloadView.vue";
@@ -23,11 +22,6 @@ const router = createRouter({
       path: "/market/app/:category/:name",
       name: "app-detail",
       component: AppDetailView,
-    },
-    {
-      path: "/mine",
-      name: "mine",
-      component: MineView,
     },
     {
       path: "/settings",

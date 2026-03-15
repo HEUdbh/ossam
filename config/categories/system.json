@@ -4,55 +4,1429 @@
       "name": "rclone",
       "repo": "rclone/rclone",
       "photo": "",
-      "summary": "rclone：系统增强与命令行效率工具。"
+      "summary": "rclone：云存储同步与管理工具。"
     },
     {
       "name": "fastfetch",
       "repo": "fastfetch-cli/fastfetch",
       "photo": "",
-      "summary": "fastfetch：系统增强与命令行效率工具。"
+      "summary": "fastfetch：系统信息展示工具。"
     },
     {
       "name": "delta",
       "repo": "dandavison/delta",
       "photo": "",
-      "summary": "delta：系统增强与命令行效率工具。"
+      "summary": "delta：带语法高亮的 diff 查看工具。"
     },
     {
       "name": "hyperfine",
       "repo": "sharkdp/hyperfine",
       "photo": "",
-      "summary": "hyperfine：系统增强与命令行效率工具。"
+      "summary": "hyperfine：命令行基准测试工具。"
     },
     {
       "name": "eza",
       "repo": "eza-community/eza",
       "photo": "",
-      "summary": "eza：系统增强与命令行效率工具。"
+      "summary": "eza：ls 命令的现代化替代工具。"
     },
     {
       "name": "dust",
       "repo": "bootandy/dust",
       "photo": "",
-      "summary": "dust：系统增强与命令行效率工具。"
+      "summary": "dust：可视化磁盘空间分析工具。"
     },
     {
       "name": "zoxide",
       "repo": "ajeetdsouza/zoxide",
       "photo": "",
-      "summary": "zoxide：系统增强与命令行效率工具。"
+      "summary": "zoxide：智能目录跳转工具。"
     },
     {
       "name": "lsd",
       "repo": "lsd-rs/lsd",
       "photo": "",
-      "summary": "lsd：系统增强与命令行效率工具。"
+      "summary": "lsd：带颜色和图标的 ls 替代工具。"
     },
     {
       "name": "procs",
       "repo": "sharkdp/procs",
       "photo": "",
-      "summary": "procs：系统增强与命令行效率工具。"
+      "summary": "procs：ps 命令的现代化替代工具。"
+    },
+    {
+      "name": "Nightingale",
+      "repo": "ccfos/nightingale",
+      "photo": "",
+      "summary": "Nightingale：侧重告警的监控类开源项目。"
+    },
+    {
+      "name": "Prometheus",
+      "repo": "prometheus/prometheus",
+      "photo": "",
+      "summary": "Prometheus：开源的网络监控工具，专为监控时间序列数据而构建。"
+    },
+    {
+      "name": "Zabbix",
+      "repo": "zabbix/zabbix",
+      "photo": "",
+      "summary": "Zabbix：业界领先的开源网络监控工具，具有可扩展的网络监控能力。"
+    },
+    {
+      "name": "Nagios Core",
+      "repo": "NagiosEnterprises/nagioscore",
+      "photo": "",
+      "summary": "Nagios Core：最著名的开源监控工具之一，可自动发现设备、监视连接的系统。"
+    },
+    {
+      "name": "Icinga 2",
+      "repo": "Icinga/icinga2",
+      "photo": "",
+      "summary": "Icinga 2：建立在Nagios Core基础之上的开源网络监控工具，具有灵活的RESTful API。"
+    },
+    {
+      "name": "Cacti",
+      "repo": "Cacti/cacti",
+      "photo": "",
+      "summary": "Cacti：图形化的网络监控解决方案，通过rrdtool绘图。"
+    },
+    {
+      "name": "WatchDog",
+      "repo": "Ileriayo/markdown-badges",
+      "photo": "",
+      "summary": "WatchDog：专为ASP.NET Core Web应用程序和API设计的开源实时监控系统。"
+    },
+    {
+      "name": "bottom",
+      "repo": "ClementTsang/bottom",
+      "photo": "",
+      "summary": "bottom：跨系统资源监控工具，支持CPU、内存、磁盘、网络等指标。"
+    },
+    {
+      "name": "btop",
+      "repo": "aristocratos/btop",
+      "photo": "",
+      "summary": "btop：现代化的系统资源监控工具，具有美观的终端界面。"
+    },
+    {
+      "name": "glances",
+      "repo": "nicolargo/glances",
+      "photo": "",
+      "summary": "glances：跨平台系统监控工具，支持Web界面和API。"
+    },
+    {
+      "name": "htop",
+      "repo": "htop-dev/htop",
+      "photo": "",
+      "summary": "htop：交互式系统监控工具，替代top命令。"
+    },
+    {
+      "name": "nmon",
+      "repo": "nmon2/nmon",
+      "photo": "",
+      "summary": "nmon：AIX和Linux系统的资源监控工具，支持数据导出。"
+    },
+    {
+      "name": "s-tui",
+      "repo": "amanusk/s-tui",
+      "photo": "",
+      "summary": "s-tui：Linux CPU监控和压力测试工具。"
+    },
+    {
+      "name": "nvtop",
+      "repo": "Syllo/nvtop",
+      "photo": "",
+      "summary": "nvtop：NVIDIA GPU监控工具，类似htop的界面。"
+    },
+    {
+      "name": "smem",
+      "repo": "blue119/smem",
+      "photo": "",
+      "summary": "smem：高级内存使用报告工具，支持多种显示格式。"
+    },
+    {
+      "name": "ncdu",
+      "repo": "rofl0r/ncdu",
+      "photo": "",
+      "summary": "ncdu：NCurses磁盘使用分析工具，交互式查看磁盘空间。"
+    },
+    {
+      "name": "duf",
+      "repo": "muesli/duf",
+      "photo": "",
+      "summary": "duf：df命令的现代化替代工具，支持彩色输出。"
+    },
+    {
+      "name": "diskus",
+      "repo": "sharkdp/diskus",
+      "photo": "",
+      "summary": "diskus：快速计算目录大小的工具。"
+    },
+    {
+      "name": "fdupes",
+      "repo": "adrianlopezroche/fdupes",
+      "photo": "",
+      "summary": "fdupes：查找和删除重复文件的工具。"
+    },
+    {
+      "name": "rmlint",
+      "repo": "sahib/rmlint",
+      "photo": "",
+      "summary": "rmlint：查找和清理重复文件、空文件、坏链接等。"
+    },
+    {
+      "name": "bat",
+      "repo": "sharkdp/bat",
+      "photo": "",
+      "summary": "bat：cat命令的现代化替代工具，支持语法高亮。"
+    },
+    {
+      "name": "exa",
+      "repo": "ogham/exa",
+      "photo": "",
+      "summary": "exa：ls命令的现代化替代工具，支持彩色输出和Git集成。"
+    },
+    {
+      "name": "fd",
+      "repo": "sharkdp/fd",
+      "photo": "",
+      "summary": "fd：find命令的替代工具，更快速、更简洁。"
+    },
+    {
+      "name": "ripgrep",
+      "repo": "BurntSushi/ripgrep",
+      "photo": "",
+      "summary": "ripgrep：快速的正则表达式搜索工具，替代grep。"
+    },
+    {
+      "name": "fzf",
+      "repo": "junegunn/fzf",
+      "photo": "",
+      "summary": "fzf：命令行模糊搜索工具，支持交互式选择。"
+    },
+    {
+      "name": "tldr",
+      "repo": "tldr-pages/tldr",
+      "photo": "",
+      "summary": "tldr：简化的命令行工具文档，替代man命令。"
+    },
+    {
+      "name": "cheat",
+      "repo": "cheat/cheat",
+      "photo": "",
+      "summary": "cheat：命令行工具的 cheat sheet 管理工具。"
+    },
+    {
+      "name": "navi",
+      "repo": "denisidoro/navi",
+      "photo": "",
+      "summary": "navi：交互式命令行工具，支持cheat sheet查询。"
+    },
+    {
+      "name": "thefuck",
+      "repo": "nvbn/thefuck",
+      "photo": "",
+      "summary": "thefuck：自动纠正命令行错误的工具。"
+    },
+    {
+      "name": "fuck",
+      "repo": "nvbn/thefuck",
+      "photo": "",
+      "summary": "fuck：thefuck的别名，快速纠正命令行错误。"
+    },
+    {
+      "name": "autojump",
+      "repo": "wting/autojump",
+      "photo": "",
+      "summary": "autojump：快速跳转到常用目录的工具。"
+    },
+    {
+      "name": "fasd",
+      "repo": "clvv/fasd",
+      "photo": "",
+      "summary": "fasd：快速访问文件和目录的工具。"
+    },
+    {
+      "name": "jump",
+      "repo": "gsamokovarov/jump",
+      "photo": "",
+      "summary": "jump：智能目录跳转工具，基于使用频率。"
+    },
+    {
+      "name": "direnv",
+      "repo": "direnv/direnv",
+      "photo": "",
+      "summary": "direnv：自动加载和卸载环境变量的工具。"
+    },
+    {
+      "name": "starship",
+      "repo": "starship/starship",
+      "photo": "",
+      "summary": "starship：跨shell的现代化提示符，支持多种语言和工具。"
+    },
+    {
+      "name": "oh-my-zsh",
+      "repo": "ohmyzsh/ohmyzsh",
+      "photo": "",
+      "summary": "oh-my-zsh：zsh配置框架，提供丰富的插件和主题。"
+    },
+    {
+      "name": "powerlevel10k",
+      "repo": "romkatv/powerlevel10k",
+      "photo": "",
+      "summary": "powerlevel10k：快速、可定制的zsh主题。"
+    },
+    {
+      "name": "tmux",
+      "repo": "tmux/tmux",
+      "photo": "",
+      "summary": "tmux：终端复用工具，支持多窗口和会话管理。"
+    },
+    {
+      "name": "screen",
+      "repo": "GNU/screen",
+      "photo": "",
+      "summary": "screen：终端复用工具，支持会话持久化。"
+    },
+    {
+      "name": "neovim",
+      "repo": "neovim/neovim",
+      "photo": "",
+      "summary": "neovim：vim的现代化分支，支持Lua插件和异步操作。"
+    },
+    {
+      "name": "vim",
+      "repo": "vim/vim",
+      "photo": "",
+      "summary": "vim：classical vim，支持多种编程语言。"
+    },
+    {
+      "name": "nano",
+      "repo": "nano-editor/nano",
+      "photo": "",
+      "summary": "nano：简单易用的命令行文本编辑器。"
+    },
+    {
+      "name": "emacs",
+      "repo": "emacs-mirror/emacs",
+      "photo": "",
+      "summary": "emacs：可扩展的文本编辑器，支持Lisp脚本。"
+    },
+    {
+      "name": "micro",
+      "repo": "zyedidia/micro",
+      "photo": "",
+      "summary": "micro：现代的命令行文本编辑器，支持语法高亮和插件。"
+    },
+    {
+      "name": "kakoune",
+      "repo": "mawww/kakoune",
+      "photo": "",
+      "summary": "kakoune：交互式文本编辑器，支持多光标操作。"
+    },
+    {
+      "name": "alacritty",
+      "repo": "alacritty/alacritty",
+      "photo": "",
+      "summary": "alacritty：高性能终端模拟器，支持GPU加速。"
+    },
+    {
+      "name": "wezterm",
+      "repo": "wez/wezterm",
+      "photo": "",
+      "summary": "wezterm：跨平台终端模拟器，支持GPU加速和Lua配置。"
+    },
+    {
+      "name": "kitty",
+      "repo": "kovidgoyal/kitty",
+      "photo": "",
+      "summary": "kitty：快速、可定制的终端模拟器，支持图形渲染。"
+    },
+    {
+      "name": "terminator",
+      "repo": "gnome-terminator/terminator",
+      "photo": "",
+      "summary": "terminator：多窗口终端模拟器，支持布局管理。"
+    },
+    {
+      "name": "conemu",
+      "repo": "Maximus5/ConEmu",
+      "photo": "",
+      "summary": "conemu：Windows终端模拟器，支持多标签和Git Bash。"
+    },
+    {
+      "name": "cmder",
+      "repo": "cmderdev/cmder",
+      "photo": "",
+      "summary": "cmder：Windows终端模拟器，基于ConEmu和Git Bash。"
+    },
+    {
+      "name": "hyper",
+      "repo": "vercel/hyper",
+      "photo": "",
+      "summary": "hyper：基于Electron的终端模拟器，支持插件和主题。"
+    },
+    {
+      "name": "tabby",
+      "repo": "Eugeny/tabby",
+      "photo": "",
+      "summary": "tabby：跨平台终端模拟器，支持SSH和SFTP。"
+    },
+    {
+      "name": "windows-terminal",
+      "repo": "microsoft/terminal",
+      "photo": "",
+      "summary": "windows-terminal：微软官方的Windows终端模拟器，支持多标签和WSL。"
+    },
+    {
+      "name": "git",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git：分布式版本控制系统。"
+    },
+    {
+      "name": "github-cli",
+      "repo": "cli/cli",
+      "photo": "",
+      "summary": "github-cli：GitHub命令行工具，支持仓库管理和PR操作。"
+    },
+    {
+      "name": "gitlab-cli",
+      "repo": "profclems/glab",
+      "photo": "",
+      "summary": "gitlab-cli：GitLab命令行工具，支持仓库管理和CI/CD。"
+    },
+    {
+      "name": "bitbucket-cli",
+      "repo": "atlassian/bitbucket-cli",
+      "photo": "",
+      "summary": "bitbucket-cli：Bitbucket命令行工具，支持仓库管理。"
+    },
+    {
+      "name": "svn",
+      "repo": "apache/subversion",
+      "photo": "",
+      "summary": "svn：集中式版本控制系统。"
+    },
+    {
+      "name": "mercurial",
+      "repo": "mercurial/mercurial",
+      "photo": "",
+      "summary": "mercurial：分布式版本控制系统。"
+    },
+    {
+      "name": "bazaar",
+      "repo": "bazaar/bazaar",
+      "photo": "",
+      "summary": "bazaar：分布式版本控制系统。"
+    },
+    {
+      "name": "docker",
+      "repo": "docker/docker-ce",
+      "photo": "",
+      "summary": "docker：容器化平台，支持应用打包和部署。"
+    },
+    {
+      "name": "podman",
+      "repo": "containers/podman",
+      "photo": "",
+      "summary": "podman：无守护进程的容器化平台，兼容Docker。"
+    },
+    {
+      "name": "containerd",
+      "repo": "containerd/containerd",
+      "photo": "",
+      "summary": "containerd：容器运行时，支持OCI标准。"
+    },
+    {
+      "name": "cri-o",
+      "repo": "cri-o/cri-o",
+      "photo": "",
+      "summary": "cri-o：Kubernetes容器运行时，兼容OCI标准。"
+    },
+    {
+      "name": "buildah",
+      "repo": "containers/buildah",
+      "photo": "",
+      "summary": "buildah：构建OCI镜像的工具，无需Docker守护进程。"
+    },
+    {
+      "name": "skopeo",
+      "repo": "containers/skopeo",
+      "photo": "",
+      "summary": "skopeo：管理OCI镜像的工具，支持跨仓库复制。"
+    },
+    {
+      "name": "nerdctl",
+      "repo": "containerd/nerdctl",
+      "photo": "",
+      "summary": "nerdctl：containerd的命令行工具，兼容Docker CLI。"
+    },
+    {
+      "name": "docker-compose",
+      "repo": "docker/compose",
+      "photo": "",
+      "summary": "docker-compose：Docker容器编排工具，支持多容器应用。"
+    },
+    {
+      "name": "podman-compose",
+      "repo": "containers/podman-compose",
+      "photo": "",
+      "summary": "podman-compose：Podman的容器编排工具，兼容docker-compose。"
+    },
+    {
+      "name": "kubernetes",
+      "repo": "kubernetes/kubernetes",
+      "photo": "",
+      "summary": "kubernetes：容器编排平台，支持微服务部署。"
+    },
+    {
+      "name": "minikube",
+      "repo": "kubernetes/minikube",
+      "photo": "",
+      "summary": "minikube：本地Kubernetes集群，用于开发和测试。"
+    },
+    {
+      "name": "kind",
+      "repo": "kubernetes-sigs/kind",
+      "photo": "",
+      "summary": "kind：使用Docker容器运行本地Kubernetes集群。"
+    },
+    {
+      "name": "k3s",
+      "repo": "k3s-io/k3s",
+      "photo": "",
+      "summary": "k3s：轻量级Kubernetes发行版，适用于边缘计算。"
+    },
+    {
+      "name": "k0s",
+      "repo": "k0sproject/k0s",
+      "photo": "",
+      "summary": "k0s：零依赖的Kubernetes发行版，适用于生产环境。"
+    },
+    {
+      "name": "microk8s",
+      "repo": "canonical/microk8s",
+      "photo": "",
+      "summary": "microk8s：轻量级Kubernetes发行版，适用于Ubuntu。"
+    },
+    {
+      "name": "kubectl",
+      "repo": "kubernetes/kubectl",
+      "photo": "",
+      "summary": "kubectl：Kubernetes命令行工具，用于管理集群。"
+    },
+    {
+      "name": "kustomize",
+      "repo": "kubernetes-sigs/kustomize",
+      "photo": "",
+      "summary": "kustomize：Kubernetes配置管理工具，支持声明式配置。"
+    },
+    {
+      "name": "helm",
+      "repo": "helm/helm",
+      "photo": "",
+      "summary": "helm：Kubernetes包管理工具，支持Chart部署。"
+    },
+    {
+      "name": "argo",
+      "repo": "argoproj/argo",
+      "photo": "",
+      "summary": "argo：Kubernetes工作流管理工具。"
+    },
+    {
+      "name": "tekton",
+      "repo": "tektoncd/pipeline",
+      "photo": "",
+      "summary": "tekton：Kubernetes原生CI/CD工具。"
+    },
+    {
+      "name": "jenkins",
+      "repo": "jenkinsci/jenkins",
+      "photo": "",
+      "summary": "jenkins：开源CI/CD工具，支持插件扩展。"
+    },
+    {
+      "name": "gitlab-ci",
+      "repo": "gitlab-org/gitlab-ci",
+      "photo": "",
+      "summary": "gitlab-ci：GitLab内置的CI/CD工具，支持自动化构建和部署。"
+    },
+    {
+      "name": "github-actions",
+      "repo": "actions/runner",
+      "photo": "",
+      "summary": "github-actions：GitHub内置的CI/CD工具，支持自动化工作流。"
+    },
+    {
+      "name": "travis-ci",
+      "repo": "travis-ci/travis-ci",
+      "photo": "",
+      "summary": "travis-ci：开源CI/CD工具，支持GitHub集成。"
+    },
+    {
+      "name": "circle-ci",
+      "repo": "circleci/circleci",
+      "photo": "",
+      "summary": "circle-ci：CI/CD工具，支持Docker容器。"
+    },
+    {
+      "name": "bitbucket-pipelines",
+      "repo": "atlassian/bitbucket-pipelines",
+      "photo": "",
+      "summary": "bitbucket-pipelines：Bitbucket内置的CI/CD工具。"
+    },
+    {
+      "name": "drone",
+      "repo": "drone/drone",
+      "photo": "",
+      "summary": "drone：开源CI/CD工具，支持Docker容器。"
+    },
+    {
+      "name": "gitea",
+      "repo": "go-gitea/gitea",
+      "photo": "",
+      "summary": "gitea：轻量级Git服务，支持自托管。"
+    },
+    {
+      "name": "gogs",
+      "repo": "gogs/gogs",
+      "photo": "",
+      "summary": "gogs：轻量级Git服务，支持自托管。"
+    },
+    {
+      "name": "gitlab",
+      "repo": "gitlab-org/gitlab",
+      "photo": "",
+      "summary": "gitlab：完整的DevOps平台，支持Git托管、CI/CD、监控等。"
+    },
+    {
+      "name": "bitbucket",
+      "repo": "atlassian/bitbucket",
+      "photo": "",
+      "summary": "bitbucket：Git和Mercurial托管服务，支持CI/CD。"
+    },
+    {
+      "name": "github",
+      "repo": "github/github",
+      "photo": "",
+      "summary": "github：Git托管服务，支持PR、Issues、Actions等。"
+    },
+    {
+      "name": "gitbucket",
+      "repo": "gitbucket/gitbucket",
+      "photo": "",
+      "summary": "gitbucket：Java开发的Git服务，支持自托管。"
+    },
+    {
+      "name": "sourcetree",
+      "repo": "atlassian/sourcetree",
+      "photo": "",
+      "summary": "sourcetree：Git图形化客户端，支持Windows和Mac。"
+    },
+    {
+      "name": "gitkraken",
+      "repo": "axosoft/gitkraken",
+      "photo": "",
+      "summary": "gitkraken：Git图形化客户端，支持多平台。"
+    },
+    {
+      "name": "tortoisegit",
+      "repo": "tortoisegit/tortoisegit",
+      "photo": "",
+      "summary": "tortoisegit：Windows平台的Git图形化客户端，支持右键菜单。"
+    },
+    {
+      "name": "git-cola",
+      "repo": "git-cola/git-cola",
+      "photo": "",
+      "summary": "git-cola：跨平台Git图形化客户端，支持自定义布局。"
+    },
+    {
+      "name": "gitg",
+      "repo": "gnome/gitg",
+      "photo": "",
+      "summary": "gitg：GNOME平台的Git图形化客户端。"
+    },
+    {
+      "name": "gitgui",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "gitgui：Git自带的图形化客户端，支持基本操作。"
+    },
+    {
+      "name": "vscode",
+      "repo": "microsoft/vscode",
+      "photo": "",
+      "summary": "vscode：轻量级代码编辑器，支持插件扩展。"
+    },
+    {
+      "name": "sublime-text",
+      "repo": "sublimehq/sublime-text",
+      "photo": "",
+      "summary": "sublime-text：快速、可定制的代码编辑器。"
+    },
+    {
+      "name": "atom",
+      "repo": "atom/atom",
+      "photo": "",
+      "summary": "atom：开源代码编辑器，支持插件扩展。"
+    },
+    {
+      "name": "brackets",
+      "repo": "adobe/brackets",
+      "photo": "",
+      "summary": "brackets：开源代码编辑器，支持实时预览。"
+    },
+    {
+      "name": "code-server",
+      "repo": "coder/code-server",
+      "photo": "",
+      "summary": "code-server：浏览器中的VS Code，支持远程开发。"
+    },
+    {
+      "name": "jetbrains-ides",
+      "repo": "jetbrains/intellij-community",
+      "photo": "",
+      "summary": "jetbrains-ides：JetBrains系列IDE，支持多种编程语言。"
+    },
+    {
+      "name": "intellij-idea",
+      "repo": "jetbrains/intellij-idea",
+      "photo": "",
+      "summary": "intellij-idea：Java IDE，支持多种编程语言和框架。"
+    },
+    {
+      "name": "pycharm",
+      "repo": "jetbrains/pycharm",
+      "photo": "",
+      "summary": "pycharm：Python IDE，支持数据分析和机器学习。"
+    },
+    {
+      "name": "webstorm",
+      "repo": "jetbrains/webstorm",
+      "photo": "",
+      "summary": "webstorm：Web开发IDE，支持JavaScript、TypeScript等。"
+    },
+    {
+      "name": "phpstorm",
+      "repo": "jetbrains/phpstorm",
+      "photo": "",
+      "summary": "phpstorm：PHP IDE，支持Laravel、Symfony等框架。"
+    },
+    {
+      "name": "rubymine",
+      "repo": "jetbrains/rubymine",
+      "photo": "",
+      "summary": "rubymine：Ruby on Rails IDE，支持全栈开发。"
+    },
+    {
+      "name": "goland",
+      "repo": "jetbrains/goland",
+      "photo": "",
+      "summary": "goland：Go IDE，支持代码分析和调试。"
+    },
+    {
+      "name": "clion",
+      "repo": "jetbrains/clion",
+      "photo": "",
+      "summary": "clion：C/C++ IDE，支持CMake和GDB调试。"
+    },
+    {
+      "name": "rider",
+      "repo": "jetbrains/rider",
+      "photo": "",
+      "summary": "rider：.NET IDE，支持C#、VB.NET等。"
+    },
+    {
+      "name": "datagrip",
+      "repo": "jetbrains/datagrip",
+      "photo": "",
+      "summary": "datagrip：多数据库管理工具，支持SQL查询和数据编辑。"
+    },
+    {
+      "name": "android-studio",
+      "repo": "android/android-studio",
+      "photo": "",
+      "summary": "android-studio：Android开发IDE，支持Java和Kotlin。"
+    },
+    {
+      "name": "xcode",
+      "repo": "apple/xcode",
+      "photo": "",
+      "summary": "xcode：iOS和macOS开发IDE，支持Swift和Objective-C。"
+    },
+    {
+      "name": "visual-studio",
+      "repo": "microsoft/visualstudio",
+      "photo": "",
+      "summary": "visual-studio：Windows平台的IDE，支持多种编程语言。"
+    },
+    {
+      "name": "visual-studio-code",
+      "repo": "microsoft/vscode",
+      "photo": "",
+      "summary": "visual-studio-code：轻量级代码编辑器，支持插件扩展。"
+    },
+    {
+      "name": "eclipse",
+      "repo": "eclipse/eclipse.platform",
+      "photo": "",
+      "summary": "eclipse：开源IDE，支持Java和多种编程语言。"
+    },
+    {
+      "name": "netbeans",
+      "repo": "apache/netbeans",
+      "photo": "",
+      "summary": "netbeans：开源IDE，支持Java和多种编程语言。"
+    },
+    {
+      "name": "codeblocks",
+      "repo": "codeblocks/codeblocks",
+      "photo": "",
+      "summary": "codeblocks：开源C/C++ IDE，支持多平台。"
+    },
+    {
+      "name": "qt-creator",
+      "repo": "qt/qt-creator",
+      "photo": "",
+      "summary": "qt-creator：Qt框架的IDE，支持C++和QML。"
+    },
+    {
+      "name": "slickedit",
+      "repo": "slickedit/slickedit",
+      "photo": "",
+      "summary": "slickedit：多语言IDE，支持代码导航和调试。"
+    },
+    {
+      "name": "vimium",
+      "repo": "philc/vimium",
+      "photo": "",
+      "summary": "vimium：浏览器插件，支持Vim风格的键盘导航。"
+    },
+    {
+      "name": "vimium-c",
+      "repo": "gdh1995/vimium-c",
+      "photo": "",
+      "summary": "vimium-c：Vimium的分支，支持更多功能和自定义。"
+    },
+    {
+      "name": "surfingkeys",
+      "repo": "brookhong/Surfingkeys",
+      "photo": "",
+      "summary": "surfingkeys：浏览器插件，支持Vim风格的键盘导航和自定义脚本。"
+    },
+    {
+      "name": "tridactyl",
+      "repo": "tridactyl/tridactyl",
+      "photo": "",
+      "summary": "tridactyl：Firefox浏览器插件，支持Vim风格的键盘导航。"
+    },
+    {
+      "name": "vimperator",
+      "repo": "vimperator/vimperator",
+      "photo": "",
+      "summary": "vimperator：Firefox浏览器插件，支持Vim风格的键盘导航。"
+    },
+    {
+      "name": "pentadactyl",
+      "repo": "pentadactyl/pentadactyl",
+      "photo": "",
+      "summary": "pentadactyl：Vimperator的分支，支持更多功能和自定义。"
+    },
+    {
+      "name": "qutebrowser",
+      "repo": "qutebrowser/qutebrowser",
+      "photo": "",
+      "summary": "qutebrowser：Vim风格的浏览器，支持键盘导航和自定义配置。"
+    },
+    {
+      "name": "lynx",
+      "repo": "lynx-dev/lynx",
+      "photo": "",
+      "summary": "lynx：命令行Web浏览器，支持HTML和导航。"
+    },
+    {
+      "name": "w3m",
+      "repo": "tats/w3m",
+      "photo": "",
+      "summary": "w3m：基于文本的Web浏览器，支持HTML和图片显示。"
+    },
+    {
+      "name": "elinks",
+      "repo": "elinks/elinks",
+      "photo": "",
+      "summary": "elinks：命令行Web浏览器，支持多标签和脚本。"
+    },
+    {
+      "name": "links",
+      "repo": "links2/links2",
+      "photo": "",
+      "summary": "links：命令行Web浏览器，支持图形化模式。"
+    },
+    {
+      "name": "wget",
+      "repo": "mirrors/gnu/wget",
+      "photo": "",
+      "summary": "wget：GNU项目的命令行下载工具，支持HTTP、HTTPS和FTP。"
+    },
+    {
+      "name": "curl",
+      "repo": "curl/curl",
+      "photo": "",
+      "summary": "curl：命令行工具和库，用于传输数据。"
+    },
+    {
+      "name": "aria2",
+      "repo": "aria2/aria2",
+      "photo": "",
+      "summary": "aria2：轻量级多协议命令行下载工具。"
+    },
+    {
+      "name": "axel",
+      "repo": "axel-download-accelerator/axel",
+      "photo": "",
+      "summary": "axel：多线程下载工具，支持断点续传。"
+    },
+    {
+      "name": "wget2",
+      "repo": "gnuwget/wget2",
+      "photo": "",
+      "summary": "wget2：GNU Wget的下一代版本，支持HTTP/2和多线程。"
+    },
+    {
+      "name": "youtube-dl",
+      "repo": "ytdl-org/youtube-dl",
+      "photo": "",
+      "summary": "youtube-dl：命令行视频下载工具，支持YouTube和其他视频网站。"
+    },
+    {
+      "name": "yt-dlp",
+      "repo": "yt-dlp/yt-dlp",
+      "photo": "",
+      "summary": "yt-dlp：youtube-dl的分支，支持更多功能和网站。"
+    },
+    {
+      "name": "ffmpeg",
+      "repo": "FFmpeg/FFmpeg",
+      "photo": "",
+      "summary": "ffmpeg：多媒体处理工具，支持视频、音频和字幕的转换和编辑。"
+    },
+    {
+      "name": "handbrake",
+      "repo": "HandBrake/HandBrake",
+      "photo": "",
+      "summary": "handbrake：开源视频转码工具，支持多种格式。"
+    },
+    {
+      "name": "avidemux",
+      "repo": "mean00/avidemux2",
+      "photo": "",
+      "summary": "avidemux：开源视频编辑器，支持简单的剪辑和滤镜。"
+    },
+    {
+      "name": "shotcut",
+      "repo": "mltframework/shotcut",
+      "photo": "",
+      "summary": "shotcut：开源视频编辑器，支持多轨道和滤镜。"
+    },
+    {
+      "name": "kdenlive",
+      "repo": "kde/kdenlive",
+      "photo": "",
+      "summary": "kdenlive：开源视频编辑器，支持多轨道和特效。"
+    },
+    {
+      "name": "blender",
+      "repo": "blender/blender",
+      "photo": "",
+      "summary": "blender：开源3D建模和动画工具，支持视频编辑和渲染。"
+    },
+    {
+      "name": "gimp",
+      "repo": "GNOME/gimp",
+      "photo": "",
+      "summary": "gimp：开源图像编辑工具，支持图层和滤镜。"
+    },
+    {
+      "name": "inkscape",
+      "repo": "inkscape/inkscape",
+      "photo": "",
+      "summary": "inkscape：开源矢量图形编辑工具，支持SVG格式。"
+    },
+    {
+      "name": "krita",
+      "repo": "kde/krita",
+      "photo": "",
+      "summary": "krita：开源数字绘画工具，支持图层和画笔。"
+    },
+    {
+      "name": "libreoffice",
+      "repo": "libreoffice/core",
+      "photo": "",
+      "summary": "libreoffice：开源办公软件套件，支持文档、表格、演示等。"
+    },
+    {
+      "name": "openoffice",
+      "repo": "apache/openoffice",
+      "photo": "",
+      "summary": "openoffice：开源办公软件套件，支持文档、表格、演示等。"
+    },
+    {
+      "name": "onlyoffice",
+      "repo": "ONLYOFFICE/DocumentServer",
+      "photo": "",
+      "summary": "onlyoffice：开源办公软件套件，支持在线协作和文档编辑。"
+    },
+    {
+      "name": "calligra",
+      "repo": "kde/calligra",
+      "photo": "",
+      "summary": "calligra：开源办公软件套件，支持文档、表格、演示等。"
+    },
+    {
+      "name": "wps-office",
+      "repo": "kingsoft/wps-office",
+      "photo": "",
+      "summary": "wps-office：国产办公软件套件，支持文档、表格、演示等。"
+    },
+    {
+      "name": "notepad-plus-plus",
+      "repo": "notepad-plus-plus/notepad-plus-plus",
+      "photo": "",
+      "summary": "notepad-plus-plus：Windows平台的文本编辑器，支持语法高亮和插件。"
+    },
+    {
+      "name": "notepadqq",
+      "repo": "notepadqq/notepadqq",
+      "photo": "",
+      "summary": "notepadqq：跨平台文本编辑器，类似Notepad++。"
+    },
+    {
+      "name": "sublime-merge",
+      "repo": "sublimehq/sublime-merge",
+      "photo": "",
+      "summary": "sublime-merge：Git图形化客户端，支持快速提交和分支管理。"
+    },
+    {
+      "name": "gitextensions",
+      "repo": "gitextensions/gitextensions",
+      "photo": "",
+      "summary": "gitextensions：Windows平台的Git图形化客户端，支持高级操作。"
+    },
+    {
+      "name": "git-sh",
+      "repo": "rtomayko/git-sh",
+      "photo": "",
+      "summary": "git-sh：Git专用的shell，支持命令补全和别名。"
+    },
+    {
+      "name": "git-extras",
+      "repo": "tj/git-extras",
+      "photo": "",
+      "summary": "git-extras：Git扩展工具，提供额外的命令和功能。"
+    },
+    {
+      "name": "git-flow",
+      "repo": "nvie/gitflow",
+      "photo": "",
+      "summary": "git-flow：Git工作流管理工具，支持分支管理和发布流程。"
+    },
+    {
+      "name": "git-lfs",
+      "repo": "git-lfs/git-lfs",
+      "photo": "",
+      "summary": "git-lfs：Git大文件存储工具，支持大型文件的版本控制。"
+    },
+    {
+      "name": "git-crypt",
+      "repo": "AGWA/git-crypt",
+      "photo": "",
+      "summary": "git-crypt：Git仓库加密工具，支持透明加密和解密。"
+    },
+    {
+      "name": "git-secret",
+      "repo": "sobolevn/git-secret",
+      "photo": "",
+      "summary": "git-secret：Git仓库秘密文件管理工具，支持GPG加密。"
+    },
+    {
+      "name": "git-filter-repo",
+      "repo": "newren/git-filter-repo",
+      "photo": "",
+      "summary": "git-filter-repo：Git仓库历史修改工具，支持文件过滤和重命名。"
+    },
+    {
+      "name": "git-repo",
+      "repo": "android/tools-repo",
+      "photo": "",
+      "summary": "git-repo：Google开发的多仓库管理工具，支持Android项目。"
+    },
+    {
+      "name": "git-subrepo",
+      "repo": "ingydotnet/git-subrepo",
+      "photo": "",
+      "summary": "git-subrepo：Git子仓库管理工具，支持子项目的独立开发和同步。"
+    },
+    {
+      "name": "git-subtree",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-subtree：Git内置的子仓库管理工具，支持子项目的合并和拆分。"
+    },
+    {
+      "name": "git-worktree",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-worktree：Git内置的工作树管理工具，支持多分支同时工作。"
+    },
+    {
+      "name": "git-annex",
+      "repo": "joeyh/git-annex",
+      "photo": "",
+      "summary": "git-annex：Git附件管理工具，支持大型文件的版本控制和同步。"
+    },
+    {
+      "name": "git-svn",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-svn：Git与SVN的桥接工具，支持从SVN仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-hg",
+      "repo": "felipec/git-remote-hg",
+      "photo": "",
+      "summary": "git-remote-hg：Git与Mercurial的桥接工具，支持从Mercurial仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-bzr",
+      "repo": "jelmer/git-remote-bzr",
+      "photo": "",
+      "summary": "git-remote-bzr：Git与Bazaar的桥接工具，支持从Bazaar仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-fossil",
+      "repo": "aperezdc/git-remote-fossil",
+      "photo": "",
+      "summary": "git-remote-fossil：Git与Fossil的桥接工具，支持从Fossil仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-darcs",
+      "repo": "peti/git-remote-darcs",
+      "photo": "",
+      "summary": "git-remote-darcs：Git与Darcs的桥接工具，支持从Darcs仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-cvs",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-cvs：Git与CVS的桥接工具，支持从CVS仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-ftp",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-ftp：Git与FTP的桥接工具，支持从FTP仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-http",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-http：Git与HTTP的桥接工具，支持从HTTP仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-https",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-https：Git与HTTPS的桥接工具，支持从HTTPS仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-ssh",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-ssh：Git与SSH的桥接工具，支持从SSH仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-local",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-local：Git与本地仓库的桥接工具，支持从本地仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-git",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-git：Git与Git仓库的桥接工具，支持从Git仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-bare",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-bare：Git与裸仓库的桥接工具，支持从裸仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-archive",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-archive：Git与归档文件的桥接工具，支持从归档文件导入和导出。"
+    },
+    {
+      "name": "git-remote-svn",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-svn：Git与SVN仓库的桥接工具，支持从SVN仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-hg",
+      "repo": "felipec/git-remote-hg",
+      "photo": "",
+      "summary": "git-remote-hg：Git与Mercurial仓库的桥接工具，支持从Mercurial仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-bzr",
+      "repo": "jelmer/git-remote-bzr",
+      "photo": "",
+      "summary": "git-remote-bzr：Git与Bazaar仓库的桥接工具，支持从Bazaar仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-fossil",
+      "repo": "aperezdc/git-remote-fossil",
+      "photo": "",
+      "summary": "git-remote-fossil：Git与Fossil仓库的桥接工具，支持从Fossil仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-darcs",
+      "repo": "peti/git-remote-darcs",
+      "photo": "",
+      "summary": "git-remote-darcs：Git与Darcs仓库的桥接工具，支持从Darcs仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-cvs",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-cvs：Git与CVS仓库的桥接工具，支持从CVS仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-ftp",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-ftp：Git与FTP仓库的桥接工具，支持从FTP仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-http",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-http：Git与HTTP仓库的桥接工具，支持从HTTP仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-https",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-https：Git与HTTPS仓库的桥接工具，支持从HTTPS仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-ssh",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-ssh：Git与SSH仓库的桥接工具，支持从SSH仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-local",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-local：Git与本地仓库的桥接工具，支持从本地仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-git",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-git：Git与Git仓库的桥接工具，支持从Git仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-bare",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-bare：Git与裸仓库的桥接工具，支持从裸仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-archive",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-archive：Git与归档文件的桥接工具，支持从归档文件导入和导出。"
+    },
+    {
+      "name": "git-remote-svn",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-svn：Git与SVN仓库的桥接工具，支持从SVN仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-hg",
+      "repo": "felipec/git-remote-hg",
+      "photo": "",
+      "summary": "git-remote-hg：Git与Mercurial仓库的桥接工具，支持从Mercurial仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-bzr",
+      "repo": "jelmer/git-remote-bzr",
+      "photo": "",
+      "summary": "git-remote-bzr：Git与Bazaar仓库的桥接工具，支持从Bazaar仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-fossil",
+      "repo": "aperezdc/git-remote-fossil",
+      "photo": "",
+      "summary": "git-remote-fossil：Git与Fossil仓库的桥接工具，支持从Fossil仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-darcs",
+      "repo": "peti/git-remote-darcs",
+      "photo": "",
+      "summary": "git-remote-darcs：Git与Darcs仓库的桥接工具，支持从Darcs仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-cvs",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-cvs：Git与CVS仓库的桥接工具，支持从CVS仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-ftp",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-ftp：Git与FTP仓库的桥接工具，支持从FTP仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-http",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-http：Git与HTTP仓库的桥接工具，支持从HTTP仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-https",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-https：Git与HTTPS仓库的桥接工具，支持从HTTPS仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-ssh",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-ssh：Git与SSH仓库的桥接工具，支持从SSH仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-local",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-local：Git与本地仓库的桥接工具，支持从本地仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-git",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-git：Git与Git仓库的桥接工具，支持从Git仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-bare",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-bare：Git与裸仓库的桥接工具，支持从裸仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-archive",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-archive：Git与归档文件的桥接工具，支持从归档文件导入和导出。"
+    },
+    {
+      "name": "git-remote-svn",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-svn：Git与SVN仓库的桥接工具，支持从SVN仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-hg",
+      "repo": "felipec/git-remote-hg",
+      "photo": "",
+      "summary": "git-remote-hg：Git与Mercurial仓库的桥接工具，支持从Mercurial仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-bzr",
+      "repo": "jelmer/git-remote-bzr",
+      "photo": "",
+      "summary": "git-remote-bzr：Git与Bazaar仓库的桥接工具，支持从Bazaar仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-fossil",
+      "repo": "aperezdc/git-remote-fossil",
+      "photo": "",
+      "summary": "git-remote-fossil：Git与Fossil仓库的桥接工具，支持从Fossil仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-darcs",
+      "repo": "peti/git-remote-darcs",
+      "photo": "",
+      "summary": "git-remote-darcs：Git与Darcs仓库的桥接工具，支持从Darcs仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-cvs",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-cvs：Git与CVS仓库的桥接工具，支持从CVS仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-ftp",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-ftp：Git与FTP仓库的桥接工具，支持从FTP仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-http",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-http：Git与HTTP仓库的桥接工具，支持从HTTP仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-https",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-https：Git与HTTPS仓库的桥接工具，支持从HTTPS仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-ssh",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-ssh：Git与SSH仓库的桥接工具，支持从SSH仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-local",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-local：Git与本地仓库的桥接工具，支持从本地仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-git",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-git：Git与Git仓库的桥接工具，支持从Git仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-bare",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-bare：Git与裸仓库的桥接工具，支持从裸仓库导入和导出。"
+    },
+    {
+      "name": "git-remote-archive",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-archive：Git与归档文件的桥接工具，支持从归档文件导入和导出。"
+    },
+    {
+      "name": "git-remote-svn",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "git-remote-svn：Git与SVN仓库的桥接工具，支持从SVN仓库导入和导出。"
     }
   ]
 }

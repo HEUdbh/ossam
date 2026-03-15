@@ -4,50 +4,362 @@
       "name": "WezTerm",
       "repo": "wez/wezterm",
       "photo": "",
-      "summary": "WezTerm：终端增强与 Shell 体验工具。"
+      "summary": "WezTerm：可配置的跨平台终端模拟器。"
     },
     {
       "name": "Alacritty",
       "repo": "alacritty/alacritty",
       "photo": "",
-      "summary": "Alacritty：终端增强与 Shell 体验工具。"
+      "summary": "Alacritty：高性能的终端模拟器。"
     },
     {
       "name": "starship",
       "repo": "starship/starship",
       "photo": "",
-      "summary": "starship：终端增强与 Shell 体验工具。"
+      "summary": "starship：现代化的 Shell 提示符。"
     },
     {
       "name": "nushell",
       "repo": "nushell/nushell",
       "photo": "",
-      "summary": "nushell：终端增强与 Shell 体验工具。"
+      "summary": "nushell：基于 Rust 的现代化 Shell。"
     },
     {
       "name": "zellij",
       "repo": "zellij-org/zellij",
       "photo": "",
-      "summary": "zellij：终端增强与 Shell 体验工具。"
+      "summary": "zellij：终端多窗口管理工具。"
     },
     {
       "name": "mise",
       "repo": "jdx/mise",
       "photo": "",
-      "summary": "mise：终端增强与 Shell 体验工具。"
+      "summary": "mise：多语言版本管理工具。"
     },
     {
       "name": "fish-shell",
       "repo": "fish-shell/fish-shell",
       "photo": "",
-      "summary": "fish-shell：终端增强与 Shell 体验工具。",
+      "summary": "fish-shell：友好的交互式 Shell。",
       "match": "fish.*\\.(zip|tar\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$"
     },
     {
       "name": "gitui",
       "repo": "extrawurst/gitui",
       "photo": "",
-      "summary": "gitui：终端增强与 Shell 体验工具。"
+      "summary": "gitui：终端下的 Git 图形化管理工具。"
+    },
+    {
+      "name": "Windows Terminal",
+      "repo": "microsoft/terminal",
+      "photo": "",
+      "summary": "Windows Terminal：微软开源的现代化终端模拟器，支持多标签页和自定义主题。"
+    },
+    {
+      "name": "Kitty",
+      "repo": "kovidgoyal/kitty",
+      "photo": "",
+      "summary": "Kitty：高性能的终端模拟器，具有强大的标签页和窗口管理功能。"
+    },
+    {
+      "name": "Terminus",
+      "repo": "Eugeny/terminus",
+      "photo": "",
+      "summary": "Terminus：适用于Windows、macOS和Linux的高度可配置的终端模拟器。"
+    },
+    {
+      "name": "OpenCode",
+      "repo": "sst/opencode",
+      "photo": "",
+      "summary": "OpenCode：为终端设计的AI编码代理工具，完全开源免费。"
+    },
+    {
+      "name": "tmux",
+      "repo": "tmux/tmux",
+      "photo": "",
+      "summary": "tmux：终端复用工具，允许在单个窗口中运行多个终端会话。"
+    },
+    {
+      "name": "screen",
+      "repo": "GNU/screen",
+      "photo": "",
+      "summary": "screen：终端复用工具，支持会话恢复和多窗口管理。"
+    },
+    {
+      "name": "neovim",
+      "repo": "neovim/neovim",
+      "photo": "",
+      "summary": "neovim：Vim的重构版本，具有现代化的特性和API。"
+    },
+    {
+      "name": "Konsole",
+      "repo": "KDE/konsole",
+      "photo": "",
+      "summary": "Konsole：KDE桌面环境的默认终端模拟器，支持多标签页和自定义配色。"
+    },
+    {
+      "name": "GNOME Terminal",
+      "repo": "GNOME/gnome-terminal",
+      "photo": "",
+      "summary": "GNOME Terminal：GNOME桌面环境的默认终端模拟器，支持多标签页和配置文件。"
+    },
+    {
+      "name": "Tilix",
+      "repo": "gnunn1/tilix",
+      "photo": "",
+      "summary": "Tilix：平铺式终端模拟器，支持垂直和水平分割窗口。"
+    },
+    {
+      "name": "rxvt-unicode",
+      "repo": "exg/rxvt-unicode",
+      "photo": "",
+      "summary": "rxvt-unicode：轻量级、高可配置的终端模拟器。"
+    },
+    {
+      "name": "zsh",
+      "repo": "zsh-users/zsh",
+      "photo": "",
+      "summary": "zsh：功能强大的Shell，支持插件和主题扩展。"
+    },
+    {
+      "name": "bash",
+      "repo": "GNU/bash",
+      "photo": "",
+      "summary": "bash：Bourne Again Shell，Linux和macOS的默认Shell。"
+    },
+    {
+      "name": "byobu",
+      "repo": "byobu/byobu",
+      "photo": "",
+      "summary": "byobu：tmux和screen的前端，提供更友好的终端复用体验。"
+    },
+    {
+      "name": "fzf",
+      "repo": "junegunn/fzf",
+      "photo": "",
+      "summary": "fzf：命令行模糊搜索工具，支持文件搜索和历史命令搜索。"
+    },
+    {
+      "name": "ripgrep",
+      "repo": "BurntSushi/ripgrep",
+      "photo": "",
+      "summary": "ripgrep：快速的递归文本搜索工具，支持正则表达式。"
+    },
+    {
+      "name": "fd",
+      "repo": "sharkdp/fd",
+      "photo": "",
+      "summary": "fd：简单快速的文件搜索工具，替代find命令。"
+    },
+    {
+      "name": "bat",
+      "repo": "sharkdp/bat",
+      "photo": "",
+      "summary": "bat：cat命令的现代化替代，支持语法高亮和分页。"
+    },
+    {
+      "name": "exa",
+      "repo": "ogham/exa",
+      "photo": "",
+      "summary": "exa：ls命令的现代化替代，支持彩色输出和图标。"
+    },
+    {
+      "name": "delta",
+      "repo": "dandavison/delta",
+      "photo": "",
+      "summary": "delta：diff命令的现代化替代，支持语法高亮和并排比较。"
+    },
+    {
+      "name": "procs",
+      "repo": "dalance/procs",
+      "photo": "",
+      "summary": "procs：ps命令的现代化替代，支持彩色输出和过滤。"
+    },
+    {
+      "name": "duf",
+      "repo": "muesli/duf",
+      "photo": "",
+      "summary": "duf：df命令的现代化替代，支持彩色输出和排序。"
+    },
+    {
+      "name": "dust",
+      "repo": "bootandy/dust",
+      "photo": "",
+      "summary": "dust：du命令的现代化替代，以树形图显示磁盘使用情况。"
+    },
+    {
+      "name": "bottom",
+      "repo": "ClementTsang/bottom",
+      "photo": "",
+      "summary": "bottom：htop的现代化替代，系统监控工具。"
+    },
+    {
+      "name": "btop",
+      "repo": "aristocratos/btop",
+      "photo": "",
+      "summary": "btop：htop的现代化替代，支持彩色输出和自定义布局。"
+    },
+    {
+      "name": "glances",
+      "repo": "nicolargo/glances",
+      "photo": "",
+      "summary": "glances：跨平台系统监控工具，支持Web界面。"
+    },
+    {
+      "name": "tldr",
+      "repo": "tldr-pages/tldr",
+      "photo": "",
+      "summary": "tldr：简化的man手册，提供常用命令的示例。"
+    },
+    {
+      "name": "cheat",
+      "repo": "cheat/cheat",
+      "photo": "",
+      "summary": "cheat：命令行工具，提供命令的使用示例。"
+    },
+    {
+      "name": "navi",
+      "repo": "denisidoro/navi",
+      "photo": "",
+      "summary": "navi：交互式命令行工具，帮助你记住和执行命令。"
+    },
+    {
+      "name": "thefuck",
+      "repo": "nvbn/thefuck",
+      "photo": "",
+      "summary": "thefuck：命令纠错工具，自动修正之前输入的错误命令。"
+    },
+    {
+      "name": "zoxide",
+      "repo": "ajeetdsouza/zoxide",
+      "photo": "",
+      "summary": "zoxide：快速目录跳转工具，替代cd命令。"
+    },
+    {
+      "name": "autojump",
+      "repo": "wting/autojump",
+      "photo": "",
+      "summary": "autojump：基于频率的目录跳转工具。"
+    },
+    {
+      "name": "direnv",
+      "repo": "direnv/direnv",
+      "photo": "",
+      "summary": "direnv：环境变量管理工具，自动加载和卸载目录特定的环境变量。"
+    },
+    {
+      "name": "ttyd",
+      "repo": "tsl0922/ttyd",
+      "photo": "",
+      "summary": "ttyd：Web终端服务器，允许通过浏览器访问终端。"
+    },
+    {
+      "name": "vim",
+      "repo": "vim/vim",
+      "photo": "",
+      "summary": "vim：经典的文本编辑器，支持模态编辑。"
+    },
+    {
+      "name": "nano",
+      "repo": "nano-editor/nano",
+      "photo": "",
+      "summary": "nano：简单易用的文本编辑器，适合初学者。"
+    },
+    {
+      "name": "emacs",
+      "repo": "emacs-mirror/emacs",
+      "photo": "",
+      "summary": "emacs：功能强大的文本编辑器和开发环境。"
+    },
+    {
+      "name": "micro",
+      "repo": "zyedidia/micro",
+      "photo": "",
+      "summary": "micro：现代的文本编辑器，支持语法高亮和多光标。"
+    },
+    {
+      "name": "kakoune",
+      "repo": "mawww/kakoune",
+      "photo": "",
+      "summary": "kakoune：模态文本编辑器，支持多光标和实时预览。"
+    },
+    {
+      "name": "lazygit",
+      "repo": "jesseduffield/lazygit",
+      "photo": "",
+      "summary": "lazygit：终端下的Git图形化管理工具，简化Git操作。"
+    },
+    {
+      "name": "tig",
+      "repo": "jonas/tig",
+      "photo": "",
+      "summary": "tig：终端下的Git浏览器，支持分支查看和提交历史。"
+    },
+    {
+      "name": "lazydocker",
+      "repo": "jesseduffield/lazydocker",
+      "photo": "",
+      "summary": "lazydocker：终端下的Docker图形化管理工具，简化Docker操作。"
+    },
+    {
+      "name": "mosh",
+      "repo": "mobile-shell/mosh",
+      "photo": "",
+      "summary": "mosh：移动Shell，支持在不稳定网络下保持连接。"
+    },
+    {
+      "name": "warp",
+      "repo": "warpdotdev/Warp",
+      "photo": "",
+      "summary": "warp：现代终端，支持AI辅助和协作功能。"
+    },
+    {
+      "name": "tabby",
+      "repo": "Eugeny/tabby",
+      "photo": "",
+      "summary": "tabby：跨平台终端模拟器，支持SSH、SFTP和自定义主题。"
+    },
+    {
+      "name": "hyper",
+      "repo": "vercel/hyper",
+      "photo": "",
+      "summary": "hyper：基于Electron的终端模拟器，支持插件和自定义主题。"
+    },
+    {
+      "name": "cmder",
+      "repo": "cmderdev/cmder",
+      "photo": "",
+      "summary": "cmder：Windows下的终端增强工具，整合了ConEmu和Git Bash。"
+    },
+    {
+      "name": "conemu",
+      "repo": "Maximus5/ConEmu",
+      "photo": "",
+      "summary": "conemu：Windows下的终端模拟器，支持多标签页和自定义配色。"
+    },
+    {
+      "name": "terminator",
+      "repo": "gnome-terminator/terminator",
+      "photo": "",
+      "summary": "terminator：多窗口终端模拟器，支持垂直和水平分割。"
+    },
+    {
+      "name": "guake",
+      "repo": "Guake/guake",
+      "photo": "",
+      "summary": "guake：下拉式终端模拟器，按下快捷键即可显示/隐藏。"
+    },
+    {
+      "name": "yakuake",
+      "repo": "KDE/yakuake",
+      "photo": "",
+      "summary": "yakuake：KDE的下拉式终端模拟器。"
+    },
+    {
+      "name": "cool-retro-term",
+      "repo": "Swordfish90/cool-retro-term",
+      "photo": "",
+      "summary": "cool-retro-term：复古风格的终端模拟器，模拟老式CRT显示器的效果。"
     }
   ]
 }

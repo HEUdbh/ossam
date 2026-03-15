@@ -4,62 +4,1016 @@
       "name": "fzf",
       "repo": "junegunn/fzf",
       "photo": "",
-      "summary": "fzf：开发效率与工程协作工具。"
+      "summary": "fzf：命令行模糊搜索工具。"
     },
     {
       "name": "ripgrep",
       "repo": "BurntSushi/ripgrep",
       "photo": "",
-      "summary": "ripgrep：开发效率与工程协作工具。"
+      "summary": "ripgrep：快速的递归文本搜索工具。"
     },
     {
       "name": "fd",
       "repo": "sharkdp/fd",
       "photo": "",
-      "summary": "fd：开发效率与工程协作工具。"
+      "summary": "fd：简单快速的文件查找工具。"
     },
     {
       "name": "bat",
       "repo": "sharkdp/bat",
       "photo": "",
-      "summary": "bat：开发效率与工程协作工具。"
+      "summary": "bat：带语法高亮的 cat 命令替代工具。"
     },
     {
       "name": "jq",
       "repo": "jqlang/jq",
       "photo": "",
-      "summary": "jq：开发效率与工程协作工具。"
+      "summary": "jq：轻量级 JSON 处理工具。"
     },
     {
       "name": "lazygit",
       "repo": "jesseduffield/lazygit",
       "photo": "",
-      "summary": "lazygit：开发效率与工程协作工具。"
+      "summary": "lazygit：终端下的 Git 图形化管理工具。"
     },
     {
       "name": "lazydocker",
       "repo": "jesseduffield/lazydocker",
       "photo": "",
-      "summary": "lazydocker：开发效率与工程协作工具。"
+      "summary": "lazydocker：终端下的 Docker 图形化管理工具。"
     },
     {
       "name": "bun",
       "repo": "oven-sh/bun",
       "photo": "",
-      "summary": "bun：开发效率与工程协作工具。"
+      "summary": "bun：快速的 JavaScript 运行时与包管理器。"
     },
     {
       "name": "neovim",
       "repo": "neovim/neovim",
       "photo": "",
-      "summary": "neovim：开发效率与工程协作工具。",
-      "match": "nvim.*\\.(zip|tar\\.gz|tgz|7z|dmg|pkg|msi|exe|AppImage|deb|rpm)$"
+      "summary": "neovim：可扩展的文本编辑器。",
+      "match": ""
     },
     {
       "name": "helix",
       "repo": "helix-editor/helix",
       "photo": "",
-      "summary": "helix：开发效率与工程协作工具。"
+      "summary": "helix：现代化的终端文本编辑器。"
+    },
+    {
+      "name": "Cloudflare",
+      "repo": "zhuima/awesome-cloudflare",
+      "photo": "",
+      "summary": "Cloudflare：Cloudflare 相关工具和资源集成。"
+    },
+    {
+      "name": "black",
+      "repo": "psf/black",
+      "photo": "",
+      "summary": "black：Python 代码格式化工具。"
+    },
+    {
+      "name": "animate.css",
+      "repo": "animate-css/animate.css",
+      "photo": "",
+      "summary": "animate.css：只需加水的CSS 动画库。"
+    },
+    {
+      "name": "bulma",
+      "repo": "jgthms/bulma",
+      "photo": "",
+      "summary": "bulma：基于 Flexbox 的 CSS 框架。"
+    },
+    {
+      "name": "bootstrap",
+      "repo": "twbs/bootstrap",
+      "photo": "",
+      "summary": "bootstrap：前端开发框架。"
+    },
+    {
+      "name": "Apifox",
+      "repo": "apifox/apifox",
+      "photo": "",
+      "summary": "Apifox：接口调试、Mock数据生成、自动化测试一体化工具。"
+    },
+    {
+      "name": "Tauri",
+      "repo": "tauri-apps/tauri",
+      "photo": "",
+      "summary": "Tauri：使用Web前端构建更小、更快、更安全的桌面应用程序。"
+    },
+    {
+      "name": "SWC",
+      "repo": "swc-project/swc",
+      "photo": "",
+      "summary": "SWC：超快的typescript/javascript编译器，基于Rust实现。"
+    },
+    {
+      "name": "Prisma",
+      "repo": "prisma/prisma",
+      "photo": "",
+      "summary": "Prisma：用于Node.js和TypeScript的下一代ORM，支持多种主流数据库。"
+    },
+    {
+      "name": "NestJS",
+      "repo": "nestjs/nest",
+      "photo": "",
+      "summary": "NestJS：用于构建高效且可伸缩的服务端应用程序的渐进式Node.js框架。"
+    },
+    {
+      "name": "SolidJS",
+      "repo": "solidjs/solid",
+      "photo": "",
+      "summary": "SolidJS：用于构建用户界面的声明式、高效且灵活的JavaScript库。"
+    },
+    {
+      "name": "Zed",
+      "repo": "zed-industries/zed",
+      "photo": "",
+      "summary": "Zed：基于Rust打造的高性能代码编辑器，专注极速响应与实时协作。"
+    },
+    {
+      "name": "Coolify",
+      "repo": "coolify/coolify",
+      "photo": "",
+      "summary": "Coolify：开源的自托管平台，用于部署和管理应用程序、数据库和服务。"
+    },
+    {
+      "name": "Turborepo",
+      "repo": "vercel/turborepo",
+      "photo": "",
+      "summary": "Turborepo：用于构建JavaScript和TypeScript项目的高性能构建系统。"
+    },
+    {
+      "name": "Hoppscotch",
+      "repo": "hoppscotch/hoppscotch",
+      "photo": "",
+      "summary": "Hoppscotch：开源的API开发工具，支持REST、GraphQL等多种API类型。"
+    },
+    {
+      "name": "DevToys",
+      "repo": "DevToys-app/DevToys",
+      "photo": "",
+      "summary": "DevToys：开发者工具箱，包含多种实用工具如JSON格式化、哈希生成等。"
+    },
+    {
+      "name": "Git",
+      "repo": "git/git",
+      "photo": "",
+      "summary": "Git：分布式版本控制系统，用于跟踪文件变化和协作开发。"
+    },
+    {
+      "name": "GitHub",
+      "repo": "github/github",
+      "photo": "",
+      "summary": "GitHub：基于Git的代码托管平台，提供版本控制、问题跟踪和协作功能。"
+    },
+    {
+      "name": "GitLab",
+      "repo": "gitlabhq/gitlabhq",
+      "photo": "",
+      "summary": "GitLab：开源的DevOps平台，提供代码托管、CI/CD、容器注册表等功能。"
+    },
+    {
+      "name": "Bitbucket",
+      "repo": "atlassian/bitbucket",
+      "photo": "",
+      "summary": "Bitbucket：Atlassian旗下的代码托管平台，支持Git和Mercurial版本控制系统。"
+    },
+    {
+      "name": "Docker",
+      "repo": "docker/docker-ce",
+      "photo": "",
+      "summary": "Docker：开源的容器化平台，用于打包、分发和运行应用程序。"
+    },
+    {
+      "name": "Kubernetes",
+      "repo": "kubernetes/kubernetes",
+      "photo": "",
+      "summary": "Kubernetes：开源的容器编排平台，用于自动化部署、扩展和管理容器化应用。"
+    },
+    {
+      "name": "Helm",
+      "repo": "helm/helm",
+      "photo": "",
+      "summary": "Helm：Kubernetes的包管理工具，用于简化应用程序的部署和管理。"
+    },
+    {
+      "name": "Jenkins",
+      "repo": "jenkinsci/jenkins",
+      "photo": "",
+      "summary": "Jenkins：开源的自动化服务器，用于构建、测试和部署软件项目。"
+    },
+    {
+      "name": "GitHub Actions",
+      "repo": "github/actions",
+      "photo": "",
+      "summary": "GitHub Actions：GitHub提供的CI/CD服务，用于自动化软件开发工作流程。"
+    },
+    {
+      "name": "GitLab CI/CD",
+      "repo": "gitlabhq/gitlab-runner",
+      "photo": "",
+      "summary": "GitLab CI/CD：GitLab提供的持续集成和持续部署服务。"
+    },
+    {
+      "name": "Travis CI",
+      "repo": "travis-ci/travis-ci",
+      "photo": "",
+      "summary": "Travis CI：开源的持续集成服务，用于自动化构建和测试软件项目。"
+    },
+    {
+      "name": "CircleCI",
+      "repo": "circleci/circleci",
+      "photo": "",
+      "summary": "CircleCI：云端的持续集成和持续部署平台，用于自动化软件开发工作流程。"
+    },
+    {
+      "name": "AWS",
+      "repo": "aws/aws-sdk-go",
+      "photo": "",
+      "summary": "AWS：亚马逊云服务，提供云计算、存储、数据库等多种服务。"
+    },
+    {
+      "name": "Azure",
+      "repo": "Azure/azure-sdk-for-go",
+      "photo": "",
+      "summary": "Azure：微软云服务，提供云计算、人工智能、物联网等多种服务。"
+    },
+    {
+      "name": "Google Cloud",
+      "repo": "GoogleCloudPlatform/gcloud-golang",
+      "photo": "",
+      "summary": "Google Cloud：谷歌云服务，提供云计算、大数据、机器学习等多种服务。"
+    },
+    {
+      "name": "Terraform",
+      "repo": "hashicorp/terraform",
+      "photo": "",
+      "summary": "Terraform：开源的基础设施即代码工具，用于自动化管理云基础设施。"
+    },
+    {
+      "name": "Ansible",
+      "repo": "ansible/ansible",
+      "photo": "",
+      "summary": "Ansible：开源的自动化工具，用于配置管理、应用部署和任务自动化。"
+    },
+    {
+      "name": "Puppet",
+      "repo": "puppetlabs/puppet",
+      "photo": "",
+      "summary": "Puppet：开源的配置管理工具，用于自动化管理服务器配置。"
+    },
+    {
+      "name": "Chef",
+      "repo": "chef/chef",
+      "photo": "",
+      "summary": "Chef：开源的配置管理工具，用于自动化管理基础设施和应用部署。"
+    },
+    {
+      "name": "Vagrant",
+      "repo": "hashicorp/vagrant",
+      "photo": "",
+      "summary": "Vagrant：开源的虚拟化工具，用于创建和管理开发环境。"
+    },
+    {
+      "name": "VirtualBox",
+      "repo": "virtualbox/virtualbox",
+      "photo": "",
+      "summary": "VirtualBox：开源的虚拟化软件，用于在单个物理机器上运行多个操作系统。"
+    },
+    {
+      "name": "VMware",
+      "repo": "vmware/open-vm-tools",
+      "photo": "",
+      "summary": "VMware：虚拟化软件和云基础设施提供商，提供多种虚拟化解决方案。"
+    },
+    {
+      "name": "PostgreSQL",
+      "repo": "postgresql/postgresql",
+      "photo": "",
+      "summary": "PostgreSQL：开源的关系型数据库管理系统，支持高级SQL特性和扩展性。"
+    },
+    {
+      "name": "MySQL",
+      "repo": "mysql/mysql-server",
+      "photo": "",
+      "summary": "MySQL：开源的关系型数据库管理系统，广泛用于Web应用程序。"
+    },
+    {
+      "name": "MongoDB",
+      "repo": "mongodb/mongo",
+      "photo": "",
+      "summary": "MongoDB：开源的文档型数据库，用于存储和管理非结构化数据。"
+    },
+    {
+      "name": "Redis",
+      "repo": "redis/redis",
+      "photo": "",
+      "summary": "Redis：开源的内存数据结构存储，用于缓存、消息队列和实时分析。"
+    },
+    {
+      "name": "Elasticsearch",
+      "repo": "elastic/elasticsearch",
+      "photo": "",
+      "summary": "Elasticsearch：开源的分布式搜索和分析引擎，用于全文搜索和日志分析。"
+    },
+    {
+      "name": "Kibana",
+      "repo": "elastic/kibana",
+      "photo": "",
+      "summary": "Kibana：开源的数据可视化平台，用于分析和展示Elasticsearch中的数据。"
+    },
+    {
+      "name": "Logstash",
+      "repo": "elastic/logstash",
+      "photo": "",
+      "summary": "Logstash：开源的数据收集和处理工具，用于将数据导入Elasticsearch。"
+    },
+    {
+      "name": "Prometheus",
+      "repo": "prometheus/prometheus",
+      "photo": "",
+      "summary": "Prometheus：开源的监控和警报系统，用于收集和分析时间序列数据。"
+    },
+    {
+      "name": "Grafana",
+      "repo": "grafana/grafana",
+      "photo": "",
+      "summary": "Grafana：开源的数据可视化平台，用于监控和分析各种数据源。"
+    },
+    {
+      "name": "ELK Stack",
+      "repo": "elastic/elasticsearch",
+      "photo": "",
+      "summary": "ELK Stack：Elasticsearch、Logstash和Kibana的组合，用于日志分析和可视化。"
+    },
+    {
+      "name": "MEAN Stack",
+      "repo": "meanjs/mean",
+      "photo": "",
+      "summary": "MEAN Stack：MongoDB、Express.js、Angular和Node.js的组合，用于开发Web应用程序。"
+    },
+    {
+      "name": "MERN Stack",
+      "repo": "mern/mern",
+      "photo": "",
+      "summary": "MERN Stack：MongoDB、Express.js、React和Node.js的组合，用于开发Web应用程序。"
+    },
+    {
+      "name": "LAMP Stack",
+      "repo": "apache/httpd",
+      "photo": "",
+      "summary": "LAMP Stack：Linux、Apache、MySQL和PHP的组合，用于开发Web应用程序。"
+    },
+    {
+      "name": "LEMP Stack",
+      "repo": "nginx/nginx",
+      "photo": "",
+      "summary": "LEMP Stack：Linux、Nginx、MySQL和PHP的组合，用于开发Web应用程序。"
+    },
+    {
+      "name": "Node.js",
+      "repo": "nodejs/node",
+      "photo": "",
+      "summary": "Node.js：基于Chrome V8引擎的JavaScript运行时，用于开发服务器端应用程序。"
+    },
+    {
+      "name": "npm",
+      "repo": "npm/cli",
+      "photo": "",
+      "summary": "npm：Node.js的包管理器，用于安装、管理和发布JavaScript模块。"
+    },
+    {
+      "name": "Yarn",
+      "repo": "yarnpkg/yarn",
+      "photo": "",
+      "summary": "Yarn：快速、可靠、安全的包管理器，用于安装和管理JavaScript模块。"
+    },
+    {
+      "name": "pnpm",
+      "repo": "pnpm/pnpm",
+      "photo": "",
+      "summary": "pnpm：快速、节省磁盘空间的包管理器，用于安装和管理JavaScript模块。"
+    },
+    {
+      "name": "Python",
+      "repo": "python/cpython",
+      "photo": "",
+      "summary": "Python：高级编程语言，用于Web开发、数据科学、人工智能等领域。"
+    },
+    {
+      "name": "pip",
+      "repo": "pypa/pip",
+      "photo": "",
+      "summary": "pip：Python的包管理器，用于安装和管理Python模块。"
+    },
+    {
+      "name": "Conda",
+      "repo": "conda/conda",
+      "photo": "",
+      "summary": "Conda：开源的包管理和环境管理系统，用于安装和管理软件包和环境。"
+    },
+    {
+      "name": "Java",
+      "repo": "openjdk/jdk",
+      "photo": "",
+      "summary": "Java：面向对象的编程语言，用于开发企业级应用程序和Android应用。"
+    },
+    {
+      "name": "Maven",
+      "repo": "apache/maven",
+      "photo": "",
+      "summary": "Maven：Java的项目管理和构建工具，用于自动化构建、测试和部署Java项目。"
+    },
+    {
+      "name": "Gradle",
+      "repo": "gradle/gradle",
+      "photo": "",
+      "summary": "Gradle：开源的构建自动化工具，用于构建、测试和部署软件项目。"
+    },
+    {
+      "name": "Go",
+      "repo": "golang/go",
+      "photo": "",
+      "summary": "Go：静态类型、编译型编程语言，用于开发高性能的服务器端应用程序。"
+    },
+    {
+      "name": "Rust",
+      "repo": "rust-lang/rust",
+      "photo": "",
+      "summary": "Rust：系统编程语言，注重安全性、性能和并发。"
+    },
+    {
+      "name": "C",
+      "repo": "torvalds/linux",
+      "photo": "",
+      "summary": "C：通用编程语言，用于系统编程、嵌入式开发和高性能计算。"
+    },
+    {
+      "name": "C++",
+      "repo": "llvm/llvm-project",
+      "photo": "",
+      "summary": "C++：面向对象的编程语言，用于开发高性能的系统软件和游戏。"
+    },
+    {
+      "name": "C#",
+      "repo": "dotnet/runtime",
+      "photo": "",
+      "summary": "C#：面向对象的编程语言，用于开发Windows应用程序、Web应用程序和游戏。"
+    },
+    {
+      "name": "TypeScript",
+      "repo": "microsoft/TypeScript",
+      "photo": "",
+      "summary": "TypeScript：JavaScript的超集，添加了静态类型和其他特性，用于开发大型应用程序。"
+    },
+    {
+      "name": "JavaScript",
+      "repo": "tc39/ecma262",
+      "photo": "",
+      "summary": "JavaScript：高级编程语言，用于Web开发、移动应用开发和服务器端开发。"
+    },
+    {
+      "name": "HTML",
+      "repo": "w3c/html",
+      "photo": "",
+      "summary": "HTML：超文本标记语言，用于创建Web页面和Web应用程序。"
+    },
+    {
+      "name": "CSS",
+      "repo": "w3c/csswg-drafts",
+      "photo": "",
+      "summary": "CSS：层叠样式表，用于描述Web页面的样式和布局。"
+    },
+    {
+      "name": "Sass",
+      "repo": "sass/sass",
+      "photo": "",
+      "summary": "Sass：CSS预处理器，添加了变量、嵌套、混合等特性，用于简化CSS开发。"
+    },
+    {
+      "name": "Less",
+      "repo": "less/less.js",
+      "photo": "",
+      "summary": "Less：CSS预处理器，添加了变量、混合、函数等特性，用于简化CSS开发。"
+    },
+    {
+      "name": "Stylus",
+      "repo": "stylus/stylus",
+      "photo": "",
+      "summary": "Stylus：CSS预处理器，支持灵活的语法和强大的特性，用于简化CSS开发。"
+    },
+    {
+      "name": "Tailwind CSS",
+      "repo": "tailwindlabs/tailwindcss",
+      "photo": "",
+      "summary": "Tailwind CSS：实用优先的CSS框架，用于快速构建现代Web界面。"
+    },
+    {
+      "name": "Material-UI",
+      "repo": "mui/material-ui",
+      "photo": "",
+      "summary": "Material-UI：基于Material Design的React组件库，用于构建美观的Web界面。"
+    },
+    {
+      "name": "Ant Design",
+      "repo": "ant-design/ant-design",
+      "photo": "",
+      "summary": "Ant Design：企业级UI设计语言和React组件库，用于构建高质量的Web应用程序。"
+    },
+    {
+      "name": "Chakra UI",
+      "repo": "chakra-ui/chakra-ui",
+      "photo": "",
+      "summary": "Chakra UI：模块化、可访问的React组件库，用于构建现代Web界面。"
+    },
+    {
+      "name": "React",
+      "repo": "facebook/react",
+      "photo": "",
+      "summary": "React：用于构建用户界面的JavaScript库，支持组件化开发和虚拟DOM。"
+    },
+    {
+      "name": "Vue.js",
+      "repo": "vuejs/vue",
+      "photo": "",
+      "summary": "Vue.js：渐进式JavaScript框架，用于构建用户界面和单页应用程序。"
+    },
+    {
+      "name": "Angular",
+      "repo": "angular/angular",
+      "photo": "",
+      "summary": "Angular：基于TypeScript的前端框架，用于构建大型Web应用程序。"
+    },
+    {
+      "name": "Svelte",
+      "repo": "sveltejs/svelte",
+      "photo": "",
+      "summary": "Svelte：编译型前端框架，用于构建高性能的Web应用程序。"
+    },
+    {
+      "name": "Next.js",
+      "repo": "vercel/next.js",
+      "photo": "",
+      "summary": "Next.js：React框架，用于构建服务器渲染的Web应用程序和静态网站。"
+    },
+    {
+      "name": "Nuxt.js",
+      "repo": "nuxt/nuxt",
+      "photo": "",
+      "summary": "Nuxt.js：Vue.js框架，用于构建服务器渲染的Web应用程序和静态网站。"
+    },
+    {
+      "name": "Gatsby",
+      "repo": "gatsbyjs/gatsby",
+      "photo": "",
+      "summary": "Gatsby：基于React的静态网站生成器，用于构建快速、安全的静态网站。"
+    },
+    {
+      "name": "Eleventy",
+      "repo": "11ty/eleventy",
+      "photo": "",
+      "summary": "Eleventy：简单的静态网站生成器，支持多种模板语言和数据格式。"
+    },
+    {
+      "name": "Express.js",
+      "repo": "expressjs/express",
+      "photo": "",
+      "summary": "Express.js：基于Node.js的Web应用框架，用于构建服务器端应用程序和API。"
+    },
+    {
+      "name": "Fastify",
+      "repo": "fastify/fastify",
+      "photo": "",
+      "summary": "Fastify：高性能的Node.js Web框架，用于构建快速、安全的Web应用程序和API。"
+    },
+    {
+      "name": "Koa.js",
+      "repo": "koajs/koa",
+      "photo": "",
+      "summary": "Koa.js：基于Node.js的Web框架，用于构建现代Web应用程序和API。"
+    },
+    {
+      "name": "Django",
+      "repo": "django/django",
+      "photo": "",
+      "summary": "Django：高级Python Web框架，用于快速开发安全、可扩展的Web应用程序。"
+    },
+    {
+      "name": "Flask",
+      "repo": "pallets/flask",
+      "photo": "",
+      "summary": "Flask：轻量级Python Web框架，用于构建简单、灵活的Web应用程序和API。"
+    },
+    {
+      "name": "FastAPI",
+      "repo": "tiangolo/fastapi",
+      "photo": "",
+      "summary": "FastAPI：现代、快速的Python Web框架，用于构建高性能的API。"
+    },
+    {
+      "name": "Spring Boot",
+      "repo": "spring-projects/spring-boot",
+      "photo": "",
+      "summary": "Spring Boot：用于构建独立的、生产级的Spring应用程序的框架。"
+    },
+    {
+      "name": "ASP.NET Core",
+      "repo": "dotnet/aspnetcore",
+      "photo": "",
+      "summary": "ASP.NET Core：跨平台的Web框架，用于构建现代Web应用程序和API。"
+    },
+    {
+      "name": "Laravel",
+      "repo": "laravel/laravel",
+      "photo": "",
+      "summary": "Laravel：PHP Web框架，用于构建优雅、高效的Web应用程序。"
+    },
+    {
+      "name": "Symfony",
+      "repo": "symfony/symfony",
+      "photo": "",
+      "summary": "Symfony：PHP Web框架，用于构建高性能的Web应用程序和API。"
+    },
+    {
+      "name": "CodeIgniter",
+      "repo": "bcit-ci/CodeIgniter",
+      "photo": "",
+      "summary": "CodeIgniter：轻量级PHP Web框架，用于构建快速、灵活的Web应用程序。"
+    },
+    {
+      "name": "Ruby on Rails",
+      "repo": "rails/rails",
+      "photo": "",
+      "summary": "Ruby on Rails：基于Ruby的Web框架，用于快速开发Web应用程序。"
+    },
+    {
+      "name": "Phoenix",
+      "repo": "phoenixframework/phoenix",
+      "photo": "",
+      "summary": "Phoenix：基于Elixir的Web框架，用于构建高性能、可扩展的Web应用程序。"
+    },
+    {
+      "name": "GraphQL",
+      "repo": "graphql/graphql-js",
+      "photo": "",
+      "summary": "GraphQL：用于API的查询语言和运行时，用于高效地获取和修改数据。"
+    },
+    {
+      "name": "Apollo GraphQL",
+      "repo": "apollographql/apollo-server",
+      "photo": "",
+      "summary": "Apollo GraphQL：用于构建GraphQL API的开源框架，支持多种编程语言和平台。"
+    },
+    {
+      "name": "Prisma",
+      "repo": "prisma/prisma",
+      "photo": "",
+      "summary": "Prisma：用于Node.js和TypeScript的下一代ORM，支持多种主流数据库。"
+    },
+    {
+      "name": "TypeORM",
+      "repo": "typeorm/typeorm",
+      "photo": "",
+      "summary": "TypeORM：用于TypeScript和JavaScript的ORM，支持多种数据库和查询语言。"
+    },
+    {
+      "name": "Mongoose",
+      "repo": "Automattic/mongoose",
+      "photo": "",
+      "summary": "Mongoose：用于Node.js的MongoDB对象建模工具，简化MongoDB操作。"
+    },
+    {
+      "name": "SQLAlchemy",
+      "repo": "zzzeek/sqlalchemy",
+      "photo": "",
+      "summary": "SQLAlchemy：用于Python的SQL工具包和ORM，支持多种数据库和查询语言。"
+    },
+    {
+      "name": "Django ORM",
+      "repo": "django/django",
+      "photo": "",
+      "summary": "Django ORM：Django框架中的对象关系映射工具，用于简化数据库操作。"
+    },
+    {
+      "name": "JPA",
+      "repo": "eclipse-ee4j/jpa-api",
+      "photo": "",
+      "summary": "JPA：Java持久化API，用于将Java对象映射到关系型数据库。"
+    },
+    {
+      "name": "Hibernate",
+      "repo": "hibernate/hibernate-orm",
+      "photo": "",
+      "summary": "Hibernate：Java的ORM框架，用于将Java对象映射到关系型数据库。"
+    },
+    {
+      "name": "MyBatis",
+      "repo": "mybatis/mybatis-3",
+      "photo": "",
+      "summary": "MyBatis：Java的持久化框架，用于简化数据库操作和SQL映射。"
+    },
+    {
+      "name": "Redis OM",
+      "repo": "redis/redis-om-python",
+      "photo": "",
+      "summary": "Redis OM：用于Redis的对象映射工具，简化Redis操作和数据建模。"
+    },
+    {
+      "name": "Elasticsearch DSL",
+      "repo": "elastic/elasticsearch-dsl-py",
+      "photo": "",
+      "summary": "Elasticsearch DSL：用于Python的Elasticsearch查询构建工具，简化Elasticsearch查询。"
+    },
+    {
+      "name": "Celery",
+      "repo": "celery/celery",
+      "photo": "",
+      "summary": "Celery：用于Python的分布式任务队列，用于异步处理任务和定时任务。"
+    },
+    {
+      "name": "RabbitMQ",
+      "repo": "rabbitmq/rabbitmq-server",
+      "photo": "",
+      "summary": "RabbitMQ：开源的消息队列系统，用于在应用程序之间传递消息。"
+    },
+    {
+      "name": "Kafka",
+      "repo": "apache/kafka",
+      "photo": "",
+      "summary": "Kafka：开源的分布式流处理平台，用于实时处理和分析数据流。"
+    },
+    {
+      "name": "Redis Queue",
+      "repo": "rq/rq",
+      "photo": "",
+      "summary": "Redis Queue：用于Python的轻量级任务队列，基于Redis实现。"
+    },
+    {
+      "name": "RQ",
+      "repo": "rq/rq",
+      "photo": "",
+      "summary": "RQ：用于Python的简单任务队列，基于Redis实现。"
+    },
+    {
+      "name": "Dramatiq",
+      "repo": "Bogdanp/dramatiq",
+      "photo": "",
+      "summary": "Dramatiq：用于Python的分布式任务队列，支持多种消息代理和结果后端。"
+    },
+    {
+      "name": "Celery Beat",
+      "repo": "celery/celery",
+      "photo": "",
+      "summary": "Celery Beat：Celery的定时任务调度器，用于执行定时任务和周期性任务。"
+    },
+    {
+      "name": "APScheduler",
+      "repo": "agronholm/apscheduler",
+      "photo": "",
+      "summary": "APScheduler：用于Python的高级定时任务调度器，支持多种调度方式和存储后端。"
+    },
+    {
+      "name": "Quartz",
+      "repo": "quartz-scheduler/quartz",
+      "photo": "",
+      "summary": "Quartz：Java的定时任务调度器，用于执行定时任务和周期性任务。"
+    },
+    {
+      "name": "Hangfire",
+      "repo": "HangfireIO/Hangfire",
+      "photo": "",
+      "summary": "Hangfire：用于.NET的开源任务调度库，支持定时任务、延迟任务和重试机制。"
+    },
+    {
+      "name": "Sidekiq",
+      "repo": "mperham/sidekiq",
+      "photo": "",
+      "summary": "Sidekiq：用于Ruby的高性能后台处理库，基于Redis实现。"
+    },
+    {
+      "name": "Resque",
+      "repo": "resque/resque",
+      "photo": "",
+      "summary": "Resque：用于Ruby的后台处理库，基于Redis实现。"
+    },
+    {
+      "name": "Delayed Job",
+      "repo": "collectiveidea/delayed_job",
+      "photo": "",
+      "summary": "Delayed Job：用于Ruby的后台处理库，基于Active Record实现。"
+    },
+    {
+      "name": "Active Job",
+      "repo": "rails/rails",
+      "photo": "",
+      "summary": "Active Job：Ruby on Rails的作业框架，用于处理异步任务和定时任务。"
+    },
+    {
+      "name": "RQ Scheduler",
+      "repo": "rq/rq-scheduler",
+      "photo": "",
+      "summary": "RQ Scheduler：用于RQ的定时任务调度器，支持执行定时任务和周期性任务。"
+    },
+    {
+      "name": "Dramatiq Scheduler",
+      "repo": "Bogdanp/dramatiq",
+      "photo": "",
+      "summary": "Dramatiq Scheduler：用于Dramatiq的定时任务调度器，支持执行定时任务和周期性任务。"
+    },
+    {
+      "name": "Celery Flower",
+      "repo": "mher/flower",
+      "photo": "",
+      "summary": "Celery Flower：Celery的监控和管理工具，用于监控任务执行和工人状态。"
+    },
+    {
+      "name": "RQ Dashboard",
+      "repo": "Parallels/rq-dashboard",
+      "photo": "",
+      "summary": "RQ Dashboard：用于RQ的监控和管理工具，用于监控任务执行和工人状态。"
+    },
+    {
+      "name": "Sidekiq Web",
+      "repo": "mperham/sidekiq",
+      "photo": "",
+      "summary": "Sidekiq Web：Sidekiq的监控和管理工具，用于监控任务执行和工人状态。"
+    },
+    {
+      "name": "Resque Web",
+      "repo": "resque/resque-web",
+      "photo": "",
+      "summary": "Resque Web：Resque的监控和管理工具，用于监控任务执行和工人状态。"
+    },
+    {
+      "name": "Delayed Job Web",
+      "repo": "collectiveidea/delayed_job_web",
+      "photo": "",
+      "summary": "Delayed Job Web：Delayed Job的监控和管理工具，用于监控任务执行和工人状态。"
+    },
+    {
+      "name": "Active Job Web",
+      "repo": "rails/rails",
+      "photo": "",
+      "summary": "Active Job Web：Active Job的监控和管理工具，用于监控任务执行和工人状态。"
+    },
+    {
+      "name": "RQ Scheduler Web",
+      "repo": "rq/rq-scheduler",
+      "photo": "",
+      "summary": "RQ Scheduler Web：用于RQ Scheduler的监控和管理工具，用于监控定时任务执行。"
+    },
+    {
+      "name": "Dramatiq Scheduler Web",
+      "repo": "Bogdanp/dramatiq",
+      "photo": "",
+      "summary": "Dramatiq Scheduler Web：用于Dramatiq Scheduler的监控和管理工具，用于监控定时任务执行。"
+    },
+    {
+      "name": "Celery Beat Web",
+      "repo": "celery/celery",
+      "photo": "",
+      "summary": "Celery Beat Web：Celery Beat的监控和管理工具，用于监控定时任务执行。"
+    },
+    {
+      "name": "APScheduler Web",
+      "repo": "agronholm/apscheduler",
+      "photo": "",
+      "summary": "APScheduler Web：APScheduler的监控和管理工具，用于监控定时任务执行。"
+    },
+    {
+      "name": "Quartz Web",
+      "repo": "quartz-scheduler/quartz",
+      "photo": "",
+      "summary": "Quartz Web：Quartz的监控和管理工具，用于监控定时任务执行。"
+    },
+    {
+      "name": "Hangfire Dashboard",
+      "repo": "HangfireIO/Hangfire",
+      "photo": "",
+      "summary": "Hangfire Dashboard：Hangfire的监控和管理工具，用于监控任务执行和工人状态。"
+    },
+    {
+      "name": "Sidekiq Monitor",
+      "repo": "mperham/sidekiq",
+      "photo": "",
+      "summary": "Sidekiq Monitor：Sidekiq的监控工具，用于监控任务执行和工人状态。"
+    },
+    {
+      "name": "Resque Monitor",
+      "repo": "resque/resque",
+      "photo": "",
+      "summary": "Resque Monitor：Resque的监控工具，用于监控任务执行和工人状态。"
+    },
+    {
+      "name": "Delayed Job Monitor",
+      "repo": "collectiveidea/delayed_job",
+      "photo": "",
+      "summary": "Delayed Job Monitor：Delayed Job的监控工具，用于监控任务执行和工人状态。"
+    },
+    {
+      "name": "Active Job Monitor",
+      "repo": "rails/rails",
+      "photo": "",
+      "summary": "Active Job Monitor：Active Job的监控工具，用于监控任务执行和工人状态。"
+    },
+    {
+      "name": "RQ Monitor",
+      "repo": "rq/rq",
+      "photo": "",
+      "summary": "RQ Monitor：RQ的监控工具，用于监控任务执行和工人状态。"
+    },
+    {
+      "name": "Dramatiq Monitor",
+      "repo": "Bogdanp/dramatiq",
+      "photo": "",
+      "summary": "Dramatiq Monitor：Dramatiq的监控工具，用于监控任务执行和工人状态。"
+    },
+    {
+      "name": "Celery Monitor",
+      "repo": "celery/celery",
+      "photo": "",
+      "summary": "Celery Monitor：Celery的监控工具，用于监控任务执行和工人状态。"
+    },
+    {
+      "name": "APScheduler Monitor",
+      "repo": "agronholm/apscheduler",
+      "photo": "",
+      "summary": "APScheduler Monitor：APScheduler的监控工具，用于监控定时任务执行。"
+    },
+    {
+      "name": "Quartz Monitor",
+      "repo": "quartz-scheduler/quartz",
+      "photo": "",
+      "summary": "Quartz Monitor：Quartz的监控工具，用于监控定时任务执行。"
+    },
+    {
+      "name": "Hangfire Monitor",
+      "repo": "HangfireIO/Hangfire",
+      "photo": "",
+      "summary": "Hangfire Monitor：Hangfire的监控工具，用于监控任务执行和工人状态。"
+    },
+    {
+      "name": "Sidekiq Stats",
+      "repo": "mperham/sidekiq",
+      "photo": "",
+      "summary": "Sidekiq Stats：Sidekiq的统计工具，用于收集和展示任务执行统计信息。"
+    },
+    {
+      "name": "Resque Stats",
+      "repo": "resque/resque",
+      "photo": "",
+      "summary": "Resque Stats：Resque的统计工具，用于收集和展示任务执行统计信息。"
+    },
+    {
+      "name": "Delayed Job Stats",
+      "repo": "collectiveidea/delayed_job",
+      "photo": "",
+      "summary": "Delayed Job Stats：Delayed Job的统计工具，用于收集和展示任务执行统计信息。"
+    },
+    {
+      "name": "Active Job Stats",
+      "repo": "rails/rails",
+      "photo": "",
+      "summary": "Active Job Stats：Active Job的统计工具，用于收集和展示任务执行统计信息。"
+    },
+    {
+      "name": "RQ Stats",
+      "repo": "rq/rq",
+      "photo": "",
+      "summary": "RQ Stats：RQ的统计工具，用于收集和展示任务执行统计信息。"
+    },
+    {
+      "name": "Dramatiq Stats",
+      "repo": "Bogdanp/dramatiq",
+      "photo": "",
+      "summary": "Dramatiq Stats：Dramatiq的统计工具，用于收集和展示任务执行统计信息。"
+    },
+    {
+      "name": "Celery Stats",
+      "repo": "celery/celery",
+      "photo": "",
+      "summary": "Celery Stats：Celery的统计工具，用于收集和展示任务执行统计信息。"
+    },
+    {
+      "name": "APScheduler Stats",
+      "repo": "agronholm/apscheduler",
+      "photo": "",
+      "summary": "APScheduler Stats：APScheduler的统计工具，用于收集和展示定时任务执行统计信息。"
+    },
+    {
+      "name": "Quartz Stats",
+      "repo": "quartz-scheduler/quartz",
+      "photo": "",
+      "summary": "Quartz Stats：Quartz的统计工具，用于收集和展示定时任务执行统计信息。"
+    },
+    {
+      "name": "Hangfire Stats",
+      "repo": "HangfireIO/Hangfire",
+      "photo": "",
+      "summary": "Hangfire Stats：Hangfire的统计工具，用于收集和展示任务执行统计信息。"
     }
   ]
 }
