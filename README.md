@@ -51,6 +51,14 @@ OSSAM (Open Source Software Application Market) 是一个基于 **Go + Wails + V
 
 ## ✨ 核心功能
 
+### 界面预览
+
+#### 应用市场展示页面
+![应用市场展示页面](images/shichang.png)
+
+#### 详情界面
+![详情界面](images/xiangqing.png)
+
 ### 1. 多线程高速下载
 - 基于 Go `net/http` 实现并发下载
 - 支持断点续传（预留扩展点）
